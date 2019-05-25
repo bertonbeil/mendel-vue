@@ -18,4 +18,11 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+*.sw*
+\.idea/codeStyles/codeStyleConfig\.xml
+\.idea/codeStyles/Project\.xml
+\.idea/
+
+package-lock\.json
+
+yarn\.lock
