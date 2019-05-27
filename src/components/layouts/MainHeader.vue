@@ -1,27 +1,66 @@
 <template>
 <el-menu text-color="#000" class="el-menu-demo" mode="horizontal" @select="handleSelect">
   <el-menu-item >Mendel@ISG</el-menu-item>
-  <el-submenu index="Design">
-    <template slot="title">New</template>
-    <el-menu-item index="CreateStudy">Study</el-menu-item>
-    <el-menu-item index="CreateProject">Project</el-menu-item>
-    <el-submenu index="DeNovo">
-      <template slot="title">De Novo Assembly</template>
-      <el-menu-item index="CreateNewCDS">CDS</el-menu-item>
-      <el-menu-item index="CreateNewAssembly">Assembly</el-menu-item>
-      <el-menu-item index="CreateNewSegments">Segments</el-menu-item>
-      <el-menu-item index="Primers">Primers</el-menu-item>
-    </el-submenu>
+
+  <el-submenu v-for="(topMenu, menuIndex) in defineMenu" :key="menuIndex" :index="topMenu.submenuTitle">
+    <template v-if="topMenu.submenuTitle" slot="title">{{ topMenu.submenuTitle }}</template>
+    <template v-for="menu in topMenu.items">
+      <el-menu-item v-if="!(menu.submenuTitle && menu.items)" :key="menu.component" :index="menu.component">{{ menu.title }}</el-menu-item>
+      <el-submenu v-else :index="menu.submenuTitle" :key="menu.submenuTitle">
+        <template v-if="menu.submenuTitle" slot="title">{{ menu.submenuTitle }}</template>
+        <template v-for="subMenu in menu.items">
+          <el-menu-item v-if="!(subMenu.submenuTitle && menu.items)" :key="subMenu.component" :index="subMenu.component">{{ subMenu.title }}</el-menu-item>
+          <el-submenu v-else :index="subMenu.submenuTitle" :key="subMenu.submenuTitle">
+            <template v-if="subMenu.submenuTitle" slot="title">{{ subMenu.submenuTitle }}</template>
+            <el-menu-item v-if="!(subMenu.submenuTitle && subMenu.items)" :key="subMenu.component"></el-menu-item>
+          </el-submenu>
+        </template>
+      </el-submenu>
+    </template>
   </el-submenu>
+
 </el-menu>
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({
-  name: "MainHeader"
+  name: 'MainHeader'
 })
 export default class MainHeader extends Vue {
+  defineMenu: any = [
+    { submenuTitle: 'New',
+      items: [
+        { component: 'CreateStudy', title: 'Study' },
+        { component: 'CreateProject', title: 'Project' },
+        { submenuTitle: 'De Novo Assembly',
+          items: [
+            { component: 'CreateNewDeNovoCDS', title: 'CDS' },
+            { component: 'CreateNewDeNovoAssembly', title: 'Assembly' },
+            { component: 'CreateNewDeNovoSegments', title: 'Segments' },
+            { component: 'CreateNewDeNovoPrimers', title: 'Primers' }
+          ]
+        },
+        { submenuTitle: 'Adapto Assembly',
+          items: [
+            { component: 'CreateNewRegionOfInterest', title: 'Region of Interest' },
+            { component: 'CreateNewAdaptoAssembly', title: 'Assembly' },
+            { component: 'CreateNewAdaptoSegments', title: 'Segments' },
+            { component: 'CreateNewAdaptoPrimers', title: 'Primers' }
+          ]
+        },
+        { component: 'EchoFile', title: 'Echo File' }
+      ]
+    },
+    { submenuTitle: 'Import',
+      items: [
+        { component: 'ImportCDS', title: 'CDS' },
+        { component: 'ImportAssembly', title: 'Assembly' },
+        { component: 'ImportSegments', title: 'Segments' }
+      ]
+    }
+  ]
+
   handleSelect (e: any) {
     console.log(e)
   }

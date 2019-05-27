@@ -1,0 +1,147 @@
+/* REWRITE THEME RULE */
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  /* IE10+ CSS styles go here */
+  .el-main {
+    overflow-x: hidden;
+  }
+  .el-select {
+    &__tags {
+      .el-tag {
+        display: inline-block !important;
+      }
+    }
+  }
+}
+
+.el-loading-mask {
+  &.is-fullscreen {
+    z-index: 999999!important;
+  }
+}
+
+.el-container {
+  flex: 1 1 100%;
+  flex-basis: unset!important;
+  position: relative;
+}
+
+.el-aside {
+  transition: all 0.25s;
+  box-shadow: 0 0 1px 0 rgba(0,0,0,0.22);
+}
+
+.el-card {
+  box-shadow: none;
+  &.is-transparent {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+  }
+  &.is-less-top-padding {
+    > .el-card__body {
+      padding: 10px 20px 20px;
+    }
+  }
+  &.is-no-top-padding {
+    > .el-card__body {
+      padding: 0 20px 20px;
+    }
+  }
+  &.is-no-padding {
+    > .el-card__body {
+      padding: 0;
+    }
+  }
+}
+
+.el-select {
+  .el-tag {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: baseline;
+  }
+  &__tags {
+    max-width: calc(100% - 10px) !important;
+    > span {
+      max-width: 100%;
+    }
+    &-text {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    &-dropdown {
+      z-index: 1000!important;
+    }
+  }
+
+}
+
+.el-notification__group {
+  width: 90%;
+}
+
+.el-notification__content {
+  text-align: left;
+  word-break: break-word;
+}
+
+.el-form-item {
+  &__label {
+    padding: 0 !important;
+    line-height: 1 !important;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.el-tooltip__popper {
+  max-width: 300px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  font-size: 1rem;
+}
+
+.el-divider--horizontal {
+  margin: 15px 0;
+}
+
+.el-radio-group {
+  .el-radio-button__inner {
+    width: 100%;
+  }
+}
+
+.el-button.outline-none {
+  outline: 0!important;
+}
+
+.el-menu--horizontal {
+  .el-menu-item:hover {
+    background-color: #ccc;
+  }
+  > .el-submenu.is-active .el-submenu__title {
+    border-bottom: none;
+  }
+}
+
+@mixin breakWordAll {
+  .el-tooltip__popper {
+    word-break: break-all;
+    overflow-wrap: break-word;
+  }
+}
+// ie style
+@media screen and (min-width: 0\0) {
+  @include breakWordAll;
+  .el-dialog {
+    position: absolute;
+    transform: translate(-50%, -50%)
+  }
+}
+// edge style
+@supports (-ms-ime-align:auto) {
+  @include breakWordAll
+}

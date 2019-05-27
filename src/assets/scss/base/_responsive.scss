@@ -1,0 +1,81 @@
+$xs: 450px;
+$sm: 767px;
+$md: 991px;
+$lg: 1199px;
+
+/* Large size and up ---------------------------------
+ ----------------------------------------------------- */
+@media (min-width: #{$lg+1px}) {
+
+}
+
+/* Middle size and max large -------------------------
+ ----------------------------------------------------- */
+@media (min-width: #{$md+1px}) and (max-width: $lg) {
+
+}
+
+/* Tablets -------------------------------------------
+ ----------------------------------------------------- */
+@media (min-width: #{$sm+1px}) and (max-width: $md) {
+}
+
+/* Small max -----------------------------------------
+ ----------------------------------------------------- */
+@media (max-width: $sm) {
+  html {
+    font-size: 13px;
+  }
+  .sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    z-index: 9999;
+    transition: .30s;
+    &--collapsed {
+      width: 0!important;
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+  .blackout {
+    position: relative;
+    &::after {
+      content: '';
+      position: fixed;
+      z-index: 99;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      animation: .3s blackout forwards;
+    }
+  }
+  @keyframes blackout {
+    from {
+      background-color: rgba(0, 0, 0, 0.0);
+    }
+    to {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  .preview-wrap {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 1em;
+  }
+  .upload-content {
+    flex-wrap: wrap;
+  }
+}
+
+/* Small max -----------------------------------------
+----------------------------------------------------- */
+@media (max-width: $xs) {
+}
