@@ -1,32 +1,45 @@
 <template>
   <div>
-    <MainHeader @onSelect="showModal" />
+    <MainHeader @select="onSelect" />
 
     <!-- Main modal wrapper -->
     <el-dialog
-      title="Tips"
+      :title="activeComponent.dialogCaption"
       :visible.sync="dialogVisible"
-      width="30%">
-        <component :is="activeComponent"></component>
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      top="60px"
+      width="100%">
+        <component :is="activeComponent.component" @save="onSave" @saveAndNext="onSaveAndNext" @close="dialogVisible = false"></component>
     </el-dialog>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import MainHeader from '@/components/layouts/MainHeader.vue'
-import CreateStudy from '@/components/design/CreateStudy.vue'
-@Component({
-  name: 'App',
-  components: { MainHeader, CreateStudy }
-})
-export default class App extends Vue {
-  dialogVisible: boolean = false
-  activeComponent: string = ''
+import { DialogBase } from '@/utils/interfaces'
 
-  showModal (component: string) {
+@Component({
+  name: 'Home'
+})
+export default class Home extends Vue {
+  dialogVisible: boolean = false
+  activeComponent: DialogBase = {} as DialogBase
+
+  onSelect (menuItem: DialogBase) {
+    if (menuItem.component) {
     this.dialogVisible = true
-    this.activeComponent = component
+    this.activeComponent = menuItem
+    }
   }
+
+  onSave () {
+    
+  }
+
+  onSaveAndNext () {
+
+  }
+  
 }
 </script>

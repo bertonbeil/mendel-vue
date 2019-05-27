@@ -1,0 +1,14 @@
+export interface DialogBase {
+  component?: string;
+  title?: string;
+  dialogCaption?: string;
+  dialogIntro?: string;
+  dialogInfo?: string;
+  submenuTitle?: string;
+  items?: DialogBase[]
+}
+
+export interface MainMenu {
+  menuTitle: string;
+  items: DialogBase[]
+}
