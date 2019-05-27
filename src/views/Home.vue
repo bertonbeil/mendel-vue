@@ -10,7 +10,7 @@
       :close-on-press-escape="false"
       top="60px"
       width="100%">
-        <component :is="activeComponent.component" @save="onSave" @saveAndNext="onSaveAndNext" @close="dialogVisible = false"></component>
+        <component :is="activeComponent.component" :modalData="activeComponent" @save="onSave" @saveAndNext="onSaveAndNext" @close="dialogVisible = false"></component>
     </el-dialog>
   </div>
 </template>
@@ -33,8 +33,8 @@ export default class Home extends Vue {
     }
   }
 
-  onSave () {
-    
+  onSave (modalData: any) {
+    console.log('on save: ', modalData)    
   }
 
   onSaveAndNext () {
