@@ -1,6 +1,7 @@
 <template>
-<el-menu text-color="#000" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+<el-menu text-color="#000" class="el-menu-demo" mode="horizontal" @select="$emit('onSelect', $event)">
   <el-menu-item >Mendel@ISG</el-menu-item>
+
   <!-- Main nav -->
   <el-submenu v-for="(topMenu, menuIndex) in defineMenu" :key="menuIndex" :index="topMenu.submenuTitle">
     <template v-if="topMenu.submenuTitle" slot="title">{{ topMenu.submenuTitle }}</template>
@@ -49,7 +50,7 @@ export default class MainHeader extends Vue {
             { component: 'CreateAdaptoPrimers', title: 'Primers' }
           ]
         },
-        { component: 'EchoFile', title: 'Echo File' }
+        { component: 'CreateEchoFile', title: 'Echo File' }
       ]
     },
     { submenuTitle: 'Import',
@@ -83,7 +84,6 @@ export default class MainHeader extends Vue {
         { component: 'ReportPromoters', title: 'Promoters' },
         { component: 'ReportTerminators', title: 'Terminators' },
         { component: 'ReportVegasAdapters', title: 'Vegas Adapters' },
-        { component: 'ReportStudies', title: 'Studies' },
         { component: 'ReportRestrictionEnzymes', title: 'Restriction Enzymes' }
       ]
     },
@@ -97,9 +97,5 @@ export default class MainHeader extends Vue {
       ]
     }
   ]
-
-  handleSelect (e: any) {
-    console.log(e)
-  }
 }
 </script>

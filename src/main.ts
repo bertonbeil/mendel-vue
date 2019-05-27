@@ -6,6 +6,8 @@ import './plugins/element.js'
 
 import '@/assets/scss/main.scss'
 
+import './register-global-components'
+
 Vue.config.productionTip = false
 
 new Vue({

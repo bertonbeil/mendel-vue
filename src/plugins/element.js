@@ -2,6 +2,7 @@ import Vue from 'vue'
 import {
   Button,
   Container,
+  Dialog,
   Menu,
   MenuItem,
   Submenu
@@ -13,6 +14,7 @@ locale.use(lang)
 
 Vue.use(Button)
 Vue.use(Container)
+Vue.use(Dialog)
 Vue.use(Menu)
 Vue.use(MenuItem)
 Vue.use(Submenu)
