@@ -1,7 +1,7 @@
 <template>
 <el-menu text-color="#000" class="el-menu-demo" mode="horizontal" @select="handleSelect">
   <el-menu-item >Mendel@ISG</el-menu-item>
-
+  <!-- Main nav -->
   <el-submenu v-for="(topMenu, menuIndex) in defineMenu" :key="menuIndex" :index="topMenu.submenuTitle">
     <template v-if="topMenu.submenuTitle" slot="title">{{ topMenu.submenuTitle }}</template>
     <template v-for="menu in topMenu.items">
@@ -35,18 +35,18 @@ export default class MainHeader extends Vue {
         { component: 'CreateProject', title: 'Project' },
         { submenuTitle: 'De Novo Assembly',
           items: [
-            { component: 'CreateNewDeNovoCDS', title: 'CDS' },
-            { component: 'CreateNewDeNovoAssembly', title: 'Assembly' },
-            { component: 'CreateNewDeNovoSegments', title: 'Segments' },
-            { component: 'CreateNewDeNovoPrimers', title: 'Primers' }
+            { component: 'CreateDeNovoCDS', title: 'CDS' },
+            { component: 'CreateDeNovoAssembly', title: 'Assembly' },
+            { component: 'CreateDeNovoSegments', title: 'Segments' },
+            { component: 'CreateDeNovoPrimers', title: 'Primers' }
           ]
         },
         { submenuTitle: 'Adapto Assembly',
           items: [
-            { component: 'CreateNewRegionOfInterest', title: 'Region of Interest' },
-            { component: 'CreateNewAdaptoAssembly', title: 'Assembly' },
-            { component: 'CreateNewAdaptoSegments', title: 'Segments' },
-            { component: 'CreateNewAdaptoPrimers', title: 'Primers' }
+            { component: 'CreateRegionOfInterest', title: 'Region of Interest' },
+            { component: 'CreateAdaptoAssembly', title: 'Assembly' },
+            { component: 'CreateAdaptoSegments', title: 'Segments' },
+            { component: 'CreateAdaptoPrimers', title: 'Primers' }
           ]
         },
         { component: 'EchoFile', title: 'Echo File' }
@@ -57,6 +57,43 @@ export default class MainHeader extends Vue {
         { component: 'ImportCDS', title: 'CDS' },
         { component: 'ImportAssembly', title: 'Assembly' },
         { component: 'ImportSegments', title: 'Segments' }
+      ]
+    },
+    { submenuTitle: 'Export',
+      items: [
+        { component: 'ExportAssembly', title: 'Assembly' }
+      ]
+    },
+    { submenuTitle: 'Tools',
+      items: [
+        { component: 'ToolPrimerCoverage', title: 'Primer Coverage Tool' },
+        { component: 'ToolStudyCollaborators', title: 'Study Collaborators Tool' },
+        { component: 'ToolVisualizer', title: 'Visualizer Tool' },
+        { component: 'ToolAssemblyAlignment', title: 'Assembly Alignment Tool' }
+      ]
+    },
+    { submenuTitle: 'Reports',
+      items: [
+        { component: 'ReportStudies', title: 'Studies' },
+        { component: 'ReportCDS', title: 'CDS' },
+        { component: 'ReportAssemblies', title: 'Assemblies' },
+        { component: 'ReportDNASegments', title: 'DNA Segments' },
+        { component: 'ReportPrimers', title: 'Primers' },
+        { component: 'ReportOrders', title: 'Orders' },
+        { component: 'ReportPromoters', title: 'Promoters' },
+        { component: 'ReportTerminators', title: 'Terminators' },
+        { component: 'ReportVegasAdapters', title: 'Vegas Adapters' },
+        { component: 'ReportStudies', title: 'Studies' },
+        { component: 'ReportRestrictionEnzymes', title: 'Restriction Enzymes' }
+      ]
+    },
+    { submenuTitle: 'Orders',
+      items: [
+        { component: 'OrderSelectAssemblies', title: 'Select Assemblies' },
+        { component: 'OrderReviewOrders', title: 'Review Orders' },
+        { component: 'OrderAssemblyStatus', title: 'Assembly Status' },
+        { component: 'OrderBarcodeScanner', title: 'Barcode Scanner' },
+        { component: 'OrderQinglanOrders', title: 'Qinglan Orders' }
       ]
     }
   ]
