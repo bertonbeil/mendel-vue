@@ -21,7 +21,7 @@ class HttpService {
 
   public getUrl(relativeUrl: string): string {
     relativeUrl = this.removeLeadingSlash(relativeUrl)
-    return `${process.env.API_URL}/${relativeUrl}`
+    return `${process.env.VUE_APP_API_URL}/${relativeUrl}`
   }
 
   private removeLeadingSlash(url: string) {

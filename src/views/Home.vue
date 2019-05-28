@@ -4,13 +4,24 @@
 
     <!-- Main modal wrapper -->
     <el-dialog
-      :title="activeComponent.dialogCaption"
-      :visible.sync="dialogVisible"
+      :title="tempModalData.dialogCaption"
+      :visible="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      :before-close="handleClose"
       top="60px"
-      width="100%">
-        <component :is="activeComponent.component" :modalData="activeComponent" @save="onSave" @saveAndNext="onSaveAndNext" @close="dialogVisible = false"></component>
+      width="100%"
+      ref="rootDialog">
+        <component
+          :is="tempModalData.component"
+          :modalData="tempModalData"
+          :isLoading.sync="isLoading"
+          @loadOn="showLoader"
+          @loadOff="isLoading.close()"
+          @save="onSave"
+          @saveAndNext="onSaveAndNext"
+          @close="handleClose">
+        </component>
     </el-dialog>
   </div>
 </template>
@@ -18,28 +29,72 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { DialogBase } from '@/utils/interfaces'
-
+import { httpService } from '@/services/http.service'
+import { Loading } from 'element-ui'
 @Component({
   name: 'Home'
 })
 export default class Home extends Vue {
   dialogVisible: boolean = false
-  activeComponent: DialogBase = {} as DialogBase
+  tempModalData: DialogBase = {} as DialogBase
+  /* modal loading ctrl */
+  isLoading: any = null
+  /* base optins set up for MessageBox dialog */
+  confirmOptions = {
+    confirmButtonText: 'Ok',
+    cancelButtonText: 'Cancel',
+    showClose: false,
+    closeOnClickModal: false,
+    closeOnPressEscape: false
+  }
 
+  /* open root Modal with passed prop */
   onSelect (menuItem: DialogBase) {
-    if (menuItem.component) {
-    this.dialogVisible = true
-    this.activeComponent = menuItem
-    }
+    if (menuItem.component) this.dialogVisible = true; this.tempModalData = menuItem
   }
 
   onSave (modalData: any) {
-    console.log('on save: ', modalData)    
+    this.showLoader()
+    httpService.post('query/studyDesigner', modalData)
+      .then((res: any) => {
+        this.isLoading.close()
+        this.responseMessage(res.data)
+      }).catch((err: any) => { this.isLoading = false; console.log(err) })
   }
 
   onSaveAndNext () {
 
   }
-  
+
+  /* set Loagin servise */
+  showLoader () {
+    this.isLoading = this.$loading({ target: '.el-dialog' })
+  }
+
+  /* modal close handled */
+  handleClose (isCloseOnSave: boolean) {
+    this.confirmClose()
+  }
+
+  /* will close root Modal and reset temp Modal Data */
+  closeModal () {
+    this.dialogVisible = false; this.tempModalData = {} as DialogBase
+  }
+
+  /* modal close confirm MessageBox */
+  confirmClose () {
+    this.$confirm('Sure you want to leave? All progress will be lost!', 'Warning', { type: 'warning', ...this.confirmOptions })
+      .then(() => {
+        this.closeModal()
+      }).catch(() => { })
+  }
+
+  /* response viewr */ /* eslint-disable */
+  responseMessage ({ lims_response, status }: any) {
+    this.$confirm(`${lims_response}`, `${status.charAt(0).toUpperCase() + status.slice(1)}`, { type: status, center: true, ...this.confirmOptions }) /* eslint-enable */
+      .then(() => {
+        this.closeModal()
+      }).catch(() => { })
+  }
 }
 </script>

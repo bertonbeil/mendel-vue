@@ -29,11 +29,14 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase } from '@/utils/interfaces'
+import { httpService } from '@/services/http.service'
+import { loader } from '@/utils/helpers'
 @Component({
   name: 'CreateStudy'
 })
 export default class CreateStudy extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
+  @Prop({ required: true }) isLoading!: boolean
 
   studyForm: any = {
     name: '',
@@ -50,10 +53,24 @@ export default class CreateStudy extends Vue {
     studyForm: any
   }
 
+  /* submit Modal data */
   save () {
     this.$refs['studyForm'].validate((valid: any) => {
-      if (valid) this.$emit('save', this.studyForm); else return false
+      if (valid) this.$emit('save', { new_study: this.studyForm, collaborators: [] }); else return false
     })
+  }
+
+  /* loda Modal data */
+  getCollaboratorList () {
+    this.$emit('loadOn')
+    return httpService.get('query/collaboratorList')
+      .then((res: any) => {
+        this.$emit('loadOff')
+      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+  }
+
+  created () {
+    this.getCollaboratorList()
   }
 }
 </script>

@@ -7,10 +7,12 @@ import {
   Form,
   FormItem,
   Input,
+  Loading,
   Row,
   Menu,
   MenuItem,
-  Submenu
+  Submenu,
+  MessageBox
 } from 'element-ui'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
@@ -24,7 +26,10 @@ Vue.use(Dialog)
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Input)
+Vue.use(Loading)
 Vue.use(Row)
 Vue.use(Menu)
 Vue.use(MenuItem)
 Vue.use(Submenu)
+
+Vue.prototype.$confirm = MessageBox.confirm
