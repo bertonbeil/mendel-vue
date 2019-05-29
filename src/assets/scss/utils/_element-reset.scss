@@ -145,3 +145,17 @@
 @supports (-ms-ime-align:auto) {
   @include breakWordAll
 }
+
+.el-dialog__body {
+  padding: 10px 20px 30px 20px;
+}
+
+.el-dialog__title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.el-form-item__label {
+  color: black;
+  font-size: 18px;
+}

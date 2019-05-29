@@ -5,6 +5,7 @@
     <!-- Main modal wrapper -->
     <el-dialog
       :title="tempModalData.dialogCaption"
+      :dialogIntro="tempModalData.dialogIntro"
       :visible="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
@@ -55,7 +56,7 @@ export default class Home extends Vue {
 
   onSave (modalData: any) {
     this.showLoader()
-    httpService.post('query/studyDesigner', modalData)
+    httpService.post(`query/${this.tempModalData.submitUrl}`, modalData.data)
       .then((res: any) => {
         this.isLoading.close()
         this.responseMessage(res.data)

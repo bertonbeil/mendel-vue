@@ -1,0 +1,117 @@
+<template>
+  <div>
+    <el-row :gutter="20">
+      <el-col :span="23">
+        <p v-html="modalData.dialogIntro" class="mb-8"></p>
+      </el-col>
+      <el-col :span="1">
+        <el-popover
+          placement="top-start"
+          width="300"
+          trigger="hover">
+          <i slot="reference" class="el-icon-info cursor-pointer text-green-600"></i>
+          <div v-html="modalData.dialogInfo"></div>
+        </el-popover>
+      </el-col>
+    </el-row>
+    <!-- Main modal content -->
+    <div>
+      <el-form :model="projectForm" label-position="top" :rules="rules" ref="projectForm">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="Study name:" prop="study">
+              <el-select v-model="projectForm.study" placeholder="Select" class="w-full">
+                <el-option v-for="item in studyList" :key="item" :label="item" :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Project name:" prop="name">
+              <el-input v-model="projectForm.name"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="Project description (optional):" prop="description">
+              <el-input v-model="projectForm.description"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="Project type">
+              <el-radio-group v-model="projectType">
+                <el-radio label="Denovo assembly (design a pathway from scratch)" class="my-3"></el-radio><br>
+                <el-radio label="Adapto assembly (re-write a sequence that exists in nature)"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+    <!-- Modal action buttons -->
+    <div slot="footer" class="text-center">
+      <el-button type="danger" @click="$emit('close')">Cancel</el-button>
+      <el-button type="success" @click="$emit('saveAndNext')">Save and Next</el-button>
+      <el-button type="primary" @click="save">Save</el-button>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Vue, Prop } from 'vue-property-decorator'
+import { DialogBase } from '@/utils/interfaces'
+import { httpService } from '@/services/http.service'
+// import { loader } from '@/utils/helpers'
+
+@Component({
+  name: 'CreateProject'
+})
+
+export default class CreateStudy extends Vue {
+  @Prop({ required: true }) modalData!: DialogBase
+  @Prop({ required: true }) isLoading!: boolean
+
+  studyList: any = []
+  projectType: string = 'Denovo assembly (design a pathway from scratch)'
+
+  projectForm: any = {
+    study: '',
+    name: '',
+    description: ''
+  }
+
+  rules: any = {
+    study: [
+      { required: true }
+    ],
+    name: [
+      { required: true, message: 'Please input Project name', trigger: 'blur' }
+    ]
+  }
+
+  $refs!: {
+    projectForm: any
+  }
+
+  /* submit Modal data */
+  save () {
+    this.$refs['projectForm'].validate((valid: any) => {
+      if (valid) this.$emit('save', { data: { ...this.projectForm, type: this.projectType.slice(0, 6).toUpperCase() } })
+      else return false
+    })
+  }
+
+  /* loda Modal data */
+  getStudyList () {
+    this.$emit('loadOn')
+    return httpService.get('query/studyNameList')
+      .then((res: any) => {
+        res.data.rows.map((study: any) => this.studyList.push(study.name))
+        this.$emit('loadOff')
+      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+  }
+
+  created () {
+    this.getStudyList()
+  }
+}
+</script>

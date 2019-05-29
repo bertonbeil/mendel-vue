@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import {
   Button,
+  Card,
   Container,
   Col,
   Dialog,
@@ -11,8 +12,13 @@ import {
   Row,
   Menu,
   MenuItem,
+  MessageBox,
+  Option,
+  Popover,
+  Radio,
+  RadioGroup,
   Submenu,
-  MessageBox
+  Select
 } from 'element-ui'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
@@ -20,6 +26,7 @@ import locale from 'element-ui/lib/locale'
 locale.use(lang)
 
 Vue.use(Button)
+Vue.use(Card)
 Vue.use(Container)
 Vue.use(Col)
 Vue.use(Dialog)
@@ -30,6 +37,11 @@ Vue.use(Loading)
 Vue.use(Row)
 Vue.use(Menu)
 Vue.use(MenuItem)
+Vue.use(Option)
+Vue.use(Popover)
+Vue.use(Radio)
+Vue.use(RadioGroup)
 Vue.use(Submenu)
+Vue.use(Select)
 
 Vue.prototype.$confirm = MessageBox.confirm
