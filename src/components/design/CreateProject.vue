@@ -38,9 +38,10 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="Project type">
+              {{projectType}}
               <el-radio-group v-model="projectType">
-                <el-radio label="Denovo assembly (design a pathway from scratch)" class="my-3"></el-radio><br>
-                <el-radio label="Adapto assembly (re-write a sequence that exists in nature)"></el-radio>
+                <el-radio label="denovo" class="my-3">Denovo assembly (design a pathway from scratch)</el-radio><br>
+                <el-radio label="adapto" >Adapto assembly (re-write a sequence that exists in nature)</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -60,7 +61,8 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
-// import { loader } from '@/utils/helpers'
+
+type ProjectType = 'denovo' | 'adapto'
 
 @Component({
   name: 'CreateProject'
@@ -71,7 +73,7 @@ export default class CreateStudy extends Vue {
   @Prop({ required: true }) isLoading!: boolean
 
   studyList: any = []
-  projectType: string = 'Denovo assembly (design a pathway from scratch)'
+  projectType: ProjectType = 'denovo'
 
   projectForm: any = {
     study: '',
@@ -95,14 +97,14 @@ export default class CreateStudy extends Vue {
   /* submit Modal data */
   save () {
     this.$refs['projectForm'].validate((valid: any) => {
-      if (valid) this.$emit('save', { data: { ...this.projectForm, type: this.projectType.slice(0, 6).toUpperCase() } })
+      if (valid) this.$emit('save', { data: { ...this.projectForm, type: this.projectType } })
       else return false
     })
   }
 
   /* loda Modal data */
   getStudyList () {
-    this.$emit('loadOn')
+    // this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => {
         res.data.rows.map((study: any) => this.studyList.push(study.name))
