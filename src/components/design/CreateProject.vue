@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row :gutter="20">
+    <el-row :gutter="20" class="mb-20">
       <el-col :span="23">
         <p v-html="modalData.dialogIntro" class="mb-8"></p>
       </el-col>
@@ -9,13 +9,13 @@
           placement="top-start"
           width="300"
           trigger="hover">
-          <i slot="reference" class="el-icon-info cursor-pointer text-green-600"></i>
+          <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
           <div v-html="modalData.dialogInfo"></div>
         </el-popover>
       </el-col>
     </el-row>
     <!-- Main modal content -->
-    <div>
+    <div class="mb-30">
       <el-form :model="projectForm" label-position="top" :rules="rules" ref="projectForm">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -38,8 +38,8 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="Project type">
-              <el-radio-group v-model="projectType">
-                <el-radio label="denovo" class="my-3">Denovo assembly (design a pathway from scratch)</el-radio><br>
+              <el-radio-group v-model="projectType" class="flex flex-col">
+                <el-radio label="denovo" class="my-12">Denovo assembly (design a pathway from scratch)</el-radio>
                 <el-radio label="adapto" >Adapto assembly (re-write a sequence that exists in nature)</el-radio>
               </el-radio-group>
             </el-form-item>
