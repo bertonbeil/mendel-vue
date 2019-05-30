@@ -38,7 +38,6 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="Project type">
-              {{projectType}}
               <el-radio-group v-model="projectType">
                 <el-radio label="denovo" class="my-3">Denovo assembly (design a pathway from scratch)</el-radio><br>
                 <el-radio label="adapto" >Adapto assembly (re-write a sequence that exists in nature)</el-radio>

@@ -62,7 +62,7 @@
             </draggable>
           </el-col>
           <el-col :span="12">
-            <draggable class="min-h-full p-3 rounded shadow-lg border border-solid border-grey-100" v-model="collaborators" group="collaborators">
+            <draggable class="min-h-full p-3 rounded shadow-lg" v-model="collaborators" group="collaborators">
               <div class="inline-block w-1/2 p-1 cursor-pointer"
                 v-for="collaborator in collaborators" :key="collaborator">
                 <el-card shadow="hover" body-style="padding:10px">
@@ -87,14 +87,9 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
-import { loader } from '@/utils/helpers'
-import draggable from 'vuedraggable'
 
 @Component({
-  name: 'CreateStudy',
-  components: {
-    draggable
-  }
+  name: 'CreateStudy'
 })
 
 export default class CreateStudy extends Vue {
