@@ -49,8 +49,9 @@ export default class Home extends Vue {
   }
 
   /* open root Modal with passed prop */
-  onSelect (menuItem: DialogBase) {
-    if (menuItem.component) this.dialogVisible = true; this.tempModalData = menuItem
+  onSelect ({ component }: DialogBase) {
+    this.dialogVisible = true;
+    this.tempModalData = this.setTempModalData(component)
   }
 
   onSave (modalData: any) {
@@ -62,8 +63,18 @@ export default class Home extends Vue {
       }).catch((err: any) => { this.isLoading = false; console.log(err) })
   }
 
-  onSaveAndNext () {
+  onSaveAndNext (modalData: any, to: string) {
+    this.showLoader()
+    httpService.post(`query/${this.tempModalData.submitUrl}`, modalData.data)
+      .then((res: any) => {
+        this.tempModalData = {...this.setTempModalData(to), saveAndNextData: modalData.data}
+        this.isLoading.close()
+      }).catch((err: any) => { this.isLoading = false; console.log(err) })
+  }
 
+  /* find and set TempModal data by component name */
+  setTempModalData (component: any): DialogBase {
+    return this.$store.state.modalDataList.slice().find((i: any) => i.component === component) as DialogBase
   }
 
   /* set Loagin servise */

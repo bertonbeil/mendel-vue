@@ -5,8 +5,10 @@ export interface DialogBase {
   dialogIntro?: string;
   dialogInfo?: string;
   submenuTitle?: string;
-  items?: DialogBase[],
+  items?: DialogBase[];
   submitUrl?: string;
+  saveAndNext?: string;
+  saveAndNextData?: string;
 }
 
 export interface MainMenu {

@@ -77,7 +77,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="success" @click="$emit('saveAndNext')">Save and Next</el-button>
+      <el-button type="success" @click="saveAndNext">Save and Next</el-button>
       <el-button type="primary" @click="save">Save</el-button>
     </div>
   </div>
@@ -122,12 +122,21 @@ export default class CreateStudy extends Vue {
     })
   }
 
+  /* submit Modal data */
+  saveAndNext () {
+    this.$refs['studyForm'].validate((valid: any) => {
+      if (valid) {
+        this.$emit('saveAndNext', { data: { new_study: this.studyForm, collaborators: this.collaborators } }, this.modalData.saveAndNext)
+      } else return false
+    })
+  }
+
   /* loda Modal data */
   getCollaboratorList () {
     this.$emit('loadOn')
     return httpService.get('query/collaboratorList')
       .then((res: any) => {
-        res.data.rows.map((investigator: any) => this.investigators.push(investigator.id))
+        this.investigators = res.data.rows.map((investigator: any) => investigator.id)
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }

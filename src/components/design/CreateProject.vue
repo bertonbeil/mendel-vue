@@ -103,7 +103,7 @@ export default class CreateStudy extends Vue {
 
   /* loda Modal data */
   getStudyList () {
-    // this.$emit('loadOn')
+    this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => {
         res.data.rows.map((study: any) => this.studyList.push(study.name))
@@ -113,6 +113,11 @@ export default class CreateStudy extends Vue {
 
   created () {
     this.getStudyList()
+      .then(() => {
+        if (this.modalData.hasOwnProperty('saveAndNextData')) {
+          this.projectForm.study = this.modalData.saveAndNextData.new_study.name
+        }
+      })
   }
 }
 </script>
