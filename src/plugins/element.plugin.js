@@ -18,7 +18,9 @@ import {
   Radio,
   RadioGroup,
   Submenu,
-  Select
+  Select,
+  Table,
+  TableColumn
 } from 'element-ui'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
@@ -43,5 +45,7 @@ Vue.use(Radio)
 Vue.use(RadioGroup)
 Vue.use(Submenu)
 Vue.use(Select)
+Vue.use(Table)
+Vue.use(TableColumn)
 
 Vue.prototype.$confirm = MessageBox.confirm

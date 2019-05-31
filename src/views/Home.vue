@@ -50,7 +50,7 @@ export default class Home extends Vue {
 
   /* open root Modal with passed prop */
   onSelect ({ component }: DialogBase) {
-    this.dialogVisible = true;
+    this.dialogVisible = true
     this.tempModalData = this.setTempModalData(component)
   }
 
@@ -67,8 +67,11 @@ export default class Home extends Vue {
     this.showLoader()
     httpService.post(`query/${this.tempModalData.submitUrl}`, modalData.data)
       .then((res: any) => {
-        this.tempModalData = {...this.setTempModalData(to), saveAndNextData: modalData.data}
-        this.isLoading.close()
+        if (res.data.status === 'error') this.responseMessage(res.data)
+        else {
+          this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: modalData.data }
+          this.isLoading.close()
+        }
       }).catch((err: any) => { this.isLoading = false; console.log(err) })
   }
 
@@ -103,9 +106,11 @@ export default class Home extends Vue {
   /* response viewr */ /* eslint-disable */
   responseMessage ({ lims_response, status }: any) {
     this.$confirm(`${lims_response}`, `${status.charAt(0).toUpperCase() + status.slice(1)}`, { type: status, center: true, ...this.confirmOptions }) /* eslint-enable */
-      .then(() => {
+      .then(() => this.isLoading.close())
+      .catch(() => {
+        this.isLoading.close()
         this.closeModal()
-      }).catch(() => { })
+      })
   }
 }
 </script>

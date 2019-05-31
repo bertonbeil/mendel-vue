@@ -35,28 +35,22 @@ export default class MainHeader extends Vue {
   defineMenu: MainMenu[] = [
     { menuTitle: 'New',
       items: [
-        {
-          component: 'CreateStudy',
-          title: 'Study'
-        },
-        {
-          component: 'CreateProject',
-          title: 'Project'
-        },
+        { component: 'CreateStudy', title: 'Study' },
+        { component: 'CreateProject', title: 'Project' },
         { submenuTitle: 'De Novo Assembly',
           items: [
-            { component: 'CreateDeNovoCDS', title: 'CDS', dialogCaption: 'Create new CDSs' },
-            { component: 'CreateDeNovoAssembly', title: 'Assembly', dialogCaption: 'Create new de novo Assembly' },
-            { component: 'CreateDeNovoSegments', title: 'Segments', dialogCaption: 'Create Segments' },
-            { component: 'CreateDeNovoPrimers', title: 'Primers', dialogCaption: 'Create new Junction primers' }
+            { component: 'CreateDeNovoCDS', title: 'CDS' },
+            { component: 'CreateDeNovoAssembly', title: 'Assembly' },
+            { component: 'CreateDeNovoSegments', title: 'Segments' },
+            { component: 'CreateDeNovoPrimers', title: 'Primers' }
           ]
         },
         { submenuTitle: 'Adapto Assembly',
           items: [
-            { component: 'CreateRegionOfInterest', title: 'Region of Interest', dialogCaption: 'Region of Interest' },
-            { component: 'CreateAdaptoAssembly', title: 'Assembly', dialogCaption: 'Assembly' },
-            { component: 'CreateAdaptoSegments', title: 'Segments', dialogCaption: 'Segment Assembly' },
-            { component: 'CreateAdaptoPrimers', title: 'Primers', dialogCaption: 'Create new Junction primers' }
+            { component: 'CreateRegionOfInterest', title: 'Region of Interest' },
+            { component: 'CreateAdaptoAssembly', title: 'Assembly' },
+            { component: 'CreateAdaptoSegments', title: 'Segments' },
+            { component: 'CreateAdaptoPrimers', title: 'Primers' }
           ]
         },
         { component: 'CreateEchoFile', title: 'Echo File' }
