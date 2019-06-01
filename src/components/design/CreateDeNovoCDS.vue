@@ -41,15 +41,15 @@
             </el-col>
 
             <el-col :span="8">
-              <el-form-item label="Enter Accession numbers:" prop="accessionNumber">
+              <el-form-item label="Enter Accession numbers:" prop="accession">
                 <el-input v-model="denovoCDSForm.accession" placeholder="Enter protein accession numbers (separated by commas)"></el-input>
                 <p class="text-grey-dark">Note: If you want to use a custom CDS please go to ”Import CDSs” after you finish creating your CDSs.</p>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="Host Organism:" prop="hostOrganism">
+              <el-form-item label="Host Organism:" prop="organism">
                 <el-select v-model="denovoCDSForm.organism" placeholder="Select host organism" class="w-full">
-                  <el-option v-for="item in hostOrganisms" :key="item" :label="item" :value="item"></el-option>
+                  <el-option v-for="item in organisms" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
                 <p class="text-grey-dark">Your proteins will be reverse translated and codon optimized for expression in this organism</p>
               </el-form-item>
@@ -77,9 +77,7 @@
           <el-table-column prop="origin" label="Source organism"></el-table-column>
           <el-table-column prop="host" label="Host organism"></el-table-column>
           <el-table-column label="Nickname">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.nickname"></el-input>
-            </template>
+            <template slot-scope="scope"><el-input v-model="scope.row.nickname"></el-input></template>
           </el-table-column>
           <el-table-column prop="url" label="Genbank link" ></el-table-column>
         </el-table>
@@ -118,7 +116,7 @@ export default class CreateDeNovoCDS extends Vue {
 
   studyList: [] = []
   projectsList: [] = []
-  hostOrganisms: [string, string] = [ 'Yeast', 'Human' ]
+  organisms: [string, string] = [ 'Yeast', 'Human' ]
   CDSNaming: boolean = false
   tableData: any = []
   nickname: any = ''
@@ -136,7 +134,9 @@ export default class CreateDeNovoCDS extends Vue {
 
   rules: any = {
     study: [ { required: true } ],
-    project: [ { required: true } ]
+    project: [ { required: true } ],
+    accession: [ { required: true } ],
+    organism: [ { required: true } ]
   }
 
   $refs!: {
@@ -145,9 +145,7 @@ export default class CreateDeNovoCDS extends Vue {
 
   /* submit Modal data */
   save () {
-    this.denovoCDSForm.accession = this.tableData.map((i: any) => i.accession).join()
     this.denovoCDSForm.nickname = this.tableData.map((i: any) => i.nickname).join()
-    console.log(this.denovoCDSForm)
     this.$emit('save', { data: this.denovoCDSForm })
   }
 
