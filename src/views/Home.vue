@@ -104,10 +104,13 @@ export default class Home extends Vue {
       }).catch(() => { })
   }
 
-  /* response viewr */ /* eslint-disable */
+  /* response viewer */ /* eslint-disable */
   responseMessage ({ lims_response, status }: any) {
     this.$confirm(`${lims_response}`, `${status.charAt(0).toUpperCase() + status.slice(1)}`, { type: status, center: true, ...this.confirmOptions }) /* eslint-enable */
-      .then(() => this.isLoading.close())
+      .then(() => {
+        this.isLoading.close()
+        this.closeModal()
+      })
       .catch(() => {
         this.isLoading.close()
         this.closeModal()

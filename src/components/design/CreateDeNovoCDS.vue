@@ -58,7 +58,7 @@
       <!-- Modal action buttons -->
       <div slot="footer" class="text-center">
         <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-        <el-button type="success" @click="getCDSTable" :disabled="disabledCDSNaming">CDS naming</el-button>
+        <el-button type="success" @click="getCDSTable">CDS naming</el-button>
       </div>
     </template>
     <template v-else>
@@ -139,10 +139,6 @@ export default class CreateDeNovoCDS extends Vue {
     denovoCDSForm: any
   }
 
-  get disabledCDSNaming () {
-    return !(this.denovoCDSForm.accession.length > 0 && this.denovoCDSForm.organism.length > 0)
-  }
-
   get disabledSubmit () {
     return !this.tableData.every((i: any) => i.nickname.length)
   }
@@ -183,19 +179,23 @@ export default class CreateDeNovoCDS extends Vue {
   }
 
   getCDSTable () {
-    return httpService.post('query/bioPartDesigner', this.denovoCDSForm)
-      .then((res: any) => {
-        const resp = res.data
-        if (resp.status === 'success') {
-          if (resp.lims_response.rows.length) this.tableData = resp.lims_response.rows.map((i: any) => ({ ...i, nickname: '' }))
-          this.CDSNaming = true
-          this.$emit('update:title', 'CDS Naming')
-          this.$emit('loadOff')
-        } else {
-          this.$confirm(`${resp.lims_response}`, `${resp.status.charAt(0).toUpperCase() + resp.status.slice(1)}`, { type: resp.status, center: true, ...this.confirmOptions })
-            .catch(() => this.$emit('close'))
-        }
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    this.$refs['denovoCDSForm'].validate((valid: any) => {
+      if (valid) {
+        return httpService.post('query/bioPartDesigner', this.denovoCDSForm)
+          .then((res: any) => {
+            const resp = res.data
+            if (resp.status === 'success') {
+              if (resp.lims_response.rows.length) this.tableData = resp.lims_response.rows.map((i: any) => ({ ...i, nickname: '' }))
+              this.CDSNaming = true
+              this.$emit('update:title', 'CDS Naming')
+              this.$emit('loadOff')
+            } else {
+              this.$confirm(`${resp.lims_response}`, `${resp.status.charAt(0).toUpperCase() + resp.status.slice(1)}`, { type: resp.status, center: true, ...this.confirmOptions })
+                .catch(() => this.$emit('close'))
+            }
+          }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      } else return false
+    })
   }
 
   cancelAndBack () {
