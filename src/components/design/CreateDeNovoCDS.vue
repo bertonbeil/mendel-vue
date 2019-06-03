@@ -1,20 +1,12 @@
 <template>
   <div>
+    <el-row :gutter="20" class="mb-20">
+      <el-col :span="24">
+        <p v-if="!CDSNaming" v-html="modalData.dialogIntro" class="mb-8"></p>
+        <p v-else v-html="test" class="mb-8"></p>
+      </el-col>
+    </el-row>
     <template v-if="!CDSNaming">
-      <el-row :gutter="20" class="mb-20">
-        <el-col :span="23">
-          <p v-html="modalData.dialogIntro" class="mb-8"></p>
-        </el-col>
-        <el-col :span="1">
-          <el-popover
-            placement="top-start"
-            width="300"
-            trigger="hover">
-            <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-            <div v-html="modalData.dialogInfo"></div>
-          </el-popover>
-        </el-col>
-      </el-row>
       <!-- Main modal content -->
       <div class="mb-30">
         <el-form :model="denovoCDSForm" label-position="top" :rules="rules" ref="denovoCDSForm">
@@ -66,7 +58,7 @@
       <!-- Modal action buttons -->
       <div slot="footer" class="text-center">
         <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-        <el-button type="success" @click="getCDSTable">CDS naming</el-button>
+        <el-button type="success" @click="getCDSTable" :disabled="disabledCDSNaming">CDS naming</el-button>
       </div>
     </template>
     <template v-else>
@@ -79,14 +71,16 @@
           <el-table-column label="Nickname">
             <template slot-scope="scope"><el-input v-model="scope.row.nickname"></el-input></template>
           </el-table-column>
-          <el-table-column prop="url" label="Genbank link" ></el-table-column>
+          <el-table-column label="Genbank link">
+            <template slot-scope="scope"><a :href='scope.row.url' target='blank' class='text-blue'>{{ scope.row.url }}</a></template>
+          </el-table-column>
         </el-table>
       </el-row>
       <!-- Modal action buttons -->
       <div slot="footer" class="text-center">
         <el-button type="danger" @click="cancelAndBack">Cancel and back</el-button>
-        <el-button type="success" @click="saveAndNext">Save and Next</el-button>
-        <el-button type="primary" @click="save">Save</el-button>
+        <el-button type="success" @click="saveAndNext" :disabled="disabledSubmit">Save and Next</el-button>
+        <el-button type="primary" @click="save" :disabled="disabledSubmit">Save</el-button>
       </div>
     </template>
   </div>
@@ -116,10 +110,12 @@ export default class CreateDeNovoCDS extends Vue {
 
   studyList: [] = []
   projectsList: [] = []
-  organisms: [string, string] = [ 'Yeast', 'Human' ]
+  organisms: [ string, string ] = [ 'Yeast', 'Human' ]
   CDSNaming: boolean = false
   tableData: any = []
-  nickname: any = ''
+  nickname: string = ''
+  url: string = ''
+  test: string = 'This page will define the information that is needed to create a name for your CDSs.'
 
   denovoCDSForm: any = {
     project: '',
@@ -141,6 +137,14 @@ export default class CreateDeNovoCDS extends Vue {
 
   $refs!: {
     denovoCDSForm: any
+  }
+
+  get disabledCDSNaming () {
+    return !(this.denovoCDSForm.accession.length > 0 && this.denovoCDSForm.organism.length > 0)
+  }
+
+  get disabledSubmit () {
+    return !this.tableData.every((i: any) => i.nickname.length)
   }
 
   /* submit Modal data */
@@ -185,6 +189,7 @@ export default class CreateDeNovoCDS extends Vue {
         if (resp.status === 'success') {
           if (resp.lims_response.rows.length) this.tableData = resp.lims_response.rows.map((i: any) => ({ ...i, nickname: '' }))
           this.CDSNaming = true
+          this.$emit('update:title', 'CDS Naming')
           this.$emit('loadOff')
         } else {
           this.$confirm(`${resp.lims_response}`, `${resp.status.charAt(0).toUpperCase() + resp.status.slice(1)}`, { type: resp.status, center: true, ...this.confirmOptions })
@@ -194,11 +199,13 @@ export default class CreateDeNovoCDS extends Vue {
   }
 
   cancelAndBack () {
+    this.$emit('update:title', 'Create new CDSs')
     this.CDSNaming = false
     this.tableData = []
   }
 
   created () {
+    this.$emit('update:title', 'Create new CDSs')
     this.getStudyList()
   }
 }
