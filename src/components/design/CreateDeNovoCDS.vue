@@ -3,7 +3,7 @@
     <el-row :gutter="20" class="mb-20">
       <el-col :span="24">
         <p v-if="!CDSNaming" v-html="modalData.dialogIntro" class="mb-8"></p>
-        <p v-else v-html="test" class="mb-8"></p>
+        <p v-else v-html="CDSNamingDialogIntro" class="mb-8"></p>
       </el-col>
     </el-row>
     <template v-if="!CDSNaming">
@@ -92,7 +92,7 @@ import { DialogBase } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
 @Component({
-  name: 'CreateProject'
+  name: 'CreateDeNovoCDS'
 })
 
 export default class CreateDeNovoCDS extends Vue {
@@ -108,14 +108,14 @@ export default class CreateDeNovoCDS extends Vue {
     closeOnPressEscape: false
   }
 
-  studyList: [] = []
-  projectsList: [] = []
+  studyList: string[] = []
+  projectsList: string[] = []
   organisms: [ string, string ] = [ 'Yeast', 'Human' ]
   CDSNaming: boolean = false
   tableData: any = []
   nickname: string = ''
   url: string = ''
-  test: string = 'This page will define the information that is needed to create a name for your CDSs.'
+  CDSNamingDialogIntro: string = 'This page will define the information that is needed to create a name for your CDSs.'
 
   denovoCDSForm: any = {
     project: '',

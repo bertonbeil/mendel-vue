@@ -30,7 +30,13 @@ export default new Vuex.Store({
         dialogIntro: 'This page allows you to generate codon optimized coding sequences (CDSs) for de novo assemblies.',
         submitUrl: 'bioPartDesigner',
       },
-      { component: 'CreateDeNovoAssembly', title: 'Assembly', dialogCaption: 'Create new de novo Assembly' },
+      {
+        component: 'CreateDeNovoAssembly',
+        title: 'Assembly',
+        dialogCaption: 'Create new de novo Assembly',
+        dialogIntro: 'This page allows you to define your de novo assembly options, as well as define which previously added or imported CDS’ to include in the assembly.',
+        dialogInfo: 'Note: If you are designing a new assembly use a short descriptive name. If you are modifying an existing assembly modify the name with version number (V1, V2 ….)'
+      },
       { component: 'CreateDeNovoSegments', title: 'Segments', dialogCaption: 'Create Segments' },
       { component: 'CreateDeNovoPrimers', title: 'Primers', dialogCaption: 'Create new Junction primers' },
       { component: 'CreateRegionOfInterest', title: 'Region of Interest', dialogCaption: 'Region of Interest' },
