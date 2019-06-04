@@ -25,12 +25,12 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="Assembly name:" prop="name">
-                <el-select
-                  v-model="denovoAssemblyForm.name"
+                <el-select v-model="denovoAssemblyForm.name"
                   filterable
                   allow-create
                   default-first-option
                   placeholder="Select assembly"
+                  class="w-full"
                   @change="assemblyNameChecker">
                   <el-option v-for="item in assemblyList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
@@ -135,9 +135,9 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   rules: any = {
-    study: [ { required: true } ],
-    project: [ { required: true } ],
-    assembly: [ { required: true } ]
+    studyName: [ { required: true } ],
+    projectName: [ { required: true } ],
+    name: [ { required: true } ]
   }
 
   $refs!: {
@@ -194,7 +194,13 @@ export default class CreateDeNovoAssembly extends Vue {
 
   assemblyNameChecker () {
     return httpService.post('query/assemblyNameChecker', { name: this.denovoAssemblyForm.name })
-      .then((res: any) => console.log(res))
+      .then((res: any) => {
+        if (res.data.valid) {
+          httpService.post('query/assemblyRequestRetriever', { name: this.denovoAssemblyForm.name })
+            .then((res: any) => console.log(res.data.rows[0]))
+            .catch(err => console.log(err))
+        }
+      })
       .catch(err => console.log(err))
   }
 
