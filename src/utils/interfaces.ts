@@ -8,7 +8,7 @@ export interface DialogBase {
   items?: DialogBase[];
   submitUrl?: string;
   saveAndNext?: string;
-  saveAndNextData?: string;
+  saveAndNextData?: string | any;
 }
 
 export interface MainMenu {

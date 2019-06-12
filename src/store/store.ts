@@ -21,14 +21,15 @@ export default new Vuex.Store({
         dialogCaption: 'Create new Project',
         dialogIntro: 'Create a new project here. A project is the second-highest level or organization within MenDEL, and groups related assemblies together. Projects address a particular question as part of a study, and can be thought of as representing ‘folders’ within a study. A given project will be populated with one or more assemblies, either unique or simply variants of each other.<br><br>In our example: You create a study titled ‘Prototrophic mammalian cell line’, and within it create projects relating to individual pathways necessary. Within the ‘Valine biosynthesis’ project, you design and assemble several different version of biosynthetic pathways to produce valine.',
         dialogInfo: '<p>A project is used to address a particular question that is part of a study. Projects represent sub-folders within a study.</p><p>Once you create a new project, you populate it with as many assemblies as you would like that are related to the project question. A project will likely contain not only multiple assemblies, but also multiple versions of any given assembly.</p><br><p>To create a project:</p><p>1. Enter Project Name: Give your project a simple but descriptive name. Example: Valine biosynthesis pathway from E. coli with independent TUs</p><p>2. Description: While this is optional, it is advised to provide some small level of detail here so you don’t forget the overall goal of the project.  Also, this allows the foundry staff and management to keep track of what is being worked on at a glance.</p>',
-        submitUrl: 'projectDesigner'
+        submitUrl: 'projectDesigner',
+        saveAndNext: 'CreateDeNovoCDS'
       },
-      { 
+      {
         component: 'CreateDeNovoCDS',
         title: 'CDS',
         dialogCaption: 'Create new CDSs',
         dialogIntro: 'This page allows you to generate codon optimized coding sequences (CDSs) for de novo assemblies.',
-        submitUrl: 'bioPartDesigner',
+        submitUrl: 'bioPartDesigner'
       },
       {
         component: 'CreateDeNovoAssembly',

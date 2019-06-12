@@ -50,7 +50,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="success" @click="$emit('saveAndNext')">Save and Next</el-button>
+      <el-button type="success" @click="save(true)">Save and Next</el-button>
       <el-button type="primary" @click="save">Save</el-button>
     </div>
   </div>
@@ -63,9 +63,7 @@ import { httpService } from '@/services/http.service'
 
 type ProjectType = 'denovo' | 'adapto'
 
-@Component({
-  name: 'CreateProject'
-})
+@Component({ name: 'CreateProject' })
 
 export default class CreateStudy extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
@@ -81,12 +79,8 @@ export default class CreateStudy extends Vue {
   }
 
   rules: any = {
-    study: [
-      { required: true }
-    ],
-    name: [
-      { required: true, message: 'Please input Project name', trigger: 'blur' }
-    ]
+    study: [ { required: true } ],
+    name: [ { required: true, message: 'Please input Project name', trigger: 'blur' } ]
   }
 
   $refs!: {
@@ -94,9 +88,9 @@ export default class CreateStudy extends Vue {
   }
 
   /* submit Modal data */
-  save () {
+  save (next: any) {
     this.$refs['projectForm'].validate((valid: any) => {
-      if (valid) this.$emit('save', { data: { ...this.projectForm, type: this.projectType } })
+      if (valid) this.$emit('save', { data: { ...this.projectForm, type: this.projectType } }, next === true ? this.modalData.saveAndNext : null)
       else return false
     })
   }
@@ -114,9 +108,7 @@ export default class CreateStudy extends Vue {
   created () {
     this.getStudyList()
       .then(() => {
-        if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.projectForm.study = this.modalData.saveAndNextData.new_study.name
-        }
+        if (this.modalData.hasOwnProperty('saveAndNextData')) this.projectForm.study = this.modalData.saveAndNextData.new_study.name
       })
   }
 }

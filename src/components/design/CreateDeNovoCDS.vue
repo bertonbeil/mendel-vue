@@ -91,9 +91,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
-@Component({
-  name: 'CreateDeNovoCDS'
-})
+@Component({ name: 'CreateDeNovoCDS' })
 
 export default class CreateDeNovoCDS extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
@@ -118,6 +116,7 @@ export default class CreateDeNovoCDS extends Vue {
   CDSNamingDialogIntro: string = 'This page will define the information that is needed to create a name for your CDSs.'
 
   denovoCDSForm: any = {
+    study: '',
     project: '',
     organism: '',
     suffix: '',
@@ -147,15 +146,6 @@ export default class CreateDeNovoCDS extends Vue {
   save () {
     this.denovoCDSForm.nickname = this.tableData.map((i: any) => i.nickname).join()
     this.$emit('save', { data: this.denovoCDSForm })
-  }
-
-  /* submit Modal data */
-  saveAndNext () {
-    // this.$refs['studyForm'].validate((valid: any) => {
-    //   if (valid) {
-    //     this.$emit('saveAndNext', { data: { new_study: this.studyForm, collaborators: this.collaborators } }, this.modalData.saveAndNext)
-    //   } else return false
-    // })
   }
 
   /* load Modal data -> Get list of study */
@@ -207,6 +197,12 @@ export default class CreateDeNovoCDS extends Vue {
   created () {
     this.$emit('update:title', 'Create new CDSs')
     this.getStudyList()
+      .then(() => {
+        if (this.modalData.hasOwnProperty('saveAndNextData')) {
+          this.denovoCDSForm.study = this.modalData.saveAndNextData.study
+          this.denovoCDSForm.project = this.modalData.saveAndNextData.name
+        }
+      })
   }
 }
 </script>

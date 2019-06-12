@@ -5,10 +5,7 @@
         <p v-html="modalData.dialogIntro" class="mb-8"></p>
       </el-col>
       <el-col :span="1">
-        <el-popover
-          placement="top-start"
-          width="300"
-          trigger="hover">
+        <el-popover placement="top-start" width="300" trigger="hover">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
           <div v-html="modalData.dialogInfo"></div>
         </el-popover>
@@ -77,7 +74,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="success" @click="saveAndNext">Save and Next</el-button>
+      <el-button type="success" @click="save(true)">Save and Next</el-button>
       <el-button type="primary" @click="save">Save</el-button>
     </div>
   </div>
@@ -88,9 +85,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
-@Component({
-  name: 'CreateStudy'
-})
+@Component({ name: 'CreateStudy' })
 
 export default class CreateStudy extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
@@ -105,9 +100,7 @@ export default class CreateStudy extends Vue {
   }
 
   rules: any = {
-    name: [
-      { required: true, message: 'Please input Study name', trigger: 'blur' }
-    ]
+    name: [ { required: true, message: 'Please input Study name', trigger: 'blur' } ]
   }
 
   $refs!: {
@@ -115,19 +108,10 @@ export default class CreateStudy extends Vue {
   }
 
   /* submit Modal data */
-  save () {
+  save (next: any) {
     this.$refs['studyForm'].validate((valid: any) => {
-      if (valid) this.$emit('save', { data: { new_study: this.studyForm, collaborators: this.collaborators } })
+      if (valid) this.$emit('save', { data: { new_study: this.studyForm, collaborators: this.collaborators } }, next === true ? this.modalData.saveAndNext : null)
       else return false
-    })
-  }
-
-  /* submit Modal data */
-  saveAndNext () {
-    this.$refs['studyForm'].validate((valid: any) => {
-      if (valid) {
-        this.$emit('saveAndNext', { data: { new_study: this.studyForm, collaborators: this.collaborators } }, this.modalData.saveAndNext)
-      } else return false
     })
   }
 
