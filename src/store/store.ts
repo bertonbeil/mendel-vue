@@ -36,9 +36,14 @@ export default new Vuex.Store({
         title: 'Assembly',
         dialogCaption: 'Create new de novo Assembly',
         dialogIntro: 'This page allows you to define your de novo assembly options, as well as define which previously added or imported CDS’ to include in the assembly.',
-        dialogInfo: 'Note: If you are designing a new assembly use a short descriptive name. If you are modifying an existing assembly modify the name with version number (V1, V2 ….)'
+        dialogInfo: 'Note: If you are designing a new assembly use a short descriptive name. If you are modifying an existing assembly modify the name with version number (V1, V2 ….)',
+        submitUrl: 'dnaDesigner'
       },
-      { component: 'CreateDeNovoSegments', title: 'Segments', dialogCaption: 'Create Segments' },
+      {
+        component: 'CreateDeNovoSegments',
+        title: 'Segments',
+        dialogCaption: 'Create Segments'
+      },
       { component: 'CreateDeNovoPrimers', title: 'Primers', dialogCaption: 'Create new Junction primers' },
       { component: 'CreateRegionOfInterest', title: 'Region of Interest', dialogCaption: 'Region of Interest' },
       { component: 'CreateAdaptoAssembly', title: 'Assembly', dialogCaption: 'Assembly' },

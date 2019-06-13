@@ -8,7 +8,9 @@ import {
   Form,
   FormItem,
   Input,
+  InputNumber,
   Loading,
+  RadioButton,
   Row,
   Menu,
   MenuItem,
@@ -35,7 +37,9 @@ Vue.use(Dialog)
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Input)
+Vue.use(InputNumber)
 Vue.use(Loading)
+Vue.use(RadioButton)
 Vue.use(Row)
 Vue.use(Menu)
 Vue.use(MenuItem)
