@@ -2,6 +2,7 @@ import Vue from 'vue'
 import {
   Button,
   Card,
+  Checkbox,
   Container,
   Col,
   Dialog,
@@ -31,6 +32,7 @@ locale.use(lang)
 
 Vue.use(Button)
 Vue.use(Card)
+Vue.use(Checkbox)
 Vue.use(Container)
 Vue.use(Col)
 Vue.use(Dialog)

@@ -8,23 +8,23 @@
       <el-form :model="denovoSegmentForm" label-position="top" :rules="rules" ref="denovoSegmentForm">
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
-            <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="denovoSegmentForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
-                <el-option v-for="item in studyList" :key="item" :label="item" :value="item"></el-option>
+            <el-form-item label="Study name:" prop="study">
+              <el-select v-model="denovoSegmentForm.study" @change="getProjectsList" placeholder="Select study" class="w-full">
+                <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="denovoSegmentForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
-                <el-option v-for="item in projectsList" :key="item" :label="item" :value="item"></el-option>
+            <el-form-item label="Project name:" prop="project">
+              <el-select v-model="denovoSegmentForm.project" @change="getAssemblyList" placeholder="Select project" class="w-full">
+                <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="Assembly name:" prop="assembly">
-              <el-select v-model="denovoSegmentForm.assembly" @change="getRestrictionEnzymeList" placeholder="Select assembly" class="w-full">
-                <el-option v-for="item in assemblyList" :key="item" :label="item" :value="item"></el-option>
+            <el-form-item label="Assembly name:" prop="dnaDesignName">
+              <el-select v-model="denovoSegmentForm.dnaDesignName" @change="getRestrictionEnzymeList" placeholder="Select assembly" class="w-full">
+                <el-option v-for="(item, i) in assemblyList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -35,7 +35,7 @@
           </el-col>
 
           <el-col :span="8">
-            <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Segmentation options:
+            <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Assembly vector:
               <el-popover class="absolute top-0 right-0" placement="top-start" width="300" trigger="hover">
                 <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
                 <div>Choose the features of your assembly vector. Yeast CEN/ARS is automatically assigned. For assemblies 30kb high copy number bacterial vector is permissible.</div>
@@ -46,9 +46,9 @@
                 <p>Yeast marker</p>
               </el-col>
               <el-col :span="15">
-                <el-radio-group v-model="denovoSegmentForm.yeastMarker" size="mini">
-                  <el-radio-button label="URA3">URA3</el-radio-button>
-                  <el-radio-button label="LEU2">LEU2</el-radio-button>
+                <el-radio-group v-model="assemblyVector.yeastMarker" size="mini">
+                  <el-radio-button :label="'URA3'">URA3</el-radio-button>
+                  <el-radio-button :label="'LEU2'">LEU2</el-radio-button>
                 </el-radio-group>
               </el-col>
             </el-row>
@@ -57,9 +57,9 @@
                 <p>Bacterial copy #</p>
               </el-col>
               <el-col :span="15">
-                <el-radio-group v-model="denovoSegmentForm.bacterialCopy" size="mini">
-                  <el-radio-button label="High (pUC)">High (pUC)</el-radio-button>
-                  <el-radio-button label="Low (BAC)">Low (BAC)</el-radio-button>
+                <el-radio-group v-model="assemblyVector.bacterialCopy" size="mini">
+                  <el-radio-button :label="'pUC'">High (pUC)</el-radio-button>
+                  <el-radio-button :label="'BAC'">Low (BAC)</el-radio-button>
                 </el-radio-group>
               </el-col>
             </el-row>
@@ -73,15 +73,15 @@
             </h4>
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item prop="openReValue">
-                  <el-select v-model="denovoSegmentForm.openReValue" placeholder="5' RE" class="w-full">
+                <el-form-item>
+                  <el-select v-model="denovoSegmentForm.restrictionEnzyme5" placeholder="5' RE" class="w-full">
                     <el-option v-for="item in restrictionEnzymes" :key="item.name" :label="item.name" :value="item.sequence"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item prop="closeReValue">
-                  <el-select v-model="denovoSegmentForm.closeReValue" placeholder="3' RE" class="w-full">
+                <el-form-item>
+                  <el-select v-model="denovoSegmentForm.restrictionEnzyme3" placeholder="3' RE" class="w-full">
                     <el-option v-for="item in restrictionEnzymes" :key="item.name" :label="item.name" :value="item.sequence"></el-option>
                   </el-select>
                 </el-form-item>
@@ -90,12 +90,35 @@
           </el-col>
           <el-col :span="8">
             <h4 class="text-xl text-black mt-3">Assembly length (bp):</h4>
-            <el-input-number v-model="denovoSegmentForm.assemblyLength" :min="0" :max="10000"></el-input-number>
+            <el-input-number :min="0" :max="10000"></el-input-number>
           </el-col>
 
           <el-col :span="24" class="my-30">
             <h4 class="text-xl text-black mt-3">Segment parameters</h4>
             <p class="break-normal">You can define parameters for segmentation here. The defaults should work for most loci to minimize number of segments and maximize efficiency of assembly.</p>
+          </el-col>
+
+          <el-col :span="8">
+            <p class="text-xl text-black mb-10">Segment length</p>
+            <el-form-item label="Minimum:" class="flex items-center text-sm" size="mini">
+              <el-input-number v-model="denovoSegmentForm.minLen" class="ml-10" :min="1"></el-input-number>
+            </el-form-item>
+            <el-form-item label="Maximum:" class="flex items-center" size="mini">
+              <el-input-number v-model="denovoSegmentForm.maxLen" class="ml-10" :min="1"></el-input-number>
+            </el-form-item>
+            <el-form-item label="Optimum:" class="flex items-center" size="mini">
+              <el-input-number v-model="denovoSegmentForm.optLen" class="ml-10" :min="1"></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <p class="text-xl text-black mb-10">Overlap length</p>
+            <el-form-item label="Length:" class="flex items-center" size="mini">
+              <el-input-number v-model="denovoSegmentForm.overlap" class="ml-10" :min="1"></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-checkbox v-model="segmentVegasAdapters" class="mb-10">Segment by VEGAS adapters</el-checkbox>
+            <p>This will result in segmentation of your assembly at the VEGAS adapters such that the VEGAS adapters will provide terminal homology for in yeasto assembly. If a transcription unit exceeds 5 kb, it will be segmented into two parts.</p>
           </el-col>
         </el-row>
       </el-form>
@@ -111,7 +134,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
-import { DialogBase } from '@/utils/interfaces'
+import { DialogBase, DenovoSegment } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
 @Component({ name: 'CreateDeNovoSegments' })
@@ -124,26 +147,43 @@ export default class CreateDeNovoAssembly extends Vue {
   projectsList: string[] = []
   assemblyList: string[] = []
   restrictionEnzymes: object[] = []
-
-  denovoSegmentForm: any = {
-    studyName: '',
-    projectName: '',
-    assembly: '',
+  segmentVegasAdapters: boolean = false
+  type: string = ''
+  assemblyVector: any = {
     yeastMarker: 'URA3',
-    bacterialCopy: 'High (pUC)',
-    openReValue: '',
-    closeReValue: '',
-    assemblyLength: 0
+    bacterialCopy: 'pUC'
+  }
+
+  denovoSegmentForm: DenovoSegment = {
+    study: '',
+    project: '',
+    dnaDesignName: '',
+    assemblyVectorName: `${this.assemblyVector.yeastMarker},${this.assemblyVector.bacterialCopy}`,
+    maxLen: 5000,
+    minLen: 600,
+    optLen: 3000,
+    overlap: 80,
+    restrictionEnzyme5: '',
+    restrictionEnzyme3: '',
+    loxPsymDistance: 20,
+    homopolymerLen: 7,
+    homopolymerDistance: 200,
+    sequences: 'None'
   }
 
   rules: any = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
-    assembly: [ { required: true } ]
+    study: [ { required: true } ],
+    project: [ { required: true } ],
+    dnaDesignName: [ { required: true } ]
   }
 
   $refs!: {
     denovoSegmentForm: any
+  }
+
+  @Watch('assemblyVector', { deep: true })
+  onChangeYeastMarker () {
+    this.denovoSegmentForm.assemblyVectorName = `${this.assemblyVector.yeastMarker},${this.assemblyVector.bacterialCopy}`
   }
 
   /* submit Modal data */
@@ -159,7 +199,7 @@ export default class CreateDeNovoAssembly extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => {
-        res.data.rows.map((studyName: any) => this.studyList.push(studyName.name))
+        this.studyList = res.data.rows
         this.$emit('loadOff')
       })
   }
@@ -167,9 +207,12 @@ export default class CreateDeNovoAssembly extends Vue {
   /* Get list of projects */
   getProjectsList () {
     this.$emit('loadOn')
-    return httpService.post('query/projectNameList', { study: this.denovoSegmentForm.studyName })
+    return httpService.post('query/projectNameList', { study: this.denovoSegmentForm.study })
       .then((res: any) => {
-        res.data.rows.map((project: any) => this.projectsList.push(project.name))
+        this.denovoSegmentForm.project = ''
+        this.denovoSegmentForm.dnaDesignName = ''
+        this.projectsList = res.data.rows
+        this.assemblyList = []
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
@@ -177,9 +220,10 @@ export default class CreateDeNovoAssembly extends Vue {
   /* Get list of assemblies */
   getAssemblyList () {
     this.$emit('loadOn')
-    return httpService.post('query/projectAssemblyList', { study: this.denovoSegmentForm.studyName, project: this.denovoSegmentForm.projectName })
+    return httpService.post('query/projectAssemblyList', { study: this.denovoSegmentForm.study, project: this.denovoSegmentForm.project })
       .then((res: any) => {
-        res.data.rows.map((name: any) => this.assemblyList.push(name.assembly))
+        this.denovoSegmentForm.dnaDesignName = ''
+        this.assemblyList = res.data.rows
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
@@ -191,7 +235,13 @@ export default class CreateDeNovoAssembly extends Vue {
 
   created () {
     this.getStudyList()
-      .then(() => { if (this.modalData.hasOwnProperty('saveAndNextData')) this.denovoSegmentForm.study = this.modalData.saveAndNextData.study })
+      .then(() => {
+        if (this.modalData.hasOwnProperty('saveAndNextData')) {
+          this.denovoSegmentForm.study = this.modalData.saveAndNextData.studyName
+          this.denovoSegmentForm.project = this.modalData.saveAndNextData.projectName
+          this.denovoSegmentForm.dnaDesignName = this.modalData.saveAndNextData.name
+        }
+      })
   }
 }
 </script>

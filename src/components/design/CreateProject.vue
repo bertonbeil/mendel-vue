@@ -21,7 +21,7 @@
           <el-col :span="12">
             <el-form-item label="Study name:" prop="study">
               <el-select v-model="projectForm.study" placeholder="Select" class="w-full">
-                <el-option v-for="item in studyList" :key="item" :label="item" :value="item">
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -32,7 +32,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="Project description (optional):" prop="description">
+            <el-form-item label="Project description (optional):">
               <el-input v-model="projectForm.description"></el-input>
             </el-form-item>
           </el-col>
@@ -58,7 +58,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { DialogBase } from '@/utils/interfaces'
+import { DialogBase, Project } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
 type ProjectType = 'denovo' | 'adapto'
@@ -72,7 +72,7 @@ export default class CreateStudy extends Vue {
   studyList: any = []
   projectType: ProjectType = 'denovo'
 
-  projectForm: any = {
+  projectForm: Project = {
     study: '',
     name: '',
     description: ''
@@ -100,7 +100,7 @@ export default class CreateStudy extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => {
-        res.data.rows.map((study: any) => this.studyList.push(study.name))
+        this.studyList = res.data.rows
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }

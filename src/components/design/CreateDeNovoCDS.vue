@@ -14,14 +14,14 @@
             <el-col :span="12">
               <el-form-item label="Study name:" prop="study">
                 <el-select v-model="denovoCDSForm.study" @change="getProjectsList" placeholder="Select study" class="w-full">
-                  <el-option v-for="item in studyList" :key="item" :label="item" :value="item"></el-option>
+                  <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="Project name:" prop="project">
                 <el-select v-model="denovoCDSForm.project" placeholder="Select project" class="w-full">
-                  <el-option v-for="item in projectsList" :key="item" :label="item" :value="item"></el-option>
+                  <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
                 </el-select>
                 <p class="text-grey-dark -mt-5 ml-5">These CDSs will appear exclusively in this project</p>
               </el-form-item>
@@ -47,7 +47,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="Forbidden sequences:" prop="forbiddenRegions">
+              <el-form-item label="Forbidden sequences:">
                 <el-input v-model="denovoCDSForm.forbiddenRegions" placeholder="Enter DNA sequences (separated by commas)"></el-input>
                 <p class="text-grey-dark">e.g. restriction enzyme sites, protein binding sites etc. Note: as a default all CDSs designed in MenDEL ar    re-coded to eliminate BsaI, BsmBI, NotI, SalI BceAI restriction enzyme (RE) recognition sequences and RapI core binding sites (ACCCA).</p>
               </el-form-item>
@@ -79,7 +79,7 @@
       <!-- Modal action buttons -->
       <div slot="footer" class="text-center">
         <el-button type="danger" @click="cancelAndBack">Cancel and back</el-button>
-        <el-button type="success" @click="saveAndNext" :disabled="disabledSubmit">Save and Next</el-button>
+        <el-button type="success" @click="save(true)" :disabled="disabledSubmit">Save and Next</el-button>
         <el-button type="primary" @click="save" :disabled="disabledSubmit">Save</el-button>
       </div>
     </template>
@@ -88,7 +88,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { DialogBase } from '@/utils/interfaces'
+import { DialogBase, DenovoCDS } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
 @Component({ name: 'CreateDeNovoCDS' })
@@ -115,7 +115,7 @@ export default class CreateDeNovoCDS extends Vue {
   url: string = ''
   CDSNamingDialogIntro: string = 'This page will define the information that is needed to create a name for your CDSs.'
 
-  denovoCDSForm: any = {
+  denovoCDSForm: DenovoCDS = {
     study: '',
     project: '',
     organism: '',
@@ -143,9 +143,9 @@ export default class CreateDeNovoCDS extends Vue {
   }
 
   /* submit Modal data */
-  save () {
+  save (next: boolean) {
     this.denovoCDSForm.nickname = this.tableData.map((i: any) => i.nickname).join()
-    this.$emit('save', { data: this.denovoCDSForm })
+    this.$emit('save', { data: this.denovoCDSForm }, next === true ? this.modalData.saveAndNext : null)
   }
 
   /* load Modal data -> Get list of study */
@@ -153,7 +153,7 @@ export default class CreateDeNovoCDS extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => {
-        res.data.rows.map((study: any) => this.studyList.push(study.name))
+        this.studyList = res.data.rows
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
@@ -163,7 +163,7 @@ export default class CreateDeNovoCDS extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoCDSForm.study })
       .then((res: any) => {
-        res.data.rows.map((project: any) => this.projectsList.push(project.name))
+        this.projectsList = res.data.rows
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
@@ -201,6 +201,7 @@ export default class CreateDeNovoCDS extends Vue {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
           this.denovoCDSForm.study = this.modalData.saveAndNextData.study
           this.denovoCDSForm.project = this.modalData.saveAndNextData.name
+          this.getProjectsList()
         }
       })
   }

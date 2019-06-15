@@ -29,7 +29,8 @@ export default new Vuex.Store({
         title: 'CDS',
         dialogCaption: 'Create new CDSs',
         dialogIntro: 'This page allows you to generate codon optimized coding sequences (CDSs) for de novo assemblies.',
-        submitUrl: 'bioPartDesigner'
+        submitUrl: 'bioPartDesigner',
+        saveAndNext: 'CreateDeNovoAssembly'
       },
       {
         component: 'CreateDeNovoAssembly',
@@ -37,14 +38,21 @@ export default new Vuex.Store({
         dialogCaption: 'Create new de novo Assembly',
         dialogIntro: 'This page allows you to define your de novo assembly options, as well as define which previously added or imported CDS’ to include in the assembly.',
         dialogInfo: 'Note: If you are designing a new assembly use a short descriptive name. If you are modifying an existing assembly modify the name with version number (V1, V2 ….)',
-        submitUrl: 'dnaDesigner'
+        submitUrl: 'dnaDesigner',
+        saveAndNext: 'CreateDeNovoSegments'
       },
       {
         component: 'CreateDeNovoSegments',
         title: 'Segments',
-        dialogCaption: 'Create Segments'
+        dialogCaption: 'Create Segments',
+        submitUrl: 'segmentDesigner'
       },
-      { component: 'CreateDeNovoPrimers', title: 'Primers', dialogCaption: 'Create new Junction primers' },
+      {
+        component: 'CreateDeNovoPrimers',
+        title: 'Primers',
+        dialogCaption: 'Create new Junction primers',
+        submitUrl: 'primerDesigner'
+      },
       { component: 'CreateRegionOfInterest', title: 'Region of Interest', dialogCaption: 'Region of Interest' },
       { component: 'CreateAdaptoAssembly', title: 'Assembly', dialogCaption: 'Assembly' },
       { component: 'CreateAdaptoSegments', title: 'Segments', dialogCaption: 'Segment Assembly' },

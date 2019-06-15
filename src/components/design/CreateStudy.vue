@@ -21,7 +21,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Study description (optional):" prop="description">
+            <el-form-item label="Study description (optional):">
               <el-input v-model="studyForm.description"></el-input>
             </el-form-item>
           </el-col>
@@ -82,7 +82,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { DialogBase } from '@/utils/interfaces'
+import { DialogBase, Study } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
 @Component({ name: 'CreateStudy' })
@@ -94,7 +94,7 @@ export default class CreateStudy extends Vue {
   investigators: any = []
   collaborators: any = []
 
-  studyForm: any = {
+  studyForm: Study = {
     name: '',
     description: ''
   }

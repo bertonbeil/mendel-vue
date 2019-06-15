@@ -10,14 +10,14 @@
           <el-col :span="8">
             <el-form-item label="Study name:" prop="studyName">
               <el-select v-model="denovoAssemblyForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
-                <el-option v-for="item in studyList" :key="item" :label="item" :value="item"></el-option>
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="projectName">
               <el-select v-model="denovoAssemblyForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
-                <el-option v-for="item in projectsList" :key="item" :label="item" :value="item"></el-option>
+                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -30,7 +30,7 @@
                 placeholder="Select assembly"
                 class="w-full"
                 @change="assemblyNameChecker">
-                <el-option v-for="item in assemblyList" :key="item" :label="item" :value="item"></el-option>
+                <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -154,7 +154,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
-import { DialogBase } from '@/utils/interfaces'
+import { DialogBase, DenovoAssembly } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
 @Component({ name: 'CreateDeNovoAssembly' })
@@ -175,9 +175,10 @@ export default class CreateDeNovoAssembly extends Vue {
   terminators: object[] = []
   TUDirections: object[] = [ { name: 5 }, { name: 3 } ]
   isAssemblyNameChecker: boolean = false
+  isSaveAndNext: boolean = false
   assemblyRow: any = { vegasAdapter: 'None', restrictionEnzyme: 'None', promoter: 'None', partName: 'None', terminator: 'None', strand: 5 }
 
-  denovoAssemblyForm: any = {
+  denovoAssemblyForm: DenovoAssembly = {
     studyName: '',
     projectName: '',
     name: '',
@@ -221,8 +222,7 @@ export default class CreateDeNovoAssembly extends Vue {
   /* load Modal data -> Get list of study */
   getStudyList () {
     this.$emit('loadOn')
-    return httpService.get('query/studyNameList')
-      .then((res: any) => res.data.rows.map((studyName: any) => this.studyList.push(studyName.name)))
+    return httpService.get('query/studyNameList').then((res: any) => { this.studyList = res.data.rows })
   }
 
   /* Get list of projects */
@@ -230,18 +230,21 @@ export default class CreateDeNovoAssembly extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoAssemblyForm.studyName })
       .then((res: any) => {
-        res.data.rows.map((project: any) => this.projectsList.push(project.name))
+        this.projectsList = res.data.rows
+        this.assemblyList = []
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
 
   getAssemblyList () {
-    this.$emit('loadOn')
-    return httpService.post('query/projectAssemblyList', { study: this.denovoAssemblyForm.studyName, project: this.denovoAssemblyForm.projectName })
+    if (this.isSaveAndNext === false) this.$emit('loadOn')
+    return httpService.post('query/projectAssemblyList',
+      { study: this.denovoAssemblyForm.studyName, project: this.denovoAssemblyForm.projectName })
       .then((res: any) => {
-        res.data.rows.map((name: any) => this.assemblyList.push(name.assembly))
+        this.assemblyList = res.data.rows
         this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      })
+      .catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
 
   assemblyNameChecker () {
@@ -336,7 +339,14 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   created () {
-    this.getData()
+    this.getData().then(() => {
+      if (this.modalData.hasOwnProperty('saveAndNextData')) {
+        this.isSaveAndNext = true
+        this.denovoAssemblyForm.studyName = this.modalData.saveAndNextData.study
+        this.denovoAssemblyForm.projectName = this.modalData.saveAndNextData.project
+        Promise.all([ this.getProjectsList(), this.getAssemblyList() ])
+      }
+    })
   }
 }
 </script>
