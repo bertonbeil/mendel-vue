@@ -92,3 +92,59 @@ export interface DenovoPrimers {
   well?: string,
   primers?: string
 }
+
+export interface AdaptoRegionOfInterest {
+  study?: string,
+  project?: string,
+  assembly?: string,
+  description?: string,
+  organism: '',
+  chromosome?: string,
+  openPos?: string,
+  closePos?: string,
+  length?: string
+}
+
+export interface AdaptoAssembly {
+  studyName?: string,
+  projectName?: string,
+  locusName?: string,
+  name?: string,
+  description?: string
+}
+
+export interface AdaptoSegmentRequest {
+  study?: string,
+  project?: string,
+  assemblyVectorName?: string,
+  dnaDesignName?: string,
+  assembly?: string,
+  mask?: string,
+  maxLen?: number,
+  minLen?: number,
+  optLen?: number,
+  minOverlap?: number,
+  maxOverlap?: number,
+  optOverlap?: number,
+  sequences?: string
+}
+
+export interface AdaptoPrimersRequest {
+  dnaDesignName?: string,
+  primers?: string,
+  minTemperature?: number,
+  maxTemperature?: number,
+  saltConcentration?: number,
+  dnaConcentration?: number,
+  minPercentGC?: number,
+  maxPercentGC?: number,
+  minLength?: number,
+  maxLength?: number,
+  minDistance?: number,
+  maxDistance?: number,
+  dimerLength?: number,
+  hairpinLength?: number,
+  tailMinDistance?: number,
+  type?: string,
+  well?: string
+}

@@ -53,9 +53,25 @@ export default new Vuex.Store({
         dialogCaption: 'Create new Junction primers',
         submitUrl: 'primerDesigner'
       },
-      { component: 'CreateRegionOfInterest', title: 'Region of Interest', dialogCaption: 'Region of Interest' },
-      { component: 'CreateAdaptoAssembly', title: 'Assembly', dialogCaption: 'Assembly' },
-      { component: 'CreateAdaptoSegments', title: 'Segments', dialogCaption: 'Segment Assembly' },
+      {
+        component: 'CreateRegionOfInterest',
+        title: 'Region of Interest',
+        dialogCaption: 'Region of Interest',
+        dialogIntro: 'Here you can define the locus of interest that you will be building with your adapto assembly. You can specify a genome and chromosome position or paste/upload the desired locus sequence below.'
+      },
+      {
+        component: 'CreateAdaptoAssembly',
+        title: 'Assembly',
+        dialogCaption: 'Assembly',
+        submitUrl: 'adaptoAssemblyDesigner'
+      },
+      {
+        component: 'CreateAdaptoSegments',
+        title: 'Segments',
+        dialogCaption: 'Segment Assembly',
+        dialogIntro: 'This page allows you to define parameters for segmenting a locus of interest into parts for assembly. Assembly segments are overlapping sequences derived via PCR amplification from a genome or existing BAC. The output of segmentation is a list of segments as well as the primers for amplifying those segments.',
+        submitUrl: 'adaptoSegmentDesigner'
+      },
       { component: 'CreateAdaptoPrimers', title: 'Primers', dialogCaption: 'Create new Junction primers' }
     ]
   },

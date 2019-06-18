@@ -139,7 +139,7 @@ import { httpService } from '@/services/http.service'
 
 @Component({ name: 'CreateDeNovoSegments' })
 
-export default class CreateDeNovoAssembly extends Vue {
+export default class CreateDeNovoSegments extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
   @Prop({ required: true }) isLoading!: boolean
 
