@@ -76,7 +76,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="success" @click="save(true)">Save and Export</el-button>
+      <el-button type="success" @click="save('next')">Save and Export</el-button>
       <el-button type="primary" @click="save">Save</el-button>
     </div>
   </div>
@@ -118,20 +118,20 @@ export default class CreateDeNovoAssembly extends Vue {
     primers: ''
   }
 
-  rules: any = {
+  rules: object = {
     study: [ { required: true } ],
     project: [ { required: true } ],
     dnaDesignName: [ { required: true } ]
   }
 
   $refs!: {
-    denovoPrimersForm: any
+    denovoPrimersForm: HTMLFormElement
   }
 
   /* submit Modal data */
-  save (next: any) {
-    this.$refs['denovoPrimersForm'].validate((valid: any) => {
-      if (valid) this.$emit('save', { data: this.denovoPrimersForm }, next === true ? this.modalData.saveAndNext : null)
+  save (next?: string) {
+    this.$refs['denovoPrimersForm'].validate((valid: boolean) => {
+      if (valid) this.$emit('save', { data: this.denovoPrimersForm }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }

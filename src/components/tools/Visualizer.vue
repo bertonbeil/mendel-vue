@@ -16,7 +16,7 @@ export default class CreateStudy extends Vue {
   visualizerToAppend: string = ''
   isVisible: boolean = false
 
-  vizualizer (denovoAssemblyForm: any) {
+  vizualizer (denovoAssemblyForm: object) {
     httpService.post('query/assemblyVisualizer', denovoAssemblyForm)
       .then((res: any) => {
         this.isVisible = true

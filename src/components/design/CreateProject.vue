@@ -50,7 +50,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="success" @click="save(true)">Save and Next</el-button>
+      <el-button type="success" @click="save('next')">Save and Next</el-button>
       <el-button type="primary" @click="save">Save</el-button>
     </div>
   </div>
@@ -69,7 +69,7 @@ export default class CreateStudy extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
   @Prop({ required: true }) isLoading!: boolean
 
-  studyList: any = []
+  studyList: object[] = []
   projectType: ProjectType = 'denovo'
 
   projectForm: Project = {
@@ -78,19 +78,19 @@ export default class CreateStudy extends Vue {
     description: ''
   }
 
-  rules: any = {
+  rules: object = {
     study: [ { required: true } ],
     name: [ { required: true, message: 'Please input Project name', trigger: 'blur' } ]
   }
 
   $refs!: {
-    projectForm: any
+    projectForm: HTMLFormElement
   }
 
   /* submit Modal data */
-  save (next: any) {
-    this.$refs['projectForm'].validate((valid: any) => {
-      if (valid) this.$emit('save', { data: { ...this.projectForm, type: this.projectType } }, next === true ? this.modalData.saveAndNext : null)
+  save (next?: string) {
+    this.$refs['projectForm'].validate((valid: boolean) => {
+      if (valid) this.$emit('save', { data: { ...this.projectForm, type: this.projectType } }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }

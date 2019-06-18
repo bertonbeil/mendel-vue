@@ -79,7 +79,7 @@
       <!-- Modal action buttons -->
       <div slot="footer" class="text-center">
         <el-button type="danger" @click="cancelAndBack">Cancel and back</el-button>
-        <el-button type="success" @click="save(true)" :disabled="disabledSubmit">Save and Next</el-button>
+        <el-button type="success" @click="save('next')" :disabled="disabledSubmit">Save and Next</el-button>
         <el-button type="primary" @click="save" :disabled="disabledSubmit">Save</el-button>
       </div>
     </template>
@@ -110,7 +110,7 @@ export default class CreateDeNovoCDS extends Vue {
   projectsList: string[] = []
   organisms: [ string, string ] = [ 'Yeast', 'Human' ]
   CDSNaming: boolean = false
-  tableData: any = []
+  tableData: string[] = []
   nickname: string = ''
   url: string = ''
   CDSNamingDialogIntro: string = 'This page will define the information that is needed to create a name for your CDSs.'
@@ -127,7 +127,7 @@ export default class CreateDeNovoCDS extends Vue {
     excludeForbiddenRegions: true
   }
 
-  rules: any = {
+  rules: object = {
     study: [ { required: true } ],
     project: [ { required: true } ],
     accession: [ { required: true } ],
@@ -135,7 +135,7 @@ export default class CreateDeNovoCDS extends Vue {
   }
 
   $refs!: {
-    denovoCDSForm: any
+    denovoCDSForm: HTMLFormElement
   }
 
   get disabledSubmit () {
@@ -143,9 +143,9 @@ export default class CreateDeNovoCDS extends Vue {
   }
 
   /* submit Modal data */
-  save (next: boolean) {
+  save (next?: string) {
     this.denovoCDSForm.nickname = this.tableData.map((i: any) => i.nickname).join()
-    this.$emit('save', { data: this.denovoCDSForm }, next === true ? this.modalData.saveAndNext : null)
+    this.$emit('save', { data: this.denovoCDSForm }, next === 'next' ? this.modalData.saveAndNext : null)
   }
 
   /* load Modal data -> Get list of study */
@@ -169,7 +169,7 @@ export default class CreateDeNovoCDS extends Vue {
   }
 
   getCDSTable () {
-    this.$refs['denovoCDSForm'].validate((valid: any) => {
+    this.$refs['denovoCDSForm'].validate((valid: boolean) => {
       if (valid) {
         return httpService.post('query/bioPartDesigner', this.denovoCDSForm)
           .then((res: any) => {

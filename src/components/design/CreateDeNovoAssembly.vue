@@ -143,7 +143,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="success" @click="save(true)">Save and Next</el-button>
+      <el-button type="success" @click="save('next')">Save and Next</el-button>
       <el-button type="primary" @click="save">Save</el-button>
       <el-button type="warning" @click="$refs.visualizer.vizualizer(denovoAssemblyForm)">Visualize</el-button>
     </div>
@@ -166,17 +166,17 @@ export default class CreateDeNovoAssembly extends Vue {
   studyList: string[] = []
   projectsList: string[] = []
   assemblyList: string[] = []
-  restrictionEnzymes: object[] = []
-  organisms: string[] = [ 'Yeast', 'Mammal' ]
+  organisms: [ string, string ] = [ 'Yeast', 'Mammal' ]
   loxSites: string[] = [ 'None', 'loxP', 'loxPsym', 'loxM' ]
+  restrictionEnzymes: object[] = []
   vegasAdapters: object[] = []
+  terminators: object[] = []
   promoters: object[] = []
   cds: object[] = []
-  terminators: object[] = []
   TUDirections: object[] = [ { name: 5 }, { name: 3 } ]
   isAssemblyNameChecker: boolean = false
   isSaveAndNext: boolean = false
-  assemblyRow: any = { vegasAdapter: 'None', restrictionEnzyme: 'None', promoter: 'None', partName: 'None', terminator: 'None', strand: 5 }
+  assemblyRow: object = { vegasAdapter: 'None', restrictionEnzyme: 'None', promoter: 'None', partName: 'None', terminator: 'None', strand: 5 }
 
   denovoAssemblyForm: DenovoAssembly = {
     studyName: '',
@@ -192,7 +192,7 @@ export default class CreateDeNovoAssembly extends Vue {
     parts: []
   }
 
-  rules: any = {
+  rules: object = {
     studyName: [ { required: true } ],
     projectName: [ { required: true } ],
     name: [ { required: true } ],
@@ -202,17 +202,17 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   $refs!: {
-    denovoAssemblyForm: any
-    visualizer: any
+    denovoAssemblyForm: HTMLFormElement
+    visualizer: HTMLFormElement
   }
 
   /* submit Modal data */
-  save (next: any) {
+  save (next?: string) {
     httpService.post('query/assemblyNameChecker', { name: this.denovoAssemblyForm.name })
       .then((res: any) => {
         if (res.data.valid === 'true') {
-          this.$refs['denovoAssemblyForm'].validate((valid: any) => {
-            if (valid) this.$emit('save', { data: this.denovoAssemblyForm }, next === true ? this.modalData.saveAndNext : null)
+          this.$refs['denovoAssemblyForm'].validate((valid: boolean) => {
+            if (valid) this.$emit('save', { data: this.denovoAssemblyForm }, next === 'next' ? this.modalData.saveAndNext : null)
             else return false
           })
         } else this.responseMessage()
@@ -283,8 +283,8 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   /* Add assembly row */
-  addRow (index:any) {
-    this.$refs['denovoAssemblyForm'].validate((valid: any) => {
+  addRow (index: number) {
+    this.$refs['denovoAssemblyForm'].validate((valid: boolean) => {
       if (valid) {
         this.isAssemblyNameChecker = true
         this.denovoAssemblyForm.parts.splice(++index, 0, this.assemblyRow)
@@ -293,7 +293,7 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   /* Delete assembly row */
-  deleteRow (index: any) {
+  deleteRow (index: number) {
     this.denovoAssemblyForm.parts.splice(index, 1)
   }
 

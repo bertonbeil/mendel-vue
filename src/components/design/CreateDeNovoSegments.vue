@@ -126,7 +126,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="success" @click="save(true)">Save and Export</el-button>
+      <el-button type="success" @click="save('next')">Save and Export</el-button>
       <el-button type="primary" @click="save">Save</el-button>
     </div>
   </div>
@@ -149,10 +149,7 @@ export default class CreateDeNovoAssembly extends Vue {
   restrictionEnzymes: object[] = []
   segmentVegasAdapters: boolean = false
   type: string = ''
-  assemblyVector: any = {
-    yeastMarker: 'URA3',
-    bacterialCopy: 'pUC'
-  }
+  assemblyVector: any = { yeastMarker: 'URA3', bacterialCopy: 'pUC' }
 
   denovoSegmentForm: DenovoSegment = {
     study: '',
@@ -171,14 +168,14 @@ export default class CreateDeNovoAssembly extends Vue {
     sequences: 'None'
   }
 
-  rules: any = {
+  rules: object = {
     study: [ { required: true } ],
     project: [ { required: true } ],
     dnaDesignName: [ { required: true } ]
   }
 
   $refs!: {
-    denovoSegmentForm: any
+    denovoSegmentForm: HTMLFormElement
   }
 
   @Watch('assemblyVector', { deep: true })
@@ -187,9 +184,9 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   /* submit Modal data */
-  save (next: any) {
-    this.$refs['denovoSegmentForm'].validate((valid: any) => {
-      if (valid) this.$emit('save', { data: this.denovoSegmentForm }, next === true ? this.modalData.saveAndNext : null)
+  save (next?: string) {
+    this.$refs['denovoSegmentForm'].validate((valid: boolean) => {
+      if (valid) this.$emit('save', { data: this.denovoSegmentForm }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }
