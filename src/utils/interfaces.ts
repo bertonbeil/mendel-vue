@@ -148,3 +148,26 @@ export interface AdaptoPrimersRequest {
   type?: string,
   well?: string
 }
+
+export interface AdaptoPrimers {
+  study?: string,
+  project?: string,
+  dnaDesignName?: string,
+  primers?: string,
+  minLength?: number,
+  maxLength?: number,
+  minTemperature?: number,
+  maxTemperature?: number,
+  minPercentGC?: number,
+  maxPercentGC?: number,
+  minDistance?: number,
+  maxDistance?: number,
+  maxHomopolymerLen?: number,
+  minBaseRepresentation?: number,
+  hairpinLength?: number,
+  saltConcentration?: number,
+  dnaConcentration?: number,
+  dimerLength?: number,
+  tailMinDistance?: number,
+  well?: string
+}

@@ -40,26 +40,28 @@
             <p class="break-normal">Define the genome and location of your locus of interest, or provide the sequence as text or a fasta file.</p>
           </el-col>
 
-          <el-col :span="7">
+          <el-col :span="4">
             <el-form-item label="Organism:" prop="organism">
               <el-select v-model="adaptoRegionOfInterestForm.organism" @change="getChromosomeList" placeholder="Select organism" class="w-full">
                 <el-option v-for="item in organismList" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
+          </el-col>
+          <el-col :span="4">
             <el-form-item label="Chromosome:" prop="chromosome">
               <el-select v-model="adaptoRegionOfInterestForm.chromosome" placeholder="Select chromosome" class="w-full">
                 <el-option v-for="item in chromosomeList" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="8">
             <el-form-item label="Coordinate:" prop="coordinate">
               <el-input-number v-model="adaptoRegionOfInterestForm.openPos" class="mr-20" placeholder="Enter coordinate (e.g. 100000) or coordinate range (e.g. 100000-200000)" :min="0" :max="15000000"></el-input-number>
               <el-input-number v-model="adaptoRegionOfInterestForm.closePos" @change="showGenomeBrowser = true" placeholder="Enter coordinate (e.g. 100000) or coordinate range (e.g. 100000-200000)" :min="0" :max="15000000"></el-input-number>
               <p class="text-grey-dark -mt-5 ml-5">A single coordinate will open a genome browser view centered on that coordinate with a window size indicated in the ‘length’ field. A range will open the browser view of that coordinate range.</p>
             </el-form-item>
           </el-col>
-          <el-col :span="7">
+          <el-col :span="8">
             <el-form-item label="Length (bp):" prop="length">
               <el-input v-model="adaptoRegionOfInterestForm.length" placeholder="200000" value="200000" disabled></el-input>
               <p class="text-grey-dark -mt-5 ml-5">This is the default length for a single entered coordinate view. Edit for a custom length, or enter a range in the coordinate field for custom coordinate endpoints.</p>

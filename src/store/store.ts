@@ -72,7 +72,13 @@ export default new Vuex.Store({
         dialogIntro: 'This page allows you to define parameters for segmenting a locus of interest into parts for assembly. Assembly segments are overlapping sequences derived via PCR amplification from a genome or existing BAC. The output of segmentation is a list of segments as well as the primers for amplifying those segments.',
         submitUrl: 'adaptoSegmentDesigner'
       },
-      { component: 'CreateAdaptoPrimers', title: 'Primers', dialogCaption: 'Create new Junction primers' }
+      {
+        component: 'CreateAdaptoPrimers',
+        title: 'Primers',
+        dialogCaption: 'Create new Junction primers',
+        dialogIntro: 'This page allows you to define parameters for designing junction primers for confirming correct assemblies by PCR across the segment junctions. By default the algorithm will design primers for the last segmentation done on the specified locus.',
+        submitUrl: 'primerDesigner'
+      }
     ]
   },
   mutations: {

@@ -42,9 +42,7 @@
               </el-popover>
             </h4>
             <el-row class="mt-10">
-              <el-col :span="9">
-                <p>Yeast marker</p>
-              </el-col>
+              <el-col :span="9"><p>Yeast marker</p></el-col>
               <el-col :span="15">
                 <el-radio-group v-model="assemblyVector.yeastMarker" size="mini">
                   <el-radio-button :label="'URA3'">URA3</el-radio-button>
@@ -53,9 +51,7 @@
               </el-col>
             </el-row>
             <el-row class="mt-10">
-              <el-col :span="9">
-                <p>Bacterial copy #</p>
-              </el-col>
+              <el-col :span="9"><p>Bacterial copy #</p></el-col>
               <el-col :span="15">
                 <el-radio-group v-model="assemblyVector.bacterialCopy" size="mini">
                   <el-radio-button :label="'pUC'">High (pUC)</el-radio-button>
@@ -90,7 +86,7 @@
           </el-col>
           <el-col :span="8">
             <h4 class="text-xl text-black mt-3">Assembly length (bp):</h4>
-            <el-input-number :min="0" :max="10000"></el-input-number>
+            <el-input-number :min="0" :max="10000" class="w-full"></el-input-number>
           </el-col>
 
           <el-col :span="24" class="my-30">
@@ -99,20 +95,20 @@
           </el-col>
 
           <el-col :span="8">
-            <p class="text-xl text-black mb-10">Segment length</p>
-            <el-form-item label="Minimum:" class="flex items-center text-sm" size="mini">
+            <p class="text-xl text-black mb-10">Segment length:</p>
+            <el-form-item label="Minimum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoSegmentForm.minLen" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
-            <el-form-item label="Maximum:" class="flex items-center" size="mini">
+            <el-form-item label="Maximum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoSegmentForm.maxLen" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
-            <el-form-item label="Optimum:" class="flex items-center" size="mini">
+            <el-form-item label="Optimum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoSegmentForm.optLen" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <p class="text-xl text-black mb-10">Overlap length</p>
-            <el-form-item label="Length:" class="flex items-center" size="mini">
+            <p class="text-xl text-black mb-10">Overlap length:</p>
+            <el-form-item label="Length:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoSegmentForm.overlap" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
           </el-col>

@@ -35,38 +35,38 @@
           </el-col>
 
           <el-col :span="6">
-            <h4 class="text-xl text-black mb-20">Primer length</h4>
-            <el-form-item label="Minimum:" class="flex items-center" size="mini">
+            <h4 class="text-xl text-black mb-20">Primer length:</h4>
+            <el-form-item label="Minimum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoPrimersForm.minLength" class="ml-10" :min="0" :max="10000"></el-input-number>
             </el-form-item>
-            <el-form-item label="Maximum:" class="flex items-center" size="mini">
+            <el-form-item label="Maximum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoPrimersForm.maxLength" class="ml-10" :min="0" :max="10000"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <h4 class="text-xl text-black mb-20">Annealing temperature</h4>
-            <el-form-item label="Minimum:" class="flex items-center" size="mini">
+            <h4 class="text-xl text-black mb-20">Annealing temperature:</h4>
+            <el-form-item label="Minimum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoPrimersForm.minTemperature" class="ml-10" :min="0" :max="10000"></el-input-number>
             </el-form-item>
-            <el-form-item label="Maximum:" class="flex items-center" size="mini">
+            <el-form-item label="Maximum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoPrimersForm.maxTemperature" class="ml-10" :min="0" :max="10000"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <h4 class="text-xl text-black mb-20">Percent GC</h4>
-            <el-form-item label="Minimum:" class="flex items-center" size="mini">
+            <h4 class="text-xl text-black mb-20">Percent GC:</h4>
+            <el-form-item label="Minimum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoPrimersForm.minPercentGC" class="ml-10" :min="0" :max="10000"></el-input-number>
             </el-form-item>
-            <el-form-item label="Maximum:" class="flex items-center" size="mini">
+            <el-form-item label="Maximum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoPrimersForm.maxPercentGC" class="ml-10" :min="0" :max="10000"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <h4 class="text-xl text-black mb-20">Amplicon length</h4>
-            <el-form-item label="Minimum:" class="flex items-center" size="mini">
+            <h4 class="text-xl text-black mb-20">Amplicon length:</h4>
+            <el-form-item label="Minimum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoPrimersForm.minDistance" class="ml-10" :min="0" :max="10000"></el-input-number>
             </el-form-item>
-            <el-form-item label="Maximum:" class="flex items-center" size="mini">
+            <el-form-item label="Maximum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="denovoPrimersForm.maxDistance" class="ml-10" :min="0" :max="10000"></el-input-number>
             </el-form-item>
           </el-col>

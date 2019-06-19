@@ -23,7 +23,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="dnaDesignName">
-              <el-select v-model="dnaDesignName" @change="getRestrictionEnzymeList" placeholder="Select assembly" class="w-full">
+              <el-select v-model="dnaDesignName" placeholder="Select assembly" class="w-full">
                 <el-option v-for="(item, i) in assemblyList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
@@ -51,7 +51,7 @@
           </el-col>
           <el-col :span="12" class="mb-30">
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Upload .bed formatted mask file:</h4>
-            <el-upload action="https://jsonplaceholder.typicode.com/posts/" :file-list="fileList" class="mt-10">
+            <el-upload action="https://jsonplaceholder.typicode.com/posts/" :file-list="fileList" class="mt-10" :on-change="uploadBedFile">
               <el-button size="mini" type="primary">Click to upload</el-button>
             </el-upload>
           </el-col>
@@ -63,25 +63,25 @@
 
           <el-col :span="12">
             <p class="text-xl text-black mb-10">Segment length</p>
-            <el-form-item label="Minimum:" class="flex items-center text-sm" size="mini">
+            <el-form-item label="Minimum:" class="form-item-label flex items-center text-sm" size="mini">
               <el-input-number v-model="segmentRequest.minLen" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
-            <el-form-item label="Maximum:" class="flex items-center" size="mini">
+            <el-form-item label="Maximum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="segmentRequest.maxLen" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
-            <el-form-item label="Optimum:" class="flex items-center" size="mini">
+            <el-form-item label="Optimum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="segmentRequest.optLen" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <p class="text-xl text-black mb-10">Overlap length</p>
-            <el-form-item label="Minimum:" class="flex items-center text-sm" size="mini">
+            <el-form-item label="Minimum:" class="form-item-label flex items-center text-sm" size="mini">
               <el-input-number v-model="segmentRequest.minOverlap" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
-            <el-form-item label="Maximum:" class="flex items-center" size="mini">
+            <el-form-item label="Maximum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="segmentRequest.maxOverlap" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
-            <el-form-item label="Optimum:" class="flex items-center" size="mini">
+            <el-form-item label="Optimum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="segmentRequest.optOverlap" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
           </el-col>
@@ -92,35 +92,35 @@
           </el-col>
 
           <el-col :span="6">
-            <p class="text-xl text-black mb-10">Primer length</p>
-            <el-form-item label="Minimum:" class="flex items-center text-sm" size="mini">
+            <p class="text-xl text-black mb-10">Primer length:</p>
+            <el-form-item label="Minimum:" class="form-item-label flex items-center text-sm" size="mini">
               <el-input-number v-model="primersRequest.minLength" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
-            <el-form-item label="Maximum:" class="flex items-center" size="mini">
+            <el-form-item label="Maximum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="primersRequest.maxLength" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <p class="text-xl text-black mb-10">Annealing temperature</p>
-            <el-form-item label="Minimum:" class="flex items-center text-sm" size="mini">
+            <p class="text-xl text-black mb-10">Annealing temperature:</p>
+            <el-form-item label="Minimum:" class="form-item-label flex items-center text-sm" size="mini">
               <el-input-number v-model="primersRequest.minTemperature" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
-            <el-form-item label="Maximum:" class="flex items-center" size="mini">
+            <el-form-item label="Maximum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="primersRequest.maxTemperature" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <p class="text-xl text-black mb-10">Percent GC</p>
-            <el-form-item label="Minimum:" class="flex items-center text-sm" size="mini">
+            <p class="text-xl text-black mb-10">Percent GC:</p>
+            <el-form-item label="Minimum:" class="form-item-label flex items-center text-sm" size="mini">
               <el-input-number v-model="primersRequest.minPercentGC" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
-            <el-form-item label="Maximum:" class="flex items-center" size="mini">
+            <el-form-item label="Maximum:" class="form-item-label flex items-center" size="mini">
               <el-input-number v-model="primersRequest.maxPercentGC" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <p class="text-xl text-black mb-10">Base composition</p>
-            <el-form-item label="Minimum:" class="flex items-center text-sm" size="mini">
+            <p class="text-xl text-black mb-10">Base composition:</p>
+            <el-form-item label="Minimum:" class="form-item-label flex items-center text-sm" size="mini">
               <el-input-number v-model="primersRequest.hairpinLength" class="ml-10" :min="1"></el-input-number>
             </el-form-item>
           </el-col>
@@ -154,6 +154,7 @@ export default class CreateAdaptoSegments extends Vue {
   type: string = ''
   dnaDesignName: string = ''
   fileList: object[] = []
+  bedFile: string = ''
 
   segmentRequest: AdaptoSegmentRequest = {
     study: '',
@@ -161,7 +162,7 @@ export default class CreateAdaptoSegments extends Vue {
     assemblyVectorName: 'URA3',
     dnaDesignName: this.dnaDesignName,
     assembly: this.dnaDesignName,
-    mask: 'chr10\t122432664\t122432665\t \nchr10\t122432914\t122432915\t \nchr10\t122432958\t122432959\t \nchr10\t122433665\t122433666\t \nchr10\t122435525\t122435625\t \n',
+    mask: '',
     maxLen: 1000,
     minLen: 5000,
     optLen: 5000,
@@ -198,12 +199,19 @@ export default class CreateAdaptoSegments extends Vue {
 
   rules: object = {
     study: [ { required: true } ],
-    project: [ { required: true } ],
-    dnaDesignName: [ { required: true } ]
+    project: [ { required: true } ]
+    // dnaDesignName: [ { required: true } ]
   }
 
   $refs!: {
     segmentRequest: HTMLFormElement
+  }
+
+  @Watch('dnaDesignName')
+  onChangeDnaDesignName () {
+    this.primersRequest.dnaDesignName = this.dnaDesignName
+    this.segmentRequest.dnaDesignName = this.dnaDesignName
+    this.segmentRequest.assembly = this.dnaDesignName
   }
 
   /* submit Modal data */
@@ -212,6 +220,12 @@ export default class CreateAdaptoSegments extends Vue {
       if (valid) this.$emit('save', { data: this.adaptoSegmentForm })
       else return false
     })
+  }
+
+  uploadBedFile (file: any) {
+    const fileReader = new FileReader()
+    fileReader.readAsText(file.raw)
+    fileReader.onload = (e: any) => { this.segmentRequest.mask = e.target.result }
   }
 
   /* load Modal data -> Get list of study */
@@ -246,11 +260,6 @@ export default class CreateAdaptoSegments extends Vue {
         this.assemblyList = res.data.rows
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
-  }
-
-  /* load Modal data -> Get list of restriction enzymes */
-  getRestrictionEnzymeList () {
-    return httpService.get('query/restrictionEnzymeList').then((res: any) => { this.restrictionEnzymes = res.data.rows })
   }
 
   created () {

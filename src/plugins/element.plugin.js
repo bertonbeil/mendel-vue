@@ -24,6 +24,7 @@ import {
   Select,
   Table,
   TableColumn,
+  Tooltip,
   Upload
 } from 'element-ui'
 import lang from 'element-ui/lib/locale/lang/en'
@@ -54,6 +55,7 @@ Vue.use(Submenu)
 Vue.use(Select)
 Vue.use(Table)
 Vue.use(TableColumn)
+Vue.use(Tooltip)
 Vue.use(Upload)
 
 Vue.prototype.$confirm = MessageBox.confirm

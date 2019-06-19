@@ -132,8 +132,12 @@
                 </el-select>
               </el-col>
               <el-col :span="2" class="flex justify-around">
-                <el-button type="success" icon="el-icon-plus" circle class="text-xl" @click="addRow(i)" size="mini"></el-button>
-                <el-button type="danger" icon="el-icon-delete" circle class="text-xl text-red-600" @click="deleteRow(i)" size="mini"></el-button>
+                <el-tooltip class="item" effect="dark" content="Add new row below" placement="top-end">
+                  <el-button type="success" icon="el-icon-plus" circle class="text-xl" @click="addRow(i)" size="mini"></el-button>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="Delete row" placement="top-end">
+                  <el-button type="danger" icon="el-icon-delete" circle class="text-xl text-red-600" @click="deleteRow(i)" size="mini"></el-button>
+                </el-tooltip>
               </el-col>
             </el-row>
           </draggable>
