@@ -1,4 +1,5 @@
 import { Project } from '@/utils/interfaces';
+
 export interface DialogBase {
   component?: string;
   title?: string;
@@ -170,4 +171,17 @@ export interface AdaptoPrimers {
   dimerLength?: number,
   tailMinDistance?: number,
   well?: string
+}
+
+export interface ExportAssembly {
+  study?: string,
+  project?: string,
+  assemblyName?: string
+}
+
+export interface EchoFile {
+  project?: string,
+  dna_amount?: number,
+  primer_amount?: number,
+  primer_control_location?: string
 }

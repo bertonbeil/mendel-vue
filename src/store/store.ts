@@ -45,13 +45,15 @@ export default new Vuex.Store({
         component: 'CreateDeNovoSegments',
         title: 'Segments',
         dialogCaption: 'Create Segments',
-        submitUrl: 'segmentDesigner'
+        submitUrl: 'segmentDesigner',
+        saveAndNext: 'ExportAssembly'
       },
       {
         component: 'CreateDeNovoPrimers',
         title: 'Primers',
         dialogCaption: 'Create new Junction primers',
-        submitUrl: 'primerDesigner'
+        submitUrl: 'primerDesigner',
+        saveAndNext: 'ExportAssembly'
       },
       {
         component: 'CreateRegionOfInterest',
@@ -77,7 +79,21 @@ export default new Vuex.Store({
         title: 'Primers',
         dialogCaption: 'Create new Junction primers',
         dialogIntro: 'This page allows you to define parameters for designing junction primers for confirming correct assemblies by PCR across the segment junctions. By default the algorithm will design primers for the last segmentation done on the specified locus.',
-        submitUrl: 'primerDesigner'
+        submitUrl: 'primerDesigner',
+        saveAndNext: 'ExportAssembly'
+      },
+      {
+        component: 'ExportAssembly',
+        title: 'Assembly',
+        dialogCaption: 'Export assembly',
+        dialogIntro: 'Export a CSV file and a Genbank file with all information about your assembly.'
+      },
+      {
+        component: 'CreateEchoFile',
+        title: 'Echo file',
+        dialogCaption: 'Create new Echo file',
+        dialogIntro: 'Use this tool to design the Echo file to analyse your assembly using junction primers designed by MenDEL.',
+        submitUrl: 'echoDesigner'
       }
     ]
   },

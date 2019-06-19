@@ -88,6 +88,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
+      <el-button type="success" @click="save('next')">Save and Export</el-button>
       <el-button type="primary" @click="save">Save</el-button>
     </div>
   </div>
@@ -142,9 +143,9 @@ export default class CreateAdaptoPrimers extends Vue {
   }
 
   /* submit Modal data */
-  save () {
+  save (next: string) {
     this.$refs['adaptoPrimersForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.adaptoPrimersForm })
+      if (valid) this.$emit('save', { data: this.adaptoPrimersForm }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }
