@@ -121,7 +121,7 @@ export default class CreateEchoFile extends Vue {
   projectsList: object[] = []
   assemblyList: object[] = []
   primers: string[] = []
-  tableData: object[] = [
+  tableData: any[] = [
     {
       project: '',
       name: '',
@@ -230,7 +230,7 @@ export default class CreateEchoFile extends Vue {
   }
 
   save () {
-    this.tableData.map(i => this.primers.push({ 'location': i.location }))
+    this.tableData.map(i => this.primers.push({ location: i.location } as any))
     this.$refs['echoFileForm'].validate((valid: boolean) => {
       if (valid) this.$emit('save', { data: { ...this.echoFileForm, assemblies: this.tableData, primers: this.primers } })
       else return false

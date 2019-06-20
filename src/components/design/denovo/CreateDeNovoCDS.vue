@@ -72,39 +72,35 @@
             <template slot-scope="scope"><el-input v-model="scope.row.nickname"></el-input></template>
           </el-table-column>
           <el-table-column label="Genbank link">
-            <template slot-scope="scope"><a :href='scope.row.url' target='blank' class='text-blue'>{{ scope.row.url }}</a></template>
+            <template slot-scope="scope"><a :href="scope.row.url" target="blank" class="text-blue">{{ scope.row.url }}</a></template>
           </el-table-column>
         </el-table>
       </el-row>
       <!-- Modal action buttons -->
       <div slot="footer" class="text-center">
         <el-button type="danger" @click="cancelAndBack">Cancel and back</el-button>
-        <el-button type="success" @click="save('next')" :disabled="disabledSubmit">Save and Next</el-button>
-        <el-button type="primary" @click="save" :disabled="disabledSubmit">Save</el-button>
+        <el-button type="success" @click="save('next')" :disabled="isDisabled">Save and Next</el-button>
+        <el-button type="primary" @click="save" :disabled="isDisabled">Save</el-button>
       </div>
     </template>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Mixins } from 'vue-property-decorator'
 import { DialogBase, DenovoCDS } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
+import { capitalize } from '@/utils/helpers'
+import { alertMixin } from '@/utils/mixins'
 
-@Component({ name: 'CreateDeNovoCDS' })
+@Component({
+  name: 'CreateDeNovoCDS',
+  mixins: [alertMixin]
+})
 
 export default class CreateDeNovoCDS extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
   @Prop({ required: true }) isLoading!: boolean
-
-  /* base optins set up for MessageBox dialog */
-  confirmOptions = {
-    confirmButtonText: 'Ok',
-    cancelButtonText: 'Cancel',
-    showClose: false,
-    closeOnClickModal: false,
-    closeOnPressEscape: false
-  }
 
   studyList: string[] = []
   projectsList: string[] = []
@@ -138,7 +134,7 @@ export default class CreateDeNovoCDS extends Vue {
     denovoCDSForm: HTMLFormElement
   }
 
-  get disabledSubmit () {
+  get isDisabled () {
     return !this.tableData.every((i: any) => i.nickname.length)
   }
 
@@ -173,15 +169,14 @@ export default class CreateDeNovoCDS extends Vue {
       if (valid) {
         return httpService.post('query/bioPartDesigner', this.denovoCDSForm)
           .then((res: any) => {
-            const resp = res.data
-            if (resp.status === 'success') {
-              if (resp.lims_response.rows.length) this.tableData = resp.lims_response.rows.map((i: any) => ({ ...i, nickname: '' }))
+            const { lims_response, status } = res.data
+            if (status === 'success') {
+              if (lims_response.rows.length) this.tableData = lims_response.rows.map((i: any) => ({ ...i, nickname: '' }))
               this.CDSNaming = true
               this.$emit('update:title', 'CDS Naming')
               this.$emit('loadOff')
             } else {
-              this.$confirm(`${resp.lims_response}`, `${resp.status.charAt(0).toUpperCase() + resp.status.slice(1)}`, { type: resp.status, center: true, ...this.confirmOptions })
-                .catch(() => this.$emit('close'))
+              (this as any).alert({ type: status, msg: lims_response })
             }
           }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
       } else return false

@@ -32,8 +32,12 @@ import { Component, Vue } from 'vue-property-decorator'
 import { DialogBase } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 import { Loading } from 'element-ui'
-
-@Component({ name: 'Home' })
+import { capitalize } from '@/utils/helpers'
+import { alertMixin } from '@/utils/mixins'
+@Component({
+  name: 'Home',
+  mixins: [alertMixin]
+})
 
 export default class Home extends Vue {
   dialogVisible: boolean = false
@@ -60,15 +64,14 @@ export default class Home extends Vue {
     this.showLoader()
     httpService.post(`query/${this.tempModalData.submitUrl}`, modalData.data)
       .then((res: any) => {
+        if (res.data.status === 'error') this.responseMessage(res.data)
+
         if (to) {
-          if (res.data.status === 'error') this.responseMessage(res.data)
-          else {
-            this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: modalData.data }
-            this.isLoading.close()
-          }
-        } else {
+          this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: modalData.data }
           this.isLoading.close()
+        } else {
           this.responseMessage(res.data)
+          this.isLoading.close()
         }
       }).catch((err: any) => { this.isLoading = false; console.log(err) })
   }
@@ -78,14 +81,21 @@ export default class Home extends Vue {
     return this.$store.state.modalDataList.slice().find((i: any) => i.component === component) as DialogBase
   }
 
-  /* set Loagin servise */
+  /* set Loadin servise */
   showLoader () {
     this.isLoading = this.$loading({ target: '.el-dialog' })
   }
 
-  /* modal close handled */
+  /* modal close handler */
   handleClose (isCloseOnSave: boolean) {
     this.confirmClose()
+  }
+
+  /* before close handler */
+  confirmClose () {
+    this.$confirm('Sure you want to leave? All progress will be lost!', 'Warning', { type: 'warning', ...this.confirmOptions })
+      .then(() => { this.closeModal() })
+      .catch(() => false)
   }
 
   /* will close root Modal and reset temp Modal Data */
@@ -93,22 +103,11 @@ export default class Home extends Vue {
     this.dialogVisible = false; this.tempModalData = {} as DialogBase
   }
 
-  /* modal close confirm MessageBox */
-  confirmClose () {
-    this.$confirm('Sure you want to leave? All progress will be lost!', 'Warning', { type: 'warning', ...this.confirmOptions })
-      .then(() => {
-        this.closeModal()
-      }).catch(() => { })
-  }
-
-  /* response viewer */ /* eslint-disable */
+  /* response viewer */
   responseMessage ({ lims_response, status }: any) {
-    this.$confirm(`${lims_response}`, `${status.charAt(0).toUpperCase() + status.slice(1)}`, { type: status, center: true, ...this.confirmOptions }) /* eslint-enable */
-      .then(() => this.isLoading.close())
-      .catch(() => {
-        this.isLoading.close()
-        this.closeModal()
-      })
+    (this as any).alert({ type: status, msg: lims_response })
+      .then(() => { this.isLoading.close() })
+      .catch(() => { this.isLoading.close(); this.closeModal() })
   }
 }
 </script>

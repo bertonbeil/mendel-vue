@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import {
+  Alert,
   Button,
   Card,
   Checkbox,
@@ -32,6 +33,7 @@ import locale from 'element-ui/lib/locale'
 
 locale.use(lang)
 
+Vue.use(Alert)
 Vue.use(Button)
 Vue.use(Card)
 Vue.use(Checkbox)
@@ -59,3 +61,4 @@ Vue.use(Tooltip)
 Vue.use(Upload)
 
 Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$alert = MessageBox.alert

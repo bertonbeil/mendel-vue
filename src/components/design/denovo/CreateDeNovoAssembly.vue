@@ -163,7 +163,7 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { DialogBase, DenovoAssembly } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
-import { _cloneDeep } from '@/utils/helpers';
+import { _cloneDeep } from '@/utils/helpers'
 
 @Component({ name: 'CreateDeNovoAssembly' })
 
@@ -249,8 +249,7 @@ export default class CreateDeNovoAssembly extends Vue {
 
   getAssemblyList () {
     if (this.isSaveAndNext === false) this.$emit('loadOn')
-    return httpService.post('query/projectAssemblyList',
-      { study: this.denovoAssemblyForm.studyName, project: this.denovoAssemblyForm.projectName })
+    return httpService.post('query/projectAssemblyList', { study: this.denovoAssemblyForm.studyName, project: this.denovoAssemblyForm.projectName })
       .then((res: any) => {
         this.assemblyList = res.data.rows
         this.$emit('loadOff')
@@ -289,9 +288,7 @@ export default class CreateDeNovoAssembly extends Vue {
   /* Add assembly row */
   addRow (index: number) {
     this.$refs['denovoAssemblyForm'].validate((valid: boolean) => {
-      if (valid) {
-        this.denovoAssemblyForm.parts.splice(++index, 0, _cloneDeep(this.assemblyRow))
-      }
+      if (valid) this.denovoAssemblyForm.parts.splice(++index, 0, _cloneDeep(this.assemblyRow))
     })
   }
 
