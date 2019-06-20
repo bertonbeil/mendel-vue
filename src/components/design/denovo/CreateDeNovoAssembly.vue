@@ -76,14 +76,14 @@
           </el-col>
           <el-col :span="5">
             <h4 class="text-xl text-black mt-3">Lox Site:</h4>
-            <el-select v-model="denovoAssemblyForm.lox" placeholder="Select lox site" class="w-full">
+            <el-select v-model="denovoAssemblyForm.lox" placeholder="Select lox site" class="w-full mb-22">
               <el-option v-for="item in loxSites" :key="item" :label="item" :value="item"></el-option>
             </el-select>
             <p class="text-grey-dark break-normal">Note: If you choose to add Lox sites they will be encoded between each TU and at the start and end of the assembly. If you want your assembly to be SCRaMbLE ready you will need to choose LoxPsym. Otherwise the Lox sites will be directional and will only produce deletions.</p>
           </el-col>
           <el-col :span="5">
             <h4 class="text-xl text-black mt-3">Rightmost VA:</h4>
-            <el-select v-model="denovoAssemblyForm.closingAdapter" placeholder="Select closing vegas adapter" class="w-full">
+            <el-select v-model="denovoAssemblyForm.closingAdapter" placeholder="Select closing vegas adapter" class="w-full mb-22">
               <el-option v-for="item in vegasAdapters" :key="item.name" :label="item.name" :value="item.name"></el-option>
             </el-select>
             <p class="text-grey-dark break-normal">Note: Choose the VEGAS adaptor (57bp spacer flanking TUs) you would like to be placed on the 3’ end of your assembly.</p>
@@ -103,32 +103,32 @@
           <draggable class="p-3" v-model="denovoAssemblyForm.parts">
             <el-row :gutter="20" class="flex items-center py-10 border-0 border-t border-solid border-grey cursor-pointer" v-for="(assembly, i) in denovoAssemblyForm.parts" :key="i">
               <el-col :span="4">
-                <select v-model="denovoAssemblyForm.parts[i].vegasAdapter" class="w-full">
+                <select v-model="denovoAssemblyForm.parts[i].vegasAdapter" class="w-full outline-none">
                   <option v-for="(item, i) in vegasAdapters" :key="i" :label="item.name" :value="item.name"></option>
                 </select>
               </el-col>
               <el-col :span="4">
-                <select v-model="denovoAssemblyForm.parts[i].restrictionEnzyme" class="w-full">
+                <select v-model="denovoAssemblyForm.parts[i].restrictionEnzyme" class="w-full outline-none">
                   <option v-for="(item, i) in restrictionEnzymes" :key="i" :label="item.name" :value="item.name"></option>
                 </select>
               </el-col>
               <el-col :span="4">
-                <select v-model="denovoAssemblyForm.parts[i].promoter" class="w-full" filterable>
+                <select v-model="denovoAssemblyForm.parts[i].promoter" class="w-full outline-none" filterable>
                   <option v-for="(item, i) in promoters" :key="i" :label="item.name" :value="item.name"></option>
                 </select>
               </el-col>
               <el-col :span="4">
-                <select v-model="denovoAssemblyForm.parts[i].partName" class="w-full">
+                <select v-model="denovoAssemblyForm.parts[i].partName" class="w-full outline-none">
                   <option v-for="(item, i) in cds" :key="i" :label="item.name" :value="item.name"></option>
                 </select>
               </el-col>
               <el-col :span="4">
-                <select v-model="denovoAssemblyForm.parts[i].terminator" class="w-full" filterable>
+                <select v-model="denovoAssemblyForm.parts[i].terminator" class="w-full outline-none" filterable>
                   <option v-for="(item, i) in terminators" :key="i" :label="item.name" :value="item.name"></option>
                 </select>
               </el-col>
               <el-col :span="2">
-                <select v-model="denovoAssemblyForm.parts[i].strand" class="w-full">
+                <select v-model="denovoAssemblyForm.parts[i].strand" class="w-full outline-none">
                   <option v-for="(item, i) in TUDirections" :key="i" :label="item.name" :value="item.name"></option>
                 </select>
               </el-col>
@@ -219,15 +219,15 @@ export default class CreateDeNovoAssembly extends Vue {
 
   /* submit Modal data */
   save (next?: string) {
-    httpService.post('query/assemblyNameChecker', { name: this.denovoAssemblyForm.name })
-      .then((res: any) => {
-        if (res.data.valid === 'true') {
-          this.$refs['denovoAssemblyForm'].validate((valid: boolean) => {
-            if (valid) this.$emit('save', { data: this.denovoAssemblyForm }, next === 'next' ? this.modalData.saveAndNext : null)
-            else return false
+    this.$refs['denovoAssemblyForm'].validate((valid: boolean) => {
+      if (valid) {
+        httpService.post('query/assemblyNameChecker', { name: this.denovoAssemblyForm.name })
+          .then((res: any) => {
+            if (res.data.valid === 'true') this.$emit('save', { data: this.denovoAssemblyForm }, next === 'next' ? this.modalData.saveAndNext : null)
+            else this.responseMessage()
           })
-        } else this.responseMessage()
-      })
+      } else return false
+    })
   }
 
   /* load Modal data -> Get list of study */
@@ -299,7 +299,10 @@ export default class CreateDeNovoAssembly extends Vue {
 
   /* load Modal data -> Get list of restriction enzymes */
   getRestrictionEnzymeList () {
-    return httpService.get('query/restrictionEnzymeList').then((res: any) => { this.restrictionEnzymes = res.data.rows })
+    return httpService.get('query/restrictionEnzymeList').then((res: any) => {
+      res.data.rows[0].sequence = 'None'
+      this.restrictionEnzymes = res.data.rows
+    })
   }
 
   /* load Modal data -> Get list of vegas adapters */
@@ -344,7 +347,6 @@ export default class CreateDeNovoAssembly extends Vue {
         this.isSaveAndNext = true
         this.denovoAssemblyForm.studyName = this.modalData.saveAndNextData.study
         this.denovoAssemblyForm.projectName = this.modalData.saveAndNextData.project
-        Promise.all([ this.getProjectsList(), this.getAssemblyList() ])
       }
     })
   }

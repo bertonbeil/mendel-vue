@@ -22,15 +22,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="Assembly name:" prop="assembly">
-              <el-select v-model="adaptoRegionOfInterestForm.assembly" @change="getOrganismList" placeholder="Select assembly" class="w-full">
-                <el-option v-for="(item, i) in assemblyList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
-              </el-select>
+            <el-form-item label="Name:" prop="name">
+              <el-input v-model="adaptoRegionOfInterestForm.name"
+                @change="getOrganismList"
+                placeholder="Enter name for this locus"
+                class="w-full">
+              </el-input>
             </el-form-item>
           </el-col>
 
           <el-col :span="24" class="mb-30">
-            <el-form-item label="Description:">
+            <el-form-item label="Description:" prop="description">
               <el-input v-model="adaptoRegionOfInterestForm.description" placeholder="Enter a short but memorable description for this region"></el-input>
             </el-form-item>
           </el-col>
@@ -55,22 +57,42 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="Coordinate:" prop="coordinate">
-              <el-input-number v-model="adaptoRegionOfInterestForm.openPos" class="mr-20" placeholder="Enter coordinate (e.g. 100000) or coordinate range (e.g. 100000-200000)" :min="0" :max="15000000"></el-input-number>
-              <el-input-number v-model="adaptoRegionOfInterestForm.closePos" @change="showGenomeBrowser = true" placeholder="Enter coordinate (e.g. 100000) or coordinate range (e.g. 100000-200000)" :min="0" :max="15000000"></el-input-number>
-              <p class="text-grey-dark -mt-5 ml-5">A single coordinate will open a genome browser view centered on that coordinate with a window size indicated in the ‘length’ field. A range will open the browser view of that coordinate range.</p>
-            </el-form-item>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="Open position:" prop="openPos">
+                  <el-input-number v-model="adaptoRegionOfInterestForm.openPos" class="mr-20"></el-input-number>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="Close position:" prop="closePos">
+                  <el-input-number v-model="adaptoRegionOfInterestForm.closePos"></el-input-number>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <p class="text-grey-dark -mt-5 ml-5 break-normal">A single coordinate will open a genome browser view centered on that coordinate with a window size indicated in the ‘length’ field. A range will open the browser view of that coordinate range.</p>
+              </el-col>
+            </el-row>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Length (bp):" prop="length">
-              <el-input v-model="adaptoRegionOfInterestForm.length" placeholder="200000" value="200000" disabled></el-input>
-              <p class="text-grey-dark -mt-5 ml-5">This is the default length for a single entered coordinate view. Edit for a custom length, or enter a range in the coordinate field for custom coordinate endpoints.</p>
+              <el-input-number placeholder="200000" class="w-full" disabled></el-input-number>
+              <p class="text-grey-dark -mt-5 ml-5 break-normal">This is the default length for a single entered coordinate view. Edit for a custom length, or enter a range in the coordinate field for custom coordinate endpoints.</p>
             </el-form-item>
           </el-col>
 
-          <el-col :span="24" v-if="showGenomeBrowser">
-            <h4 class="text-xl text-black mt-3">Genome browser:</h4>
-            <iframe class="w-full h-500" :src="iframeSrc" frameborder="0"></iframe>
+          <GenomeBrowser :iframeSrc='iframeSrc' v-if="showBrowser" />
+
+          <el-col :span="24" v-if="showBrowser" class="flex justify-between">
+            <div>
+              <el-button type="info" icon="el-icon-minus" circle @click="adaptoRegionOfInterestForm.openPos -= openPosValue" size="mini"></el-button>
+              <el-input-number controls-position="right" v-model="openPosValue" class="mx-10" size="mini"></el-input-number>
+              <el-button type="info" icon="el-icon-plus" circle @click="adaptoRegionOfInterestForm.openPos += openPosValue" size="mini"></el-button>
+            </div>
+            <div>
+              <el-button type="info" icon="el-icon-minus" circle @click="adaptoRegionOfInterestForm.closePos -= closePosValue" size="mini"></el-button>
+              <el-input-number controls-position="right" v-model="closePosValue" class="mx-10" size="mini"></el-input-number>
+              <el-button type="info" icon="el-icon-plus" circle @click="adaptoRegionOfInterestForm.closePos += closePosValue" size="mini"></el-button>
+            </div>
           </el-col>
         </el-row>
       </el-form>
@@ -85,9 +107,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase, AdaptoRegionOfInterest } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
+import GenomeBrowser from '../../shared/GenomeBrowser.vue'
 
 @Component({ name: 'CreateRegionOfInterest' })
 
@@ -100,25 +123,30 @@ export default class CreateRegionOfInterest extends Vue {
   assemblyList: string[] = []
   organismList: string[] = []
   chromosomeList: string[] = []
-  showGenomeBrowser: boolean = false
-  organism: string = 'rn6'
+  openPosValue: number = 5000
+  closePosValue: number = 5000
 
   adaptoRegionOfInterestForm: AdaptoRegionOfInterest = {
     study: '',
     project: '',
-    assembly: '',
+    name: '',
     description: '',
     organism: '',
     chromosome: '',
-    openPos: '',
-    closePos: '',
-    length: ''
+    openPos: 1000000,
+    closePos: 15000000,
+    length: 200000
   }
 
   rules: object = {
     study: [ { required: true } ],
     project: [ { required: true } ],
-    assembly: [ { required: true } ]
+    name: [ { required: true } ],
+    description: [ { required: true } ],
+    organism: [ { required: true } ],
+    chromosome: [ { required: true } ],
+    openPos: [ { required: true } ],
+    closePos: [ { required: true } ]
   }
 
   $refs!: {
@@ -133,17 +161,19 @@ export default class CreateRegionOfInterest extends Vue {
     })
   }
 
-  get iframeSrc () {
-    // if (this.adaptoRegionOfInterestForm.organism === 'human') this.organism = 'hg36'
-    // else if (this.adaptoRegionOfInterestForm.organism === 'rat') this.organism = 'rn6'
-    // else if (this.adaptoRegionOfInterestForm.organism === 'mouse') this.organism = 'mm10'
-    // else if (this.adaptoRegionOfInterestForm.organism === 'drosophila') this.organism = 'dm6'
+  get showBrowser () {
+    return Object.values(this.adaptoRegionOfInterestForm).every((item: any) => { return item !== '' })
+  }
 
-    return `https://genome.ucsc.edu/cgi-bin/hgTracks?db=${this.organism}
-    &lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position=
-    ${this.adaptoRegionOfInterestForm.chromosome}%3A
-    ${this.adaptoRegionOfInterestForm.openPos}-
-    ${this.adaptoRegionOfInterestForm.closePos}&hgsid=728161491_DuUswQ4Qb8YNKSSnYWajK4db9HsW`
+  get organism () {
+    return this.adaptoRegionOfInterestForm.organism === 'human' ? 'hg38'
+      : this.adaptoRegionOfInterestForm.organism === 'rat' ? 'rn6'
+        : this.adaptoRegionOfInterestForm.organism === 'mouse' ? 'mm10'
+          : this.adaptoRegionOfInterestForm.organism === 'drosophila' ? 'dm6' : null
+  }
+
+  get iframeSrc () {
+    return `https://genome.ucsc.edu/cgi-bin/hgTracks?db=${this.organism}&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position=${this.adaptoRegionOfInterestForm.chromosome}%3A${this.adaptoRegionOfInterestForm.openPos}-${this.adaptoRegionOfInterestForm.closePos}&hgsid=728161491_DuUswQ4Qb8YNKSSnYWajK4db9HsW`
   }
 
   /* load Modal data -> Get list of study */
@@ -162,7 +192,7 @@ export default class CreateRegionOfInterest extends Vue {
     return httpService.post('query/projectNameList', { study: this.adaptoRegionOfInterestForm.study })
       .then((res: any) => {
         this.adaptoRegionOfInterestForm.project = ''
-        this.adaptoRegionOfInterestForm.assembly = ''
+        this.adaptoRegionOfInterestForm.name = ''
         this.projectsList = res.data.rows
         this.assemblyList = []
         this.$emit('loadOff')
@@ -174,7 +204,7 @@ export default class CreateRegionOfInterest extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectAssemblyList', { study: this.adaptoRegionOfInterestForm.study, project: this.adaptoRegionOfInterestForm.project })
       .then((res: any) => {
-        this.adaptoRegionOfInterestForm.assembly = ''
+        this.adaptoRegionOfInterestForm.name = ''
         this.assemblyList = res.data.rows
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })

@@ -28,7 +28,7 @@
               <el-table-column prop="project" label="Project">
                 <template slot-scope="scope">
                   <el-form-item size="mini">
-                    <el-select v-model="scope.row.project" placeholder="Select project">
+                    <el-select v-model="scope.row.project" placeholder="Select project" @change="getAssemblyList">
                       <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
                     </el-select>
                   </el-form-item>
@@ -37,15 +37,15 @@
               <el-table-column prop="name" label="Assembly">
                 <template slot-scope="scope">
                   <el-form-item size="mini">
-                    <el-select v-model="scope.row.name" placeholder="Select project" @change="getAssemblyList">
-                      <el-option v-for="item in assemblyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
+                    <el-select v-model="scope.row.name" placeholder="Select project">
+                      <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
                     </el-select>
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column prop="quadrant" label="Quadrant">
                 <template slot-scope="scope">
-                  <div v-html="scope.row.quadrant"></div>
+                  <EchoQuadrant :activeCell='scope.row.quadrant' />
                 </template>
               </el-table-column>
               <el-table-column prop="templates" label="Templates">
@@ -87,13 +87,20 @@
               <el-table-column prop="step" label="Step">
                 <template slot-scope="scope">
                   <el-form-item size="mini">
-                    <el-select v-model="scope.row.step" @change="getAssemblyList">
+                    <el-select v-model="scope.row.step">
                       <el-option v-for="item in [1,2,4]" :key="item" :label="item" :value="item"></el-option>
                     </el-select>
                   </el-form-item>
                 </template>
               </el-table-column>
             </el-table>
+          </el-col>
+          <el-col :span="4" class="mt-35">
+            <div v-for="(item, i) in echoCalcRows" :key="i" class="mt-25">
+              <p>#primer pairs {{ item.primerPairs }}</p>
+              <p>#wells used {{ item.wellsUsed }}</p>
+            </div>
+            <p class="mt-30">Total wells used: {{ 10 }}</p>
           </el-col>
         </el-row>
       </el-form>
@@ -110,7 +117,6 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase, EchoFile } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
-import { Project } from '../../utils/interfaces'
 
 @Component({ name: 'CreateEchoFile' })
 
@@ -125,12 +131,7 @@ export default class CreateEchoFile extends Vue {
     {
       project: '',
       name: '',
-      quadrant: `<div class='flex flex-wrap w-40 h-40'>
-        <div class="w-20 h-20 bg-green-light border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-      </div>`,
+      quadrant: 0,
       templates: '1',
       segments: '0',
       negativeCtrl: true,
@@ -142,12 +143,7 @@ export default class CreateEchoFile extends Vue {
     {
       project: '',
       name: '',
-      quadrant: `<div class='flex flex-wrap w-40 h-40'>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 bg-green-light border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-      </div>`,
+      quadrant: 1,
       templates: '1',
       segments: '0',
       negativeCtrl: true,
@@ -159,12 +155,7 @@ export default class CreateEchoFile extends Vue {
     {
       project: '',
       name: '',
-      quadrant: `<div class='flex flex-wrap w-40 h-40'>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 bg-green-light border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-      </div>`,
+      quadrant: 2,
       templates: '1',
       segments: '0',
       negativeCtrl: true,
@@ -176,12 +167,7 @@ export default class CreateEchoFile extends Vue {
     {
       project: '',
       name: '',
-      quadrant: `<div class='flex flex-wrap w-40 h-40'>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 border border-solid border-black rounded-full"></div>
-        <div class="w-20 h-20 bg-green-light border border-solid border-black rounded-full"></div>
-      </div>`,
+      quadrant: 3,
       templates: '1',
       segments: '0',
       num_controls: 3, // (negativeCtrl ? 1 : 0) + (positiveCtrl ? 1 : 0) + (waterCtrl ? 1 : 0)
@@ -193,31 +179,19 @@ export default class CreateEchoFile extends Vue {
     }
   ]
 
+  echoCalcRows: object[] = [
+    { primerPairs: 1, wellsUsed: 1 },
+    { primerPairs: 1, wellsUsed: 1 },
+    { primerPairs: 1, wellsUsed: 1 },
+    { primerPairs: 1, wellsUsed: 1 }
+  ]
+
   echoFileForm: EchoFile = {
     project: '',
     dna_amount: 10.0,
     primer_amount: 10.0,
     primer_control_location: 'P24'
   }
-
-  // project: '',
-  // dna_amount: '10.0',
-  // primer_amount: '10.0',
-  // primer_control_location: 'P24',
-  // assemblies: [
-  //   {
-  //     name: 'A_test_011',
-  //     templates: 1,
-  //     segments: 0,
-  //     num_controls: (negativeCtrl ? 1 : 0) + (positiveCtrl ? 1 : 0) + (waterCtrl ? 1 : 0),
-  //     location: 'A1',
-  //     negativeCtrl: true,
-  //     positiveCtrl: true,
-  //     waterCtrl: true,
-  //     step: 1
-  //   }
-  // ],
-  // primers: [ { location: 'A1' } ]
 
   rules: object = {
     dna_amount: [ { required: true } ],
@@ -248,9 +222,9 @@ export default class CreateEchoFile extends Vue {
   }
 
   /* Get list of assemblies */
-  getAssemblyList () {
+  getAssemblyList (project: any) {
     this.$emit('loadOn')
-    return httpService.post('query/projectAssemblyList', { project: this.tableData[0].project })
+    return httpService.post('query/projectAssemblyList', { project })
       .then((res: any) => {
         this.assemblyList = res.data.rows
         this.$emit('loadOff')

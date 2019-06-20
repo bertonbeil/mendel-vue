@@ -23,7 +23,10 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="dnaDesignName">
-              <el-select v-model="denovoSegmentForm.dnaDesignName" @change="getRestrictionEnzymeList" placeholder="Select assembly" class="w-full">
+              <el-select v-model="denovoSegmentForm.dnaDesignName"
+                @change="[getRestrictionEnzymeList(), latestDnaDesign()]"
+                placeholder="Select assembly"
+                class="w-full">
                 <el-option v-for="(item, i) in assemblyList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
@@ -69,14 +72,14 @@
             </h4>
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item>
+                <el-form-item prop='restrictionEnzyme5'>
                   <el-select v-model="denovoSegmentForm.restrictionEnzyme5" placeholder="5' RE" class="w-full">
                     <el-option v-for="item in restrictionEnzymes" :key="item.name" :label="item.name" :value="item.sequence"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item>
+                <el-form-item prop='restrictionEnzyme3'>
                   <el-select v-model="denovoSegmentForm.restrictionEnzyme3" placeholder="3' RE" class="w-full">
                     <el-option v-for="item in restrictionEnzymes" :key="item.name" :label="item.name" :value="item.sequence"></el-option>
                   </el-select>
@@ -86,7 +89,7 @@
           </el-col>
           <el-col :span="8">
             <h4 class="text-xl text-black mt-3">Assembly length (bp):</h4>
-            <el-input-number :min="0" :max="10000" class="w-full"></el-input-number>
+            <el-input-number v-model="assemblyLength" class="w-full" disabled></el-input-number>
           </el-col>
 
           <el-col :span="24" class="my-30">
@@ -146,6 +149,7 @@ export default class CreateDeNovoSegments extends Vue {
   segmentVegasAdapters: boolean = false
   type: string = ''
   assemblyVector: any = { yeastMarker: 'URA3', bacterialCopy: 'pUC' }
+  assemblyLength: number = 0
 
   denovoSegmentForm: DenovoSegment = {
     study: '',
@@ -167,7 +171,9 @@ export default class CreateDeNovoSegments extends Vue {
   rules: object = {
     study: [ { required: true } ],
     project: [ { required: true } ],
-    dnaDesignName: [ { required: true } ]
+    dnaDesignName: [ { required: true } ],
+    restrictionEnzyme5: [ { required: true } ],
+    restrictionEnzyme3: [ { required: true } ]
   }
 
   $refs!: {
@@ -217,6 +223,18 @@ export default class CreateDeNovoSegments extends Vue {
       .then((res: any) => {
         this.denovoSegmentForm.dnaDesignName = ''
         this.assemblyList = res.data.rows
+        this.$emit('loadOff')
+      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+  }
+
+  latestDnaDesign () {
+    this.$emit('loadOn')
+    return httpService.get('query/latestDnaDesign', { study: this.denovoSegmentForm.study, project: this.denovoSegmentForm.project })
+      .then((res: any) => {
+        res.data.rows.filter((i: any) => {
+          if (i.name === this.denovoSegmentForm.dnaDesignName) this.assemblyLength = i.value.length
+          return this.assemblyLength
+        })
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
