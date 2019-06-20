@@ -9,6 +9,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       :before-close="handleClose"
+      custom-class="lims-dialog mb-0"
       top="60px"
       width="100%"
       ref="rootDialog">

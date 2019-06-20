@@ -16,7 +16,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="denovoAssemblyForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+              <el-select v-model="denovoAssemblyForm.projectName" @change="[getAssemblyList(), getCDS()]" placeholder="Select project" class="w-full">
                 <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
@@ -90,7 +90,7 @@
           </el-col>
         </el-row>
 
-        <el-row v-if="isAssemblyNameChecker">
+        <el-row v-if="showAssemblyTable">
           <el-row :gutter="20">
             <el-col :span="4"><h4 class="text-base text-black mt-3">VA:</h4></el-col>
             <el-col :span="4"><h4 class="text-base text-black mt-3">RE:</h4></el-col>
@@ -99,38 +99,41 @@
             <el-col :span="4"><h4 class="text-base text-black mt-3">Terminator:</h4></el-col>
             <el-col :span="4"><h4 class="text-base text-black mt-3">TU Direction:</h4></el-col>
           </el-row>
+
           <draggable class="p-3" v-model="denovoAssemblyForm.parts">
             <el-row :gutter="20" class="flex items-center py-10 border-0 border-t border-solid border-grey cursor-pointer" v-for="(assembly, i) in denovoAssemblyForm.parts" :key="i">
               <el-col :span="4">
-                <el-select v-model="assembly.vegasAdapter" class="w-full">
-                  <el-option v-for="(item, i) in vegasAdapters" :key="i" :label="item.name" :value="item.name"></el-option>
-                </el-select>
+                <select v-model="denovoAssemblyForm.parts[i].vegasAdapter" class="w-full">
+                  <option v-for="(item, i) in vegasAdapters" :key="i" :label="item.name" :value="item.name"></option>
+                </select>
               </el-col>
               <el-col :span="4">
-                <el-select v-model="assembly.restrictionEnzyme" class="w-full">
-                  <el-option v-for="(item, i) in restrictionEnzymes" :key="i" :label="item.name" :value="item.name"></el-option>
-                </el-select>
+                <select v-model="denovoAssemblyForm.parts[i].restrictionEnzyme" class="w-full">
+                  <option v-for="(item, i) in restrictionEnzymes" :key="i" :label="item.name" :value="item.name"></option>
+                </select>
               </el-col>
               <el-col :span="4">
-                <el-select v-model="assembly.promoter" class="w-full" filterable>
-                  <el-option v-for="(item, i) in promoters" :key="i" :label="item.name" :value="item.name"></el-option>
-                </el-select>
+                <select v-model="denovoAssemblyForm.parts[i].promoter" class="w-full" filterable>
+                  <option v-for="(item, i) in promoters" :key="i" :label="item.name" :value="item.name"></option>
+                </select>
               </el-col>
               <el-col :span="4">
-                <el-select v-model="assembly.partName" class="w-full">
-                  <el-option v-for="(item, i) in cds" :key="i" :label="item.name" :value="item.name"></el-option>
-                </el-select>
+                <select v-model="denovoAssemblyForm.parts[i].partName" class="w-full">
+                  <option v-for="(item, i) in cds" :key="i" :label="item.name" :value="item.name"></option>
+                </select>
               </el-col>
               <el-col :span="4">
-                <el-select v-model="assembly.terminator" class="w-full" filterable>
-                  <el-option v-for="(item, i) in terminators" :key="i" :label="item.name" :value="item.name"></el-option>
-                </el-select>
+                <select v-model="denovoAssemblyForm.parts[i].terminator" class="w-full" filterable>
+                  <option v-for="(item, i) in terminators" :key="i" :label="item.name" :value="item.name"></option>
+                </select>
               </el-col>
               <el-col :span="2">
-                <el-select v-model="assembly.strand" class="w-full">
-                  <el-option v-for="(item, i) in TUDirections" :key="i" :label="item.name" :value="item.name"></el-option>
-                </el-select>
+                <select v-model="denovoAssemblyForm.parts[i].strand" class="w-full">
+                  <option v-for="(item, i) in TUDirections" :key="i" :label="item.name" :value="item.name"></option>
+                </select>
               </el-col>
+
+              <!-- table actions -->
               <el-col :span="2" class="flex justify-around">
                 <el-tooltip class="item" effect="dark" content="Add new row below" placement="top-end">
                   <el-button type="success" icon="el-icon-plus" circle class="text-xl" @click="addRow(i)" size="mini"></el-button>
@@ -160,6 +163,7 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { DialogBase, DenovoAssembly } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
+import { _cloneDeep } from '@/utils/helpers';
 
 @Component({ name: 'CreateDeNovoAssembly' })
 
@@ -178,7 +182,6 @@ export default class CreateDeNovoAssembly extends Vue {
   promoters: object[] = []
   cds: object[] = []
   TUDirections: object[] = [ { name: 5 }, { name: 3 } ]
-  isAssemblyNameChecker: boolean = false
   isSaveAndNext: boolean = false
   assemblyRow: object = { vegasAdapter: 'None', restrictionEnzyme: 'None', promoter: 'None', partName: 'None', terminator: 'None', strand: 5 }
 
@@ -208,6 +211,10 @@ export default class CreateDeNovoAssembly extends Vue {
   $refs!: {
     denovoAssemblyForm: HTMLFormElement
     visualizer: HTMLFormElement
+  }
+
+  get showAssemblyTable () {
+    return this.denovoAssemblyForm.studyName && this.denovoAssemblyForm.projectName && this.denovoAssemblyForm.name && this.denovoAssemblyForm.organism && this.denovoAssemblyForm.openReValue && this.denovoAssemblyForm.closeReValue
   }
 
   /* submit Modal data */
@@ -260,16 +267,9 @@ export default class CreateDeNovoAssembly extends Vue {
           httpService.post('query/assemblyRequestRetriever', { name: this.denovoAssemblyForm.name })
             .then((res: any) => {
               this.handleResponse(res.data.rows[0])
-              this.getCDS()
-              this.isAssemblyNameChecker = true
               this.$emit('loadOff')
             })
             .catch((err: any) => console.log(err))
-        } else if (res.data.valid === 'true' &&
-        this.denovoAssemblyForm.openReValue !== '' &&
-        this.denovoAssemblyForm.closeReValue !== '' &&
-        this.denovoAssemblyForm.organism !== '') {
-          this.denovoAssemblyForm.parts = [ this.assemblyRow ]
         }
       })
       .catch(err => console.log(err))
@@ -290,8 +290,7 @@ export default class CreateDeNovoAssembly extends Vue {
   addRow (index: number) {
     this.$refs['denovoAssemblyForm'].validate((valid: boolean) => {
       if (valid) {
-        this.isAssemblyNameChecker = true
-        this.denovoAssemblyForm.parts.splice(++index, 0, this.assemblyRow)
+        this.denovoAssemblyForm.parts.splice(++index, 0, _cloneDeep(this.assemblyRow))
       }
     })
   }
@@ -339,7 +338,7 @@ export default class CreateDeNovoAssembly extends Vue {
 
   /* response viewer */
   responseMessage () {
-    this.$confirm('Error', `Assembly name ${this.denovoAssemblyForm.name} has been used before. Please specify new name`, { type: 'error', center: true })
+    this.$confirm(`Assembly name ${this.denovoAssemblyForm.name} has been used before. Please specify new name`, 'Error', { type: 'error', center: true })
   }
 
   created () {
