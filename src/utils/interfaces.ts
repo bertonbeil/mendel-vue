@@ -95,15 +95,15 @@ export interface DenovoPrimers {
 }
 
 export interface AdaptoRegionOfInterest {
-  study?: string
-  project?: string
-  assembly?: string
-  description?: string
-  organism: string
-  chromosome?: string
-  openPos?: string
-  closePos?: string
-  length?: string
+  study?: string,
+  project?: string,
+  name?: string,
+  description?: string,
+  organism?: string,
+  chromosome?: string,
+  openPos?: number,
+  closePos?: number,
+  length?: number
 }
 
 export interface AdaptoAssembly {

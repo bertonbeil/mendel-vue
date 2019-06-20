@@ -126,8 +126,8 @@ export default class CreateEchoFile extends Vue {
 
   projectsList: object[] = []
   assemblyList: object[] = []
-  primers: string[] = []
-  tableData: any[] = [
+  primers: object[] = []
+  tableData: object[] = [
     {
       project: '',
       name: '',
