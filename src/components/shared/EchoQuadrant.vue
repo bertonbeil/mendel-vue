@@ -1,9 +1,9 @@
 <template>
   <div class='flex flex-wrap w-40 h-40'>
-    <div v-for="(item, i) in 4" :key="i"
-      class="w-20 h-20 border border-solid border-black rounded-full"
-      :class="[ activeCell === i ? 'bg-green-light' : '' ]">
-    </div>
+    <div class="w-20 h-20 border border-solid border-black rounded-full" :class="[ activeCell === 'A1' ? 'bg-green-light' : '' ]"></div>
+    <div class="w-20 h-20 border border-solid border-black rounded-full" :class="[ activeCell === 'A2' ? 'bg-green-light' : '' ]"></div>
+    <div class="w-20 h-20 border border-solid border-black rounded-full" :class="[ activeCell === 'B1' ? 'bg-green-light' : '' ]"></div>
+    <div class="w-20 h-20 border border-solid border-black rounded-full" :class="[ activeCell === 'B2' ? 'bg-green-light' : '' ]"></div>
   </div>
 </template>
 
