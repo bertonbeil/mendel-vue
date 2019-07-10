@@ -65,7 +65,7 @@ type ProjectType = 'denovo' | 'adapto'
 
 @Component({ name: 'CreateProject' })
 
-export default class CreateStudy extends Vue {
+export default class CreateProject extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
   @Prop({ required: true }) isLoading!: boolean
 
