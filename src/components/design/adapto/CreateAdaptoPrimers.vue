@@ -5,35 +5,17 @@
     </el-row>
     <!-- Main modal content -->
     <div class="mb-30">
-      <el-form :model="adaptoPrimersForm" label-position="top" :rules="rules" ref="adaptoPrimersForm">
+      <el-row :gutter="20" class="mb-30">
+        <StudySelect :getProjectsList='getProjectsList' :studyName.sync='adaptoPrimersForm.study' :studyList='studyList' />
+        <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='adaptoPrimersForm.project' :projectList='projectsList' />
+        <AssemblySelect :assemblyList='assemblyList' :assemblyName.sync='adaptoPrimersForm.dnaDesignName' />
+      </el-row>
+      <el-form label-position="top">
         <el-row :gutter="20" class="mb-30">
-          <el-col :span="8">
-            <el-form-item label="Study name:" prop="study">
-              <el-select v-model="adaptoPrimersForm.study" @change="getProjectsList" placeholder="Select study" class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="Project name:" prop="project">
-              <el-select v-model="adaptoPrimersForm.project" @change="getAssemblyList" placeholder="Select project" class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="Assembly name:" prop="dnaDesignName">
-              <el-select v-model="adaptoPrimersForm.dnaDesignName" placeholder="Select assembly" class="w-full">
-                <el-option v-for="(item, i) in assemblyList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-
           <el-col :span="24" class="mb-30">
             <h4 class="text-xl text-black mt-3">Primer parameters:</h4>
             <p class="break-normal">You can define your desired parameters for primer design here. The defaults should generally work well for most amplicons amplified with modern high-fidelity polymerases.</p>
           </el-col>
-
           <el-col :span="8">
             <p class="text-xl text-black mb-10">Primer length:</p>
             <el-form-item label="Minimum:" class="form-item-label flex items-center text-sm" size="mini">
@@ -99,7 +81,9 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { DialogBase, AdaptoPrimers } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
-@Component({ name: 'CreateAdaptoPrimers' })
+@Component({
+  name: 'CreateAdaptoPrimers'
+})
 
 export default class CreateAdaptoPrimers extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
@@ -132,32 +116,20 @@ export default class CreateAdaptoPrimers extends Vue {
     well: 'A1'
   }
 
-  rules: object = {
-    study: [ { required: true } ],
-    project: [ { required: true } ],
-    dnaDesignName: [ { required: true } ]
-  }
-
-  $refs!: {
-    adaptoPrimersForm: HTMLFormElement
+  get validate () {
+    return this.adaptoPrimersForm.study !== '' && this.adaptoPrimersForm.project !== '' && this.adaptoPrimersForm.dnaDesignName !== ''
   }
 
   /* submit Modal data */
   save (next: string) {
-    this.$refs['adaptoPrimersForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.adaptoPrimersForm }, next === 'next' ? this.modalData.saveAndNext : null)
-      else return false
-    })
+    if (this.validate) this.$emit('save', { data: this.adaptoPrimersForm }, next === 'next' ? this.modalData.saveAndNext : null)
   }
 
   /* load Modal data -> Get list of study */
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = res.data.rows
-        this.$emit('loadOff')
-      })
+      .then((res: any) => { this.studyList = res.data.rows; this.$emit('loadOff') })
   }
 
   /* Get list of projects */
@@ -179,7 +151,7 @@ export default class CreateAdaptoPrimers extends Vue {
     return httpService.post('query/projectAssemblyList', { study: this.adaptoPrimersForm.study, project: this.adaptoPrimersForm.project })
       .then((res: any) => {
         this.adaptoPrimersForm.dnaDesignName = ''
-        this.assemblyList = res.data.rows
+        res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }

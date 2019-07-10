@@ -7,20 +7,8 @@
     <div class="mb-30">
       <el-form :model="denovoSegmentForm" label-position="top" :rules="rules" ref="denovoSegmentForm">
         <el-row :gutter="20" class="mb-30">
-          <el-col :span="8">
-            <el-form-item label="Study name:" prop="study">
-              <el-select v-model="denovoSegmentForm.study" @change="getProjectsList" placeholder="Select study" class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="Project name:" prop="project">
-              <el-select v-model="denovoSegmentForm.project" @change="getAssemblyList" placeholder="Select project" class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+          <StudySelect :getProjectsList='getProjectsList' :studyName.sync='denovoSegmentForm.study' :studyList='studyList' />
+          <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='denovoSegmentForm.project' :projectList='projectsList' />
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="dnaDesignName">
               <el-select v-model="denovoSegmentForm.dnaDesignName"
@@ -169,8 +157,6 @@ export default class CreateDeNovoSegments extends Vue {
   }
 
   rules: object = {
-    study: [ { required: true } ],
-    project: [ { required: true } ],
     dnaDesignName: [ { required: true } ],
     restrictionEnzyme5: [ { required: true } ],
     restrictionEnzyme3: [ { required: true } ]

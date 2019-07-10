@@ -50,6 +50,8 @@ export default class MainHeader extends Vue {
             { component: 'CreateRegionOfInterest', title: 'Region of Interest' },
             { component: 'CreateAdaptoAssembly', title: 'Assembly' },
             { component: 'CreateAdaptoSegments', title: 'Segments' },
+            { component: 'CreateAdaptoReSegments', title: 'Re-Segments' },
+            { component: 'CreateAdaptoSegmentsManipulation', title: 'Segments manipulation' },
             { component: 'CreateAdaptoPrimers', title: 'Primers' }
           ]
         },

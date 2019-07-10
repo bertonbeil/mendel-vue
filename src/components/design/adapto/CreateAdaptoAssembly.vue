@@ -5,36 +5,19 @@
     </el-row>
     <!-- Main modal content -->
     <div class="mb-30">
+      <el-row :gutter="20" class="mb-30">
+        <StudySelect :getProjectsList='getProjectsList' :studyName.sync='adaptoAssemblyForm.studyName' :studyList='studyList'/>
+        <ProjectSelect :getAssemblyList='getRegionList' :projectName.sync='adaptoAssemblyForm.projectName' :projectList='projectsList' />
+        <AssemblySelect :assemblyList='locusNameList' :assemblyName.sync='adaptoAssemblyForm.locusName' />
+      </el-row>
       <el-form :model="adaptoAssemblyForm" label-position="top" :rules="rules" ref="adaptoAssemblyForm">
         <el-row :gutter="20" class="mb-30">
-          <el-col :span="6">
-            <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="adaptoAssemblyForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="adaptoAssemblyForm.projectName" @change="getRegionList" placeholder="Select project" class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="Region:" prop="locusName">
-              <el-select v-model="adaptoAssemblyForm.locusName" placeholder="Select region" class="w-full">
-                <el-option v-for="item in locusNameList" :key="item" :label="item" :value="item"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
           <el-col :span="6">
             <el-form-item label="Name:" prop="name">
               <el-input v-model="adaptoAssemblyForm.name" placeholder="Enter assembly name"></el-input>
             </el-form-item>
           </el-col>
-
-          <el-col :span="24" class="mb-30">
+          <el-col :span="18">
             <el-form-item label="Description:" prop="description">
               <el-input v-model="adaptoAssemblyForm.description" placeholder="Enter a short but memorable description for this region"></el-input>
             </el-form-item>
@@ -51,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase, AdaptoAssembly } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
@@ -64,18 +47,17 @@ export default class CreateAdaptoAssembly extends Vue {
   studyList: string[] = []
   projectsList: string[] = []
   locusNameList: string[] = []
+  assemblyName: string = ''
 
   adaptoAssemblyForm: AdaptoAssembly = {
     studyName: '',
     projectName: '',
-    locusName: '',
+    locusName: this.assemblyName,
     name: '',
     description: ''
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
     locusName: [ { required: true } ],
     name: [ { required: true } ],
     description: [ { required: true } ]
@@ -97,10 +79,7 @@ export default class CreateAdaptoAssembly extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = res.data.rows
-        this.$emit('loadOff')
-      })
+      .then((res: any) => { this.studyList = res.data.rows; this.$emit('loadOff') })
   }
 
   /* Get list of projects */

@@ -1,5 +1,5 @@
 <template>
-  <el-container id="app" class="h-full is-vertical">
+  <el-container id="app" class="h-full is-vertical bg">
     <router-view />
   </el-container>
 </template>

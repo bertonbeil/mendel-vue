@@ -75,6 +75,18 @@ export default new Vuex.Store({
         submitUrl: 'adaptoSegmentDesigner'
       },
       {
+        component: 'CreateAdaptoReSegments',
+        title: 'Re-Segments',
+        dialogCaption: 'Re-Segment Assembly',
+        dialogIntro: 'This page allows you to define parameters for segmenting a locus of interest into parts for assembly. Assembly segments are overlapping sequences derived via PCR amplification from a genome or existing BAC. The output of segmentation is a list of segments as well as the primers for amplifying those segments.',
+        submitUrl: 'adaptoSegmentDesigner'
+      },
+      {
+        component: 'CreateAdaptoSegmentsManipulation',
+        title: 'Segments manipulation',
+        dialogCaption: 'Segment manipulation'
+      },
+      {
         component: 'CreateAdaptoPrimers',
         title: 'Primers',
         dialogCaption: 'Create new Junction primers',

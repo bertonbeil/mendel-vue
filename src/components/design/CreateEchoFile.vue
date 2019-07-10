@@ -257,6 +257,7 @@ export default class CreateEchoFile extends Vue {
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
 
+  /* Get segments of rows */
   getSegments (index: any) {
     this.tableData[index].assemblyList.map((item: any) => {
       if (item.assembly === this.tableData[index].name) this.tableData[index].segments = item.segments

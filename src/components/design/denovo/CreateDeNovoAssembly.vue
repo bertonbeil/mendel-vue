@@ -7,20 +7,8 @@
     <div class="mb-30">
       <el-form :model="denovoAssemblyForm" label-position="top" :rules="rules" ref="denovoAssemblyForm">
         <el-row :gutter="20" class="mb-30">
-          <el-col :span="8">
-            <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="denovoAssemblyForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
-                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="denovoAssemblyForm.projectName" @change="[getAssemblyList(), getCDS()]" placeholder="Select project" class="w-full">
-                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+          <StudySelect :getProjectsList='getProjectsList' :studyName.sync='denovoAssemblyForm.studyName' :studyList='studyList' />
+          <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='denovoAssemblyForm.projectName' :projectList='projectsList' />
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="name">
               <el-select v-model="denovoAssemblyForm.name"
@@ -200,8 +188,6 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
     name: [ { required: true } ],
     openReValue: [ { required: true } ],
     closeReValue: [ { required: true } ],

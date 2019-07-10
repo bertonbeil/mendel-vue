@@ -12,6 +12,22 @@
       </el-row>
       <el-form label-position="top">
         <el-row :gutter="20" class="mb-30">
+          <el-col :span="8">
+            <el-form-item label="First:">
+              <el-input-number class="w-full" :min="1"></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Last:">
+              <el-input-number class="w-full" :min="1"></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Length:">
+              <el-input-number class="w-full" :min="1"></el-input-number>
+            </el-form-item>
+          </el-col>
+
           <el-col :span="24" class="mb-30">
             <h4 class="text-xl text-black mt-3">Segmentation options</h4>
             <p class="break-normal">Select options for this segmentation, such as assembly vector to be used and any desired flanking restriction sites.</p>

@@ -34,6 +34,7 @@ import { httpService } from '@/services/http.service'
 import { Loading } from 'element-ui'
 import { capitalize } from '@/utils/helpers'
 import { alertMixin } from '@/utils/mixins'
+
 @Component({
   name: 'Home',
   mixins: [alertMixin]

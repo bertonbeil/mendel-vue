@@ -130,6 +130,13 @@ export interface AdaptoSegmentRequest {
   sequences?: string
 }
 
+export interface AdaptoSegmentsManipulation {
+  studyName?: string
+  projectName?: string
+  assemblyName?: string
+  action?: string
+}
+
 export interface AdaptoPrimersRequest {
   dnaDesignName?: string
   primers?: string

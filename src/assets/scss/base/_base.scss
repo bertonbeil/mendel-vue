@@ -24,6 +24,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.bg {
+  background: url('~@/assets/img/bg.png') no-repeat center;
+  background-size: 60%;
+}
+
 button {
   outline: none;
   border: none;

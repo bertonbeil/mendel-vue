@@ -7,20 +7,8 @@
     <div class="mb-30">
       <el-form :model="adaptoRegionOfInterestForm" label-position="top" :rules="rules" ref="adaptoRegionOfInterestForm">
         <el-row :gutter="20" class="mb-30">
-          <el-col :span="8">
-            <el-form-item label="Study name:" prop="study">
-              <el-select v-model="adaptoRegionOfInterestForm.study" @change="getProjectsList" placeholder="Select study" class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="Project name:" prop="project">
-              <el-select v-model="adaptoRegionOfInterestForm.project" @change="getAssemblyList" placeholder="Select project" class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+          <StudySelect :getProjectsList='getProjectsList' :studyName.sync='adaptoRegionOfInterestForm.study' :studyList='studyList' />
+          <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='adaptoRegionOfInterestForm.project' :projectList='projectsList' />
           <el-col :span="8">
             <el-form-item label="Name:" prop="name">
               <el-input v-model="adaptoRegionOfInterestForm.name"
@@ -139,8 +127,6 @@ export default class CreateRegionOfInterest extends Vue {
   }
 
   rules: object = {
-    study: [ { required: true } ],
-    project: [ { required: true } ],
     name: [ { required: true } ],
     description: [ { required: true } ],
     organism: [ { required: true } ],
