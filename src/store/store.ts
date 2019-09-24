@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    debug: false,
+    debugMode: false,
     modalDataList: [
       {
         component: 'CreateStudy',
@@ -115,10 +115,16 @@ export default new Vuex.Store({
       }
     ]
   },
+
   mutations: {
-
+    set_debugMode (state, value) {
+      state.debugMode = value
+    }
   },
-  actions: {
 
+  actions: {
+    toggleDebugMode ({ commit, state }) {
+      commit('set_debugMode', !state.debugMode)
+    }
   }
 })

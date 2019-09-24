@@ -5,8 +5,8 @@
   <!-- Main nav -->
   <el-submenu v-for="(topMenu, menuIndex) in defineMenu" :key="menuIndex" :index="topMenu.menuTitle">
     <template v-if="topMenu.menuTitle" slot="title">{{ topMenu.menuTitle }}</template>
-    <el-menu-item v-if="topMenu.menuTitle === user.id">
-      <el-checkbox v-model="debug" @change="toggleDebugMode">Debug</el-checkbox>
+    <el-menu-item v-if="topMenu.menuTitle === user.id" @click="$store.dispatch('toggleDebugMode')">
+      <el-checkbox :value="debugMode">Debug</el-checkbox>
     </el-menu-item>
     <!--  -->
     <template v-for="menu in topMenu.items">
@@ -33,7 +33,6 @@ import { httpService } from '@/services/http.service'
 
 export default class MainHeader extends Vue {
   user: any = {}
-  debug: boolean = true
 
   defineMenu: MainMenu[] = [
     { menuTitle: 'New',
@@ -112,6 +111,10 @@ export default class MainHeader extends Vue {
     }
   ]
 
+  get debugMode () {
+    return this.$store.state.debugMode
+  }
+
   @Watch('user')
   onChangeUser () {
     this.defineMenu[6].menuTitle = this.user.id
@@ -121,8 +124,8 @@ export default class MainHeader extends Vue {
     this.$emit('select', menuItem)
   }
 
-  toggleDebugMode () {
-    this.$store.state.debug = this.debug
+  toggleDebugMode (value: boolean) {
+    this.$store.commit('set_debugMode', value)
   }
 
   created () {
