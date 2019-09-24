@@ -134,6 +134,12 @@
           </draggable>
         </el-row>
       </el-form>
+      <el-row :gutter="20" v-if="$store.state.debug">
+        <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
+          <p class="text-xl text-black">Debug</p>
+          <pre>{{ sendData }}</pre>
+        </el-col>
+      </el-row>
     </div>
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
@@ -203,14 +209,21 @@ export default class CreateDeNovoAssembly extends Vue {
     return this.denovoAssemblyForm.studyName && this.denovoAssemblyForm.projectName && this.denovoAssemblyForm.name && this.denovoAssemblyForm.organism && this.denovoAssemblyForm.openReValue && this.denovoAssemblyForm.closeReValue
   }
 
+  get sendData () {
+    return this.denovoAssemblyForm
+  }
+
   /* submit Modal data */
   save (next?: string) {
     this.$refs['denovoAssemblyForm'].validate((valid: boolean) => {
       if (valid) {
         httpService.post('query/assemblyNameChecker', { name: this.denovoAssemblyForm.name })
           .then((res: any) => {
-            if (res.data.valid === 'true') this.$emit('save', { data: this.denovoAssemblyForm }, next === 'next' ? this.modalData.saveAndNext : null)
-            else this.responseMessage()
+            if (res.data.valid === 'true') {
+              this.$emit('save', { data: this.sendData }, next === 'next'
+                ? this.modalData.saveAndNext
+                : null)
+            } else this.responseMessage()
           })
       } else return false
     })

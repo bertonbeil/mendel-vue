@@ -6,9 +6,22 @@
     <!-- Main modal content -->
     <div class="mb-30">
       <el-row :gutter="20" class="mb-30">
-        <StudySelect :getProjectsList='getProjectsList' :studyName.sync='adaptoPrimersForm.study' :studyList='studyList' />
-        <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='adaptoPrimersForm.project' :projectList='projectsList' />
-        <AssemblySelect :assemblyList='assemblyList' :assemblyName.sync='adaptoPrimersForm.dnaDesignName' />
+        <Select
+          :name.sync='adaptoPrimersForm.study'
+          :list='studyList'
+          :getList='getProjectsList'
+          label='Study' />
+        <Select
+          :name.sync='adaptoPrimersForm.project'
+          :list='projectsList'
+          :getList='getAssemblyList'
+          label='Project'
+          ref="projectSelect" />
+        <Select
+          :name.sync='adaptoPrimersForm.dnaDesignName'
+          :list='assemblyList'
+          label='Assembly'
+          ref="assemblySelect" />
       </el-row>
       <el-form label-position="top">
         <el-row :gutter="20" class="mb-30">
@@ -66,6 +79,12 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-row :gutter="20" v-if="$store.state.debug">
+        <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
+          <p class="text-xl text-black">Debug</p>
+          <pre>{{ sendData }}</pre>
+        </el-col>
+      </el-row>
     </div>
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
@@ -116,20 +135,33 @@ export default class CreateAdaptoPrimers extends Vue {
     well: 'A1'
   }
 
+  $refs!: {
+    projectSelect: HTMLFormElement,
+    assemblySelect: HTMLFormElement
+  }
+
   get validate () {
     return this.adaptoPrimersForm.study !== '' && this.adaptoPrimersForm.project !== '' && this.adaptoPrimersForm.dnaDesignName !== ''
   }
 
+  get sendData () {
+    return this.adaptoPrimersForm
+  }
+
   /* submit Modal data */
   save (next: string) {
-    if (this.validate) this.$emit('save', { data: this.adaptoPrimersForm }, next === 'next' ? this.modalData.saveAndNext : null)
+    if (this.validate) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
   }
 
   /* load Modal data -> Get list of study */
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => { this.studyList = res.data.rows; this.$emit('loadOff') })
+      .then((res: any) => {
+        this.studyList = []
+        res.data.rows.map((item: any) => this.studyList.push(item.name))
+        this.$emit('loadOff')
+      })
   }
 
   /* Get list of projects */
@@ -137,10 +169,11 @@ export default class CreateAdaptoPrimers extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.adaptoPrimersForm.study })
       .then((res: any) => {
-        this.adaptoPrimersForm.project = ''
-        this.adaptoPrimersForm.dnaDesignName = ''
-        this.projectsList = res.data.rows
+        this.projectsList = []
         this.assemblyList = []
+        this.$refs.projectSelect.selectForm.name = ''
+        this.$refs.assemblySelect.selectForm.name = ''
+        res.data.rows.map((item: any) => this.projectsList.push(item.name))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
@@ -150,7 +183,8 @@ export default class CreateAdaptoPrimers extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectAssemblyList', { study: this.adaptoPrimersForm.study, project: this.adaptoPrimersForm.project })
       .then((res: any) => {
-        this.adaptoPrimersForm.dnaDesignName = ''
+        this.assemblyList = []
+        this.$refs.assemblySelect.selectForm.name = ''
         res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })

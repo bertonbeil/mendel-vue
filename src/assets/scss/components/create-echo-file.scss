@@ -1,0 +1,120 @@
+/* Echo File  */
+
+.visualizer-echo-file-row {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.visualizer-echo-file-wrap {
+  display: inline-block;
+  min-width: 100%;
+}
+
+.visualizer-echo-file {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 50px 20px;
+}
+
+.visualizer-echo-file::before,
+.visualizer-echo-file::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 55px;
+  width: 3px;
+  background: #ccc;
+}
+
+.visualizer-echo-file::after {
+  left: unset;
+  right: 0;
+}
+
+.visualizer-echo-file__item-last {
+  min-width: 0 !important;
+  max-width: 0;
+}
+
+.visualizer-echo-file__item-last span {
+  visibility: hidden;
+}
+
+.visualizer-echo-file__item {
+  flex: 1;
+  position: relative;
+  min-width: 50px;
+  height: 2px;
+  background: #000;
+}
+
+.visualizer-echo-file__item:nth-child(even) {
+  margin-top: 10px;
+}
+
+.echo-segment-arrow {
+  position: absolute;
+  bottom: 10px;
+  left: -13px;
+  cursor: pointer;
+  padding: 3px;
+}
+
+.echo-segment-arrow-disabled {
+  opacity: .3;
+  border: 1px solid #000;
+  border-radius: 50%;
+}
+
+.visualizer-echo-file__item:nth-child(even) .echo-segment-arrow {
+  bottom: 20px;
+}
+
+.echo-closet {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: #ccc;
+}
+
+.echo-closet::before,
+.echo-closet::after {
+  content: "";
+  position: absolute;
+  top: -55px;
+  left: 0;
+  height: 3px;
+  width: 10px;
+  background: #ccc;
+}
+
+.echo-closet::after {
+  left: unset;
+  right: 0;
+}
+
+.echo-segment-index {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.visualizer-echo-file__item:nth-child(even) .echo-segment-index {
+  top: 10px;
+}
+
+div[aria-label='Account Information'] {
+  width: 50% !important;
+}
+
+.el-menu--horizontal>.el-submenu:last-child {
+  float: right;
+}
+
+.leading-loose {
+  line-height: 4 !important;
+}

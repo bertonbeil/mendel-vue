@@ -17,8 +17,8 @@ import { httpService } from '@/services/http.service'
 @Component({ name: 'ProjectSelect' })
 
 export default class ProjectSelect extends Vue {
-  @Prop({ required: true }) getAssemblyList!: any
   @Prop({ required: true }) projectList!: any
+  @Prop({ required: true }) getAssemblyList!: any
 
   projectSelectForm: any = {
     projectName: ''

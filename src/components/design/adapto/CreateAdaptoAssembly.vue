@@ -6,9 +6,22 @@
     <!-- Main modal content -->
     <div class="mb-30">
       <el-row :gutter="20" class="mb-30">
-        <StudySelect :getProjectsList='getProjectsList' :studyName.sync='adaptoAssemblyForm.studyName' :studyList='studyList'/>
-        <ProjectSelect :getAssemblyList='getRegionList' :projectName.sync='adaptoAssemblyForm.projectName' :projectList='projectsList' />
-        <AssemblySelect :assemblyList='locusNameList' :assemblyName.sync='adaptoAssemblyForm.locusName' />
+        <Select
+          :name.sync='adaptoAssemblyForm.studyName'
+          :list='studyList'
+          :getList='getProjectsList'
+          label='Study' />
+        <Select
+          :name.sync='adaptoAssemblyForm.projectName'
+          :list='projectsList'
+          :getList='getRegionList'
+          label='Project'
+          ref="projectSelect" />
+        <Select
+          :name.sync='adaptoAssemblyForm.locusName'
+          :list='locusNameList'
+          label='Assembly'
+          ref="regionSelect" />
       </el-row>
       <el-form :model="adaptoAssemblyForm" label-position="top" :rules="rules" ref="adaptoAssemblyForm">
         <el-row :gutter="20" class="mb-30">
@@ -24,6 +37,12 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-row :gutter="20" v-if="$store.state.debug">
+        <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
+          <p class="text-xl text-black">Debug</p>
+          <pre>{{ sendData }}</pre>
+        </el-col>
+      </el-row>
     </div>
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
@@ -37,6 +56,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase, AdaptoAssembly } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
+import ProjectSelect from '../../shared/Select.vue'
 
 @Component({ name: 'CreateAdaptoAssembly' })
 
@@ -64,13 +84,19 @@ export default class CreateAdaptoAssembly extends Vue {
   }
 
   $refs!: {
-    adaptoAssemblyForm: HTMLFormElement
+    adaptoAssemblyForm: HTMLFormElement,
+    projectSelect: HTMLFormElement,
+    regionSelect: HTMLFormElement
+  }
+
+  get sendData () {
+    return this.adaptoAssemblyForm
   }
 
   /* submit Modal data */
   save () {
     this.$refs['adaptoAssemblyForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.adaptoAssemblyForm })
+      if (valid) this.$emit('save', { data: this.sendData })
       else return false
     })
   }
@@ -79,7 +105,11 @@ export default class CreateAdaptoAssembly extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => { this.studyList = res.data.rows; this.$emit('loadOff') })
+      .then((res: any) => {
+        this.studyList = []
+        res.data.rows.map((item: any) => this.studyList.push(item.name))
+        this.$emit('loadOff')
+      })
   }
 
   /* Get list of projects */
@@ -87,10 +117,11 @@ export default class CreateAdaptoAssembly extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.adaptoAssemblyForm.studyName })
       .then((res: any) => {
-        this.adaptoAssemblyForm.projectName = ''
-        this.adaptoAssemblyForm.locusName = ''
-        this.projectsList = res.data.rows
+        this.projectsList = []
         this.locusNameList = []
+        this.$refs.projectSelect.selectForm.name = ''
+        this.$refs.regionSelect.selectForm.name = ''
+        res.data.rows.map((item: any) => this.projectsList.push(item.name))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
@@ -100,7 +131,8 @@ export default class CreateAdaptoAssembly extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/locusRegionRetriever', { study: this.adaptoAssemblyForm.studyName, project: this.adaptoAssemblyForm.projectName })
       .then((res: any) => {
-        this.adaptoAssemblyForm.locusName = ''
+        this.locusNameList = []
+        this.$refs.regionSelect.selectForm.name = ''
         this.locusNameList = res.data.regions
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })

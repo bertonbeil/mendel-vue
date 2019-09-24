@@ -6,9 +6,22 @@
     <!-- Main modal content -->
     <div class="mb-30">
       <el-row :gutter="20" class="mb-30">
-        <StudySelect :getProjectsList='getProjectsList' :studyName.sync='segmentRequest.study' :studyList='studyList' />
-        <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='segmentRequest.project' :projectList='projectsList' />
-        <AssemblySelect :assemblyList='assemblyList' :assemblyName.sync='dnaDesignName' />
+        <Select
+          :name.sync='segmentRequest.study'
+          :list='studyList'
+          :getList='getProjectsList'
+          label='Study' />
+        <Select
+          :name.sync='segmentRequest.project'
+          :list='projectsList'
+          :getList='getAssemblyList'
+          label='Project'
+          ref="projectSelect" />
+        <Select
+          :name.sync='dnaDesignName'
+          :list='assemblyList'
+          label='Assembly'
+          ref="assemblySelect" />
       </el-row>
       <el-form label-position="top">
         <el-row :gutter="20" class="mb-30">
@@ -125,6 +138,12 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-row :gutter="20" v-if="$store.state.debug">
+        <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
+          <p class="text-xl text-black">Debug</p>
+          <pre>{{ sendData }}</pre>
+        </el-col>
+      </el-row>
     </div>
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
@@ -196,6 +215,11 @@ export default class CreateAdaptoSegments extends Vue {
     primers_request: this.primersRequest
   }
 
+  $refs!: {
+    projectSelect: HTMLFormElement,
+    assemblySelect: HTMLFormElement
+  }
+
   @Watch('dnaDesignName')
   onChangeDnaDesignName () {
     this.primersRequest.dnaDesignName = this.dnaDesignName
@@ -207,9 +231,13 @@ export default class CreateAdaptoSegments extends Vue {
     return this.segmentRequest.study !== '' && this.segmentRequest.project !== '' && this.dnaDesignName !== ''
   }
 
+  get sendData () {
+    return this.adaptoSegmentForm
+  }
+
   /* submit Modal data */
   save () {
-    if (this.validate) this.$emit('save', { data: this.adaptoSegmentForm })
+    if (this.validate) this.$emit('save', { data: this.sendData })
   }
 
   uploadBedFile (file: any) {
@@ -223,7 +251,8 @@ export default class CreateAdaptoSegments extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => {
-        this.studyList = res.data.rows
+        this.studyList = []
+        res.data.rows.map((item: any) => this.studyList.push(item.name))
         this.$emit('loadOff')
       })
   }
@@ -233,10 +262,11 @@ export default class CreateAdaptoSegments extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.segmentRequest.study })
       .then((res: any) => {
-        this.segmentRequest.project = ''
-        this.dnaDesignName = ''
-        this.projectsList = res.data.rows
+        this.projectsList = []
         this.assemblyList = []
+        this.$refs.projectSelect.selectForm.name = ''
+        this.$refs.assemblySelect.selectForm.name = ''
+        res.data.rows.map((item: any) => this.projectsList.push(item.name))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
@@ -246,7 +276,8 @@ export default class CreateAdaptoSegments extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectAssemblyList', { study: this.segmentRequest.study, project: this.segmentRequest.project })
       .then((res: any) => {
-        this.dnaDesignName = ''
+        this.assemblyList = []
+        this.$refs.assemblySelect.selectForm.name = ''
         res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })

@@ -5,10 +5,13 @@
   <!-- Main nav -->
   <el-submenu v-for="(topMenu, menuIndex) in defineMenu" :key="menuIndex" :index="topMenu.menuTitle">
     <template v-if="topMenu.menuTitle" slot="title">{{ topMenu.menuTitle }}</template>
+    <el-menu-item v-if="topMenu.menuTitle === user.id">
+      <el-checkbox v-model="debug" @change="toggleDebugMode">Debug</el-checkbox>
+    </el-menu-item>
     <!--  -->
     <template v-for="menu in topMenu.items">
       <el-menu-item
-        v-if="!(menu.submenuTitle && menu.items)" :key="menu.component" :index="menu.component" @click="select(menu)" >{{ menu.title }}</el-menu-item>
+        v-if="!(menu.submenuTitle && menu.items)" :key="menu.component" :index="menu.component" @click="select(menu)">{{ menu.title }}</el-menu-item>
       <el-submenu v-else :index="menu.submenuTitle" :key="menu.submenuTitle">
         <template v-if="menu.submenuTitle" slot="title">{{ menu.submenuTitle }}</template>
         <!--  -->
@@ -18,19 +21,19 @@
       </el-submenu>
     </template>
   </el-submenu>
-
 </el-menu>
 </template>
+
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { MainMenu, DialogBase } from '@/utils/interfaces'
-@Component({
-  name: 'MainHeader'
-})
+import { httpService } from '@/services/http.service'
+
+@Component({ name: 'MainHeader' })
+
 export default class MainHeader extends Vue {
-  select (menuItem: DialogBase) {
-    this.$emit('select', menuItem)
-  }
+  user: any = {}
+  debug: boolean = true
 
   defineMenu: MainMenu[] = [
     { menuTitle: 'New',
@@ -100,7 +103,32 @@ export default class MainHeader extends Vue {
         { component: 'OrderBarcodeScanner', title: 'Barcode Scanner' },
         { component: 'OrderQinglanOrders', title: 'Qinglan Orders' }
       ]
+    },
+    { menuTitle: '',
+      items: [
+        { component: 'AccountInfo', title: 'Account info' },
+        { title: 'Logout' }
+      ]
     }
   ]
+
+  @Watch('user')
+  onChangeUser () {
+    this.defineMenu[6].menuTitle = this.user.id
+  }
+
+  select (menuItem: DialogBase) {
+    this.$emit('select', menuItem)
+  }
+
+  toggleDebugMode () {
+    this.$store.state.debug = this.debug
+  }
+
+  created () {
+    return httpService.get('query/whoAmI')
+      .then((res: any) => { this.user = res.data.user })
+      .catch((err: any) => console.log(err))
+  }
 }
 </script>

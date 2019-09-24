@@ -54,6 +54,12 @@
             </el-col>
           </el-row>
         </el-form>
+        <el-row :gutter="20" v-if="$store.state.debug">
+          <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
+            <p class="text-xl text-black">Debug</p>
+            <pre>{{ sendData }}</pre>
+          </el-col>
+        </el-row>
       </div>
       <!-- Modal action buttons -->
       <div slot="footer" class="text-center">
@@ -138,10 +144,14 @@ export default class CreateDeNovoCDS extends Vue {
     return !this.tableData.every((i: any) => i.nickname.length)
   }
 
+  get sendData () {
+    return this.denovoCDSForm
+  }
+
   /* submit Modal data */
   save (next?: string) {
     this.denovoCDSForm.nickname = this.tableData.map((i: any) => i.nickname).join()
-    this.$emit('save', { data: this.denovoCDSForm }, next === 'next' ? this.modalData.saveAndNext : null)
+    this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
   }
 
   /* load Modal data -> Get list of study */

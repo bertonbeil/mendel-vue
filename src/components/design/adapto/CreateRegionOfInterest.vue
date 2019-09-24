@@ -7,8 +7,19 @@
     <div class="mb-30">
       <el-form :model="adaptoRegionOfInterestForm" label-position="top" :rules="rules" ref="adaptoRegionOfInterestForm">
         <el-row :gutter="20" class="mb-30">
-          <StudySelect :getProjectsList='getProjectsList' :studyName.sync='adaptoRegionOfInterestForm.study' :studyList='studyList' />
-          <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='adaptoRegionOfInterestForm.project' :projectList='projectsList' />
+          <!-- <StudySelect :getProjectsList='getProjectsList' :studyName.sync='adaptoRegionOfInterestForm.study' :studyList='studyList' /> -->
+          <!-- <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='adaptoRegionOfInterestForm.project' :projectList='projectsList' /> -->
+          <Select
+              :name.sync='adaptoRegionOfInterestForm.study'
+              :list='studyList'
+              :getList='getProjectsList'
+              label='Study' />
+            <Select
+              :name.sync='adaptoRegionOfInterestForm.project'
+              :list='projectsList'
+              :getList='getAssemblyList'
+              label='Project'
+              ref="projectSelect" />
           <el-col :span="8">
             <el-form-item label="Name:" prop="name">
               <el-input v-model="adaptoRegionOfInterestForm.name"
@@ -84,6 +95,12 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-row :gutter="20" v-if="$store.state.debug">
+        <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
+          <p class="text-xl text-black">Debug</p>
+          <pre>{{ sendData }}</pre>
+        </el-col>
+      </el-row>
     </div>
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
@@ -136,13 +153,18 @@ export default class CreateRegionOfInterest extends Vue {
   }
 
   $refs!: {
-    adaptoRegionOfInterestForm: HTMLFormElement
+    adaptoRegionOfInterestForm: HTMLFormElement,
+    projectSelect: HTMLFormElement
+  }
+
+  get sendData () {
+    return this.adaptoRegionOfInterestForm
   }
 
   /* submit Modal data */
   save (next?: string) {
     this.$refs['adaptoRegionOfInterestForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.adaptoRegionOfInterestForm }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }
@@ -167,7 +189,8 @@ export default class CreateRegionOfInterest extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => {
-        this.studyList = res.data.rows
+        this.studyList = []
+        res.data.rows.map((item: any) => this.studyList.push(item.name))
         this.$emit('loadOff')
       })
   }
@@ -177,10 +200,11 @@ export default class CreateRegionOfInterest extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.adaptoRegionOfInterestForm.study })
       .then((res: any) => {
-        this.adaptoRegionOfInterestForm.project = ''
-        this.adaptoRegionOfInterestForm.name = ''
-        this.projectsList = res.data.rows
+        this.projectsList = []
         this.assemblyList = []
+        this.$refs.projectSelect.selectForm.name = ''
+        this.adaptoRegionOfInterestForm.name = ''
+        res.data.rows.map((item: any) => this.projectsList.push(item.name))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
@@ -190,8 +214,9 @@ export default class CreateRegionOfInterest extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectAssemblyList', { study: this.adaptoRegionOfInterestForm.study, project: this.adaptoRegionOfInterestForm.project })
       .then((res: any) => {
+        this.assemblyList = []
         this.adaptoRegionOfInterestForm.name = ''
-        this.assemblyList = res.data.rows
+        res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }

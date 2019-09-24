@@ -70,6 +70,12 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-row :gutter="20" v-if="$store.state.debug">
+        <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
+          <p class="text-xl text-black">Debug</p>
+          <pre>{{ sendData }}</pre>
+        </el-col>
+      </el-row>
     </div>
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
@@ -107,10 +113,14 @@ export default class CreateStudy extends Vue {
     studyForm: HTMLFormElement
   }
 
+  get sendData () {
+    return { new_study: this.studyForm, collaborators: this.collaborators }
+  }
+
   /* submit Modal data */
   save (next?: string) {
     this.$refs['studyForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: { new_study: this.studyForm, collaborators: this.collaborators } }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }

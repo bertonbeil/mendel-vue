@@ -55,6 +55,12 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-row :gutter="20" v-if="$store.state.debug">
+        <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
+          <p class="text-xl text-black">Debug</p>
+          <pre>{{ sendData }}</pre>
+        </el-col>
+      </el-row>
     </div>
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
@@ -105,9 +111,13 @@ export default class CreateDeNovoPrimers extends Vue {
     return this.denovoPrimersForm.study !== '' && this.denovoPrimersForm.project !== '' && this.denovoPrimersForm.dnaDesignName !== ''
   }
 
+  get sendData () {
+    return this.denovoPrimersForm
+  }
+
   /* submit Modal data */
   save (next?: string) {
-    if (this.validate) this.$emit('save', { data: this.denovoPrimersForm }, next === 'next' ? this.modalData.saveAndNext : null)
+    if (this.validate) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
   }
 
   /* load Modal data -> Get list of study */

@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    debug: false,
     modalDataList: [
       {
         component: 'CreateStudy',
@@ -106,6 +107,11 @@ export default new Vuex.Store({
         dialogCaption: 'Create new Echo file',
         dialogIntro: 'Use this tool to design the Echo file to analyse your assembly using junction primers designed by MenDEL.',
         submitUrl: 'echoDesigner'
+      },
+      {
+        component: 'AccountInfo',
+        dialogCaption: 'Account Information',
+        dialogIntro: 'User Details'
       }
     ]
   },

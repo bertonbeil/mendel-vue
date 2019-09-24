@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row :gutter="20" class="mb-20">
+    <el-row :gutter="20" class="mb-30">
       <el-col :span="24"><p v-html="modalData.dialogIntro" class="mb-8"></p></el-col>
     </el-row>
     <!-- Main modal content -->
@@ -25,6 +25,15 @@
 
           <el-col :span="20">
             <el-table :data="tableData" style="width: 100%" cell-class-name="table-cell">
+              <el-table-column prop="study" label="Study">
+                <template slot-scope="scope">
+                  <el-form-item size="mini">
+                    <el-select v-model="scope.row.study" placeholder="Select study" @change="getProjectsList(scope.$index)">
+                      <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </template>
+              </el-table-column>
               <el-table-column prop="project" label="Project">
                 <template slot-scope="scope">
                   <el-form-item size="mini">
@@ -87,8 +96,8 @@
               <el-table-column prop="step" label="Step">
                 <template slot-scope="scope">
                   <el-form-item size="mini">
-                    <el-select v-model="scope.row.step">
-                      <el-option v-for="item in [1,2,4]" :key="item" :label="item" :value="item"></el-option>
+                    <el-select v-model="scope.row.step" default-first-option @change="changeStep(scope.$index)">
+                      <el-option v-for="item in [ 'None', 1, 2, 4 ]" :key="item" :label="item" :value="item"></el-option>
                     </el-select>
                   </el-form-item>
                 </template>
@@ -105,6 +114,24 @@
         </el-row>
       </el-form>
     </div>
+
+    <!-- Junctions visualizations -->
+    <el-row class="mb-30">
+      <div class="visualizer-echo-file-row" v-for="row in 4" :key="row">
+        <template v-if="tableData[row - 1].name !== ''">
+          <div class="visualizer-echo-file-wrap">
+            <div class="visualizer-echo-file" ref="visualizerEchoFile">
+              <div class='visualizer-echo-file__item' v-for="junction in tableData[row - 1].segments + 1" :key="junction">
+                <span class='echo-segment-index'>{{ junction }}</span>
+                <img class='echo-segment-arrow echo-segment-arrow-disabled' src='~@/assets/img/down-arrow.svg'/>
+              </div>
+              <div class="echo-closet"></div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </el-row>
+
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
@@ -124,6 +151,7 @@ export default class CreateEchoFile extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
   @Prop({ required: true }) isLoading!: boolean
 
+  studyList: object[] = []
   projectsList: object[] = []
   assemblyList: any = []
   primers: string[] = []
@@ -132,6 +160,7 @@ export default class CreateEchoFile extends Vue {
   rowIndex: number = 0
 
   tableData: any = [ {
+    study: '',
     project: '',
     name: '',
     templates: 1,
@@ -141,10 +170,11 @@ export default class CreateEchoFile extends Vue {
     negativeCtrl: true,
     positiveCtrl: true,
     waterCtrl: true,
-    step: 1,
+    step: 'None',
     primersLoc: 'A1',
     assemblyList: []
   }, {
+    study: '',
     project: '',
     name: '',
     templates: 1,
@@ -154,10 +184,11 @@ export default class CreateEchoFile extends Vue {
     negativeCtrl: true,
     positiveCtrl: true,
     waterCtrl: true,
-    step: 1,
+    step: 'None',
     primersLoc: 'A1',
     assemblyList: []
   }, {
+    study: '',
     project: '',
     name: '',
     templates: 1,
@@ -167,10 +198,11 @@ export default class CreateEchoFile extends Vue {
     negativeCtrl: true,
     positiveCtrl: true,
     waterCtrl: true,
-    step: 1,
+    step: 'None',
     primersLoc: 'A1',
     assemblyList: []
   }, {
+    study: '',
     project: '',
     name: '',
     templates: 1,
@@ -180,7 +212,7 @@ export default class CreateEchoFile extends Vue {
     negativeCtrl: true,
     positiveCtrl: true,
     waterCtrl: true,
-    step: 1,
+    step: 'None',
     primersLoc: 'A1',
     assemblyList: []
   } ]
@@ -233,10 +265,21 @@ export default class CreateEchoFile extends Vue {
     })
   }
 
-  /* Get list of projects */
-  getProjectsList () {
+  /* load Modal data -> Get list of study */
+  getStudyList () {
     this.$emit('loadOn')
-    return httpService.get('query/projectNameList')
+    return httpService.get('query/studyNameList')
+      .then((res: any) => {
+        this.studyList = []
+        res.data.rows.map((item: any) => this.studyList.push(item))
+        this.$emit('loadOff')
+      })
+  }
+
+  /* Get list of projects */
+  getProjectsList (index: any) {
+    this.$emit('loadOn')
+    return httpService.post('query/projectNameList', { study: this.tableData[index].study })
       .then((res: any) => {
         this.projectsList = res.data.rows
         this.$emit('loadOff')
@@ -262,10 +305,15 @@ export default class CreateEchoFile extends Vue {
     this.tableData[index].assemblyList.map((item: any) => {
       if (item.assembly === this.tableData[index].name) this.tableData[index].segments = item.segments
     })
+    console.log(this.tableData[index].segments)
+  }
+
+  changeStep (index: any) {
+    console.log(index)
   }
 
   created () {
-    this.getProjectsList()
+    this.getStudyList()
   }
 }
 </script>

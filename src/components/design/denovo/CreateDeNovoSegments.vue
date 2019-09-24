@@ -109,6 +109,12 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-row :gutter="20" v-if="$store.state.debug">
+        <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
+          <p class="text-xl text-black">Debug</p>
+          <pre>{{ sendData }}</pre>
+        </el-col>
+      </el-row>
     </div>
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
@@ -166,6 +172,10 @@ export default class CreateDeNovoSegments extends Vue {
     denovoSegmentForm: HTMLFormElement
   }
 
+  get sendData () {
+    return this.denovoSegmentForm
+  }
+
   @Watch('assemblyVector', { deep: true })
   onChangeYeastMarker () {
     this.denovoSegmentForm.assemblyVectorName = `${this.assemblyVector.yeastMarker},${this.assemblyVector.bacterialCopy}`
@@ -174,7 +184,7 @@ export default class CreateDeNovoSegments extends Vue {
   /* submit Modal data */
   save (next?: string) {
     this.$refs['denovoSegmentForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.denovoSegmentForm }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }

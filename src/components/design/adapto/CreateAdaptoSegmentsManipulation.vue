@@ -5,9 +5,22 @@
       <el-row :gutter="20">
         <el-col :span="18">
           <el-row :gutter="20" class="mb-30">
-            <StudySelect :getProjectsList='getProjectsList' :studyName.sync='adaptoSegmentsManipulationForm.studyName' :studyList='studyList' />
-            <ProjectSelect :getAssemblyList='getRegionList' :projectName.sync='adaptoSegmentsManipulationForm.projectName' :projectList='projectsList' />
-            <AssemblySelect :assemblyList='assemblyList' :assemblyName.sync='adaptoSegmentsManipulationForm.assemblyName' />
+            <Select
+              :name.sync='adaptoSegmentsManipulationForm.studyName'
+              :list='studyList'
+              :getList='getProjectsList'
+              label='Study' />
+            <Select
+              :name.sync='adaptoSegmentsManipulationForm.projectName'
+              :list='projectsList'
+              :getList='getRegionList'
+              label='Project'
+              ref="projectSelect" />
+            <Select
+              :name.sync='adaptoSegmentsManipulationForm.assemblyName'
+              :list='assemblyList'
+              label='Assembly'
+              ref="assemblySelect" />
           </el-row>
         </el-col>
         <el-col :span="6">
@@ -57,7 +70,9 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   }
 
   $refs!: {
-    adaptoSegmentsManipulationForm: HTMLFormElement
+    adaptoSegmentsManipulationForm: HTMLFormElement,
+    projectSelect: HTMLFormElement,
+    assemblySelect: HTMLFormElement
   }
 
   /* submit Modal data */
@@ -73,7 +88,8 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => {
-        this.studyList = res.data.rows
+        this.studyList = []
+        res.data.rows.map((item: any) => this.studyList.push(item.name))
         this.$emit('loadOff')
       })
   }
@@ -83,10 +99,12 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.adaptoSegmentsManipulationForm.studyName })
       .then((res: any) => {
-        this.adaptoSegmentsManipulationForm.projectName = ''
-        this.adaptoSegmentsManipulationForm.assemblyName = ''
-        this.projectsList = res.data.rows
+        this.projectsList = []
         this.assemblyList = []
+        this.$refs.projectSelect.selectForm.name = ''
+        this.$refs.assemblySelect.selectForm.name = ''
+        this.adaptoSegmentsManipulationForm.action = ''
+        res.data.rows.map((item: any) => this.projectsList.push(item.name))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
@@ -96,7 +114,9 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/locusRegionRetriever', { study: this.adaptoSegmentsManipulationForm.studyName, project: this.adaptoSegmentsManipulationForm.projectName })
       .then((res: any) => {
-        this.adaptoSegmentsManipulationForm.assemblyName = ''
+        this.assemblyList = []
+        this.$refs.assemblySelect.selectForm.name = ''
+        this.adaptoSegmentsManipulationForm.action = ''
         this.assemblyList = res.data.regions
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
