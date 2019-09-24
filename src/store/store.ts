@@ -1,11 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { httpService } from '@/services/http.service'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     debugMode: false,
+    user: {
+      id: '',
+      role: ''
+    },
     modalDataList: [
       {
         component: 'CreateStudy',
@@ -119,12 +124,24 @@ export default new Vuex.Store({
   mutations: {
     set_debugMode (state, value) {
       state.debugMode = value
+    },
+
+    set_user (state, value) {
+      state.user = value
     }
   },
 
   actions: {
     toggleDebugMode ({ commit, state }) {
       commit('set_debugMode', !state.debugMode)
+    },
+
+    getUserInfo ({ commit }) {
+      httpService.get('query/whoAmI')
+        .then((res: any) => {
+          commit('set_user', res.data.user)
+        })
+        .catch((err: any) => { throw new Error(err) })
     }
   }
 })

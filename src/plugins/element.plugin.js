@@ -7,6 +7,9 @@ import {
   Container,
   Col,
   Dialog,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
   Form,
   FormItem,
   Input,
@@ -23,6 +26,7 @@ import {
   RadioGroup,
   Submenu,
   Select,
+  Switch,
   Table,
   TableColumn,
   Tooltip,
@@ -40,6 +44,9 @@ Vue.use(Checkbox)
 Vue.use(Container)
 Vue.use(Col)
 Vue.use(Dialog)
+Vue.use(Dropdown)
+Vue.use(DropdownMenu)
+Vue.use(DropdownItem)
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Input)
@@ -55,6 +62,7 @@ Vue.use(Radio)
 Vue.use(RadioGroup)
 Vue.use(Submenu)
 Vue.use(Select)
+Vue.use(Switch)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Tooltip)

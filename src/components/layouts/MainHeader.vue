@@ -1,13 +1,10 @@
 <template>
-<el-menu text-color="#000" class="el-menu-demo" mode="horizontal">
-  <el-menu-item>Mendel@ISG</el-menu-item>
+<el-menu text-color="#000" class="el-menu-demo px-20" mode="horizontal">
+  <el-menu-item class="pl-0">Mendel@ISG</el-menu-item>
 
   <!-- Main nav -->
   <el-submenu v-for="(topMenu, menuIndex) in defineMenu" :key="menuIndex" :index="topMenu.menuTitle">
     <template v-if="topMenu.menuTitle" slot="title">{{ topMenu.menuTitle }}</template>
-    <el-menu-item v-if="topMenu.menuTitle === user.id" @click="$store.dispatch('toggleDebugMode')">
-      <el-checkbox :value="debugMode">Debug</el-checkbox>
-    </el-menu-item>
     <!--  -->
     <template v-for="menu in topMenu.items">
       <el-menu-item
@@ -21,6 +18,26 @@
       </el-submenu>
     </template>
   </el-submenu>
+
+  <el-dropdown
+    v-if="userInfo.id !== ''"
+    :hide-on-click="false"
+    placement="bottom-end"
+    class="float-right py-10">
+    <span class="el-dropdown-link">
+      <span class="inline-flex items-center justify-center w-40 h-40 rounded-full bg-grey mr-10">
+        <i class="el-icon-user"></i>
+      </span>
+      {{ userInfo.id }}
+      <i class="el-icon-arrow-down el-icon--right"></i>
+    </span>
+    <el-dropdown-menu slot="dropdown">
+      <el-dropdown-item v-if="user.role = 'admin'">Debug mode <el-switch class="ml-15" @click.native="$store.dispatch('toggleDebugMode')" :value="debugMode"></el-switch> </el-dropdown-item>
+      <el-dropdown-item disabled>User Info</el-dropdown-item>
+      <el-dropdown-item divided>Log Out</el-dropdown-item>
+    </el-dropdown-menu>
+  </el-dropdown>
+
 </el-menu>
 </template>
 
@@ -102,17 +119,15 @@ export default class MainHeader extends Vue {
         { component: 'OrderBarcodeScanner', title: 'Barcode Scanner' },
         { component: 'OrderQinglanOrders', title: 'Qinglan Orders' }
       ]
-    },
-    { menuTitle: '',
-      items: [
-        { component: 'AccountInfo', title: 'Account info' },
-        { title: 'Logout' }
-      ]
     }
   ]
 
   get debugMode () {
     return this.$store.state.debugMode
+  }
+
+  get userInfo () {
+    return this.$store.state.user
   }
 
   @Watch('user')
@@ -129,9 +144,7 @@ export default class MainHeader extends Vue {
   }
 
   created () {
-    return httpService.get('query/whoAmI')
-      .then((res: any) => { this.user = res.data.user })
-      .catch((err: any) => console.log(err))
+    this.$store.dispatch('getUserInfo')
   }
 }
 </script>

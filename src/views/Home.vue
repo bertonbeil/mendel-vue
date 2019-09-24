@@ -11,18 +11,26 @@
       :before-close="handleClose"
       custom-class="lims-dialog mb-0"
       top="60px"
-      width="100%"
-      ref="rootDialog">
+      width="100%">
         <component
           :title.sync="tempModalData.dialogCaption"
           :is="tempModalData.component"
           :modalData="tempModalData"
           :isLoading.sync="isLoading"
+          ref="modalRef"
           @loadOn="showLoader"
           @loadOff="isLoading.close()"
           @save="onSave"
           @close="handleClose">
         </component>
+
+      <el-row :gutter="20" v-if="this.$store.state.debugMode && this.$refs.modalRef && this.$refs.modalRef.sendData">
+        <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
+          <p class="text-xl text-black">Debug</p>
+
+          <pre>{{ $refs.modalRef.sendData }}</pre>
+        </el-col>
+      </el-row>
     </el-dialog>
   </div>
 </template>
@@ -52,6 +60,14 @@ export default class Home extends Vue {
     showClose: false,
     closeOnClickModal: false,
     closeOnPressEscape: false
+  }
+
+  $refs!: {
+    modalRef: any
+  }
+
+  get debugMode () {
+    return this.$store.state.debugMode
   }
 
   /* open root Modal with passed prop */
