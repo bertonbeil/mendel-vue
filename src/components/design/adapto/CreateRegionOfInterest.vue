@@ -74,23 +74,23 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="Length (bp):" prop="length">
-              <el-input-number placeholder="200000" class="w-full" disabled></el-input-number>
+              <el-input-number v-model="lengthBp" class="w-full" disabled></el-input-number>
               <p class="text-grey-dark -mt-5 ml-5 break-normal">This is the default length for a single entered coordinate view. Edit for a custom length, or enter a range in the coordinate field for custom coordinate endpoints.</p>
             </el-form-item>
           </el-col>
 
-          <GenomeBrowser :iframeSrc='iframeSrc' v-if="showBrowser" />
+          <GenomeBrowser :iframeSrc='iframeSrc' v-if="showBrowser" class="my-30" />
 
           <el-col :span="24" v-if="showBrowser" class="flex justify-between">
             <div>
-              <el-button type="info" icon="el-icon-minus" circle @click="adaptoRegionOfInterestForm.openPos -= openPosValue" size="mini"></el-button>
-              <el-input-number controls-position="right" v-model="openPosValue" class="mx-10" size="mini"></el-input-number>
-              <el-button type="info" icon="el-icon-plus" circle @click="adaptoRegionOfInterestForm.openPos += openPosValue" size="mini"></el-button>
+              <el-button type="info" icon="el-icon-minus" circle @click="changePosValue('openPos', false)" size="mini"></el-button>
+              <el-input-number controls-position="right" v-model="posValue" class="mx-10" size="mini"></el-input-number>
+              <el-button type="info" icon="el-icon-plus" circle @click="changePosValue('openPos', true)" size="mini"></el-button>
             </div>
             <div>
-              <el-button type="info" icon="el-icon-minus" circle @click="adaptoRegionOfInterestForm.closePos -= closePosValue" size="mini"></el-button>
-              <el-input-number controls-position="right" v-model="closePosValue" class="mx-10" size="mini"></el-input-number>
-              <el-button type="info" icon="el-icon-plus" circle @click="adaptoRegionOfInterestForm.closePos += closePosValue" size="mini"></el-button>
+              <el-button type="info" icon="el-icon-minus" circle @click="changePosValue('closePos', false)" size="mini"></el-button>
+              <el-input-number controls-position="right" v-model="posValue" class="mx-10" size="mini"></el-input-number>
+              <el-button type="info" icon="el-icon-plus" circle @click="changePosValue('closePos', true)" size="mini"></el-button>
             </div>
           </el-col>
         </el-row>
@@ -99,6 +99,30 @@
         <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
           <p class="text-xl text-black">Debug</p>
           <pre>{{ sendData }}</pre>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24" class="mb-30">
+          <h4 class="text-xl text-black mt-3">Paste sequence:</h4>
+          <p class="break-normal mb-30">Define the genome and location of your locus of interest, or provide the sequence as text or a fasta file.</p>
+          <el-input
+            placeholder="Alternatively you can paste the locus sequence in fasta format…"
+            v-model="textarea"
+            type="textarea"
+            resize="none"
+            :rows="4">
+          </el-input>
+        </el-col>
+        <el-col :span="24">
+          <h4 class="text-xl text-black mt-3">Upload fasta:</h4>
+          <el-upload
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :file-list="fileList" class="mt-10"
+            :on-change="uploadFastaFile"
+            multiple="false"
+            accept=".fa,.fasta">
+            <el-button size="mini" type="primary">Click to upload</el-button>
+          </el-upload>
         </el-col>
       </el-row>
     </div>
@@ -128,8 +152,10 @@ export default class CreateRegionOfInterest extends Vue {
   assemblyList: string[] = []
   organismList: string[] = []
   chromosomeList: string[] = []
-  openPosValue: number = 5000
-  closePosValue: number = 5000
+  posValue: number = 5000
+  textarea: string = ''
+  fileList: object[] = []
+  mask: any
 
   adaptoRegionOfInterestForm: AdaptoRegionOfInterest = {
     study: '',
@@ -138,8 +164,8 @@ export default class CreateRegionOfInterest extends Vue {
     description: '',
     organism: '',
     chromosome: '',
-    openPos: 1000000,
-    closePos: 15000000,
+    openPos: 0,
+    closePos: 0,
     length: 200000
   }
 
@@ -161,14 +187,6 @@ export default class CreateRegionOfInterest extends Vue {
     return this.adaptoRegionOfInterestForm
   }
 
-  /* submit Modal data */
-  save (next?: string) {
-    this.$refs['adaptoRegionOfInterestForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
-      else return false
-    })
-  }
-
   get showBrowser () {
     return Object.values(this.adaptoRegionOfInterestForm).every((item: any) => { return item !== '' })
   }
@@ -182,6 +200,30 @@ export default class CreateRegionOfInterest extends Vue {
 
   get iframeSrc () {
     return `https://genome.ucsc.edu/cgi-bin/hgTracks?db=${this.organism}&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position=${this.adaptoRegionOfInterestForm.chromosome}%3A${this.adaptoRegionOfInterestForm.openPos}-${this.adaptoRegionOfInterestForm.closePos}&hgsid=728161491_DuUswQ4Qb8YNKSSnYWajK4db9HsW`
+  }
+
+  get lengthBp () {
+    let form = this.adaptoRegionOfInterestForm
+    return form.closePos - form.openPos
+  }
+
+  /* submit Modal data */
+  save (next?: string) {
+    this.$refs['adaptoRegionOfInterestForm'].validate((valid: boolean) => {
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+      else return false
+    })
+  }
+
+  changePosValue (pos: any, isAdd: boolean) {
+    let form = this.adaptoRegionOfInterestForm
+    isAdd ? form[pos] += this.posValue : form[pos] -= this.posValue
+  }
+
+  uploadFastaFile (file: any) {
+    const fileReader = new FileReader()
+    fileReader.readAsText(file.raw)
+    fileReader.onload = (e: any) => { this.mask = e.target.result }
   }
 
   /* load Modal data -> Get list of study */
