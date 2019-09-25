@@ -83,14 +83,14 @@
 
           <el-col :span="24" v-if="showBrowser" class="flex justify-between">
             <div>
-              <el-button type="info" icon="el-icon-minus" circle @click="changePosValue('openPos', false)" size="mini"></el-button>
+              <el-button type="info" icon="el-icon-minus" circle @click="adaptoRegionOfInterestForm.openPos -= posValue" size="mini"></el-button>
               <el-input-number controls-position="right" v-model="posValue" class="mx-10" size="mini"></el-input-number>
-              <el-button type="info" icon="el-icon-plus" circle @click="changePosValue('openPos', true)" size="mini"></el-button>
+              <el-button type="info" icon="el-icon-plus" circle @click="adaptoRegionOfInterestForm.openPos += posValue" size="mini"></el-button>
             </div>
             <div>
-              <el-button type="info" icon="el-icon-minus" circle @click="changePosValue('closePos', false)" size="mini"></el-button>
+              <el-button type="info" icon="el-icon-minus" circle @click="adaptoRegionOfInterestForm.closePos -= posValue" size="mini"></el-button>
               <el-input-number controls-position="right" v-model="posValue" class="mx-10" size="mini"></el-input-number>
-              <el-button type="info" icon="el-icon-plus" circle @click="changePosValue('closePos', true)" size="mini"></el-button>
+              <el-button type="info" icon="el-icon-plus" circle @click="adaptoRegionOfInterestForm.closePos += posValue" size="mini"></el-button>
             </div>
           </el-col>
         </el-row>
@@ -213,11 +213,6 @@ export default class CreateRegionOfInterest extends Vue {
       if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
-  }
-
-  changePosValue (pos: any, isAdd: boolean) {
-    let form = this.adaptoRegionOfInterestForm
-    isAdd ? form[pos] += this.posValue : form[pos] -= this.posValue
   }
 
   uploadFastaFile (file: any) {
