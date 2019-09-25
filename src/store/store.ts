@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    debugMode: false,
+    debugMode: true,
     user: {
       id: '',
       role: ''

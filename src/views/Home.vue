@@ -25,7 +25,7 @@
         </component>
 
       <el-row :gutter="20" v-if="this.$store.state.debugMode && this.$refs.modalRef && this.$refs.modalRef.sendData">
-        <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
+        <el-col :span="24" class="p-10 my-30 border-t-2 border-b-2 border-solid border-grey">
           <p class="text-xl text-black">Debug</p>
 
           <pre>{{ $refs.modalRef.sendData }}</pre>

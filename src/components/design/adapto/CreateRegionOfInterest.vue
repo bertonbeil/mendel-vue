@@ -95,12 +95,7 @@
           </el-col>
         </el-row>
       </el-form>
-      <el-row :gutter="20" v-if="$store.state.debug">
-        <el-col :span="24" class="p-10 mb-30 border-t-2 border-b-2 border-solid border-grey">
-          <p class="text-xl text-black">Debug</p>
-          <pre>{{ sendData }}</pre>
-        </el-col>
-      </el-row>
+
       <el-row>
         <el-col :span="24" class="mb-30">
           <h4 class="text-xl text-black mt-3">Paste sequence:</h4>
@@ -119,7 +114,6 @@
             action="https://jsonplaceholder.typicode.com/posts/"
             :file-list="fileList" class="mt-10"
             :on-change="uploadFastaFile"
-            multiple="false"
             accept=".fa,.fasta">
             <el-button size="mini" type="primary">Click to upload</el-button>
           </el-upload>
@@ -155,7 +149,6 @@ export default class CreateRegionOfInterest extends Vue {
   posValue: number = 5000
   textarea: string = ''
   fileList: object[] = []
-  mask: any
 
   adaptoRegionOfInterestForm: AdaptoRegionOfInterest = {
     study: '',
@@ -218,7 +211,7 @@ export default class CreateRegionOfInterest extends Vue {
   uploadFastaFile (file: any) {
     const fileReader = new FileReader()
     fileReader.readAsText(file.raw)
-    fileReader.onload = (e: any) => { this.mask = e.target.result }
+    fileReader.onload = (e: any) => { this.textarea = e.target.result }
   }
 
   /* load Modal data -> Get list of study */

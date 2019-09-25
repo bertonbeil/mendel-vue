@@ -254,6 +254,10 @@ export default class CreateEchoFile extends Vue {
     this.echoCalcRows.map((item: any) => { this.totalWellsUsed += item.wellsUsed })
   }
 
+  get sendData () {
+    return { ...this.echoFileForm, assemblies: this.assemblies, primers: this.primers }
+  }
+
   save () {
     this.assemblies = this.tableData.filter((item: any) => item.name !== '')
     this.assemblies.map((item: any) => { delete item.assemblyList; delete item.project; delete item.primersLoc })

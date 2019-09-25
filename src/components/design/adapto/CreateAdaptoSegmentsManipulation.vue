@@ -75,6 +75,10 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     assemblySelect: HTMLFormElement
   }
 
+  get sendData () {
+    return { ...this.adaptoSegmentsManipulationForm }
+  }
+
   /* submit Modal data */
   save () {
     this.$refs['adaptoSegmentsManipulationForm'].validate((valid: boolean) => {
