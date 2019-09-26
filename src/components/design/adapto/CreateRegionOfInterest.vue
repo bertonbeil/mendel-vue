@@ -7,19 +7,20 @@
     <div class="mb-30">
       <el-form :model="adaptoRegionOfInterestForm" label-position="top" :rules="rules" ref="adaptoRegionOfInterestForm">
         <el-row :gutter="20" class="mb-30">
-          <!-- <StudySelect :getProjectsList='getProjectsList' :studyName.sync='adaptoRegionOfInterestForm.study' :studyList='studyList' /> -->
-          <!-- <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='adaptoRegionOfInterestForm.project' :projectList='projectsList' /> -->
-          <Select
-              :name.sync='adaptoRegionOfInterestForm.study'
-              :list='studyList'
-              :getList='getProjectsList'
-              label='Study' />
-            <Select
-              :name.sync='adaptoRegionOfInterestForm.project'
-              :list='projectsList'
-              :getList='getAssemblyList'
-              label='Project'
-              ref="projectSelect" />
+          <el-col :span="8">
+            <el-form-item label="Study name:" prop="studyName">
+              <el-select v-model="adaptoRegionOfInterestForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+                <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Project name:" prop="projectName">
+              <el-select v-model="adaptoRegionOfInterestForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+                <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item label="Name:" prop="name">
               <el-input v-model="adaptoRegionOfInterestForm.name"
@@ -43,14 +44,14 @@
 
           <el-col :span="4">
             <el-form-item label="Organism:" prop="organism">
-              <el-select v-model="adaptoRegionOfInterestForm.organism" @change="getChromosomeList" placeholder="Select organism" class="w-full">
+              <el-select v-model="source.organism" @change="getChromosomeList" placeholder="Select organism" class="w-full">
                 <el-option v-for="item in organismList" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="4">
             <el-form-item label="Chromosome:" prop="chromosome">
-              <el-select v-model="adaptoRegionOfInterestForm.chromosome" placeholder="Select chromosome" class="w-full">
+              <el-select v-model="source.chromosome" placeholder="Select chromosome" class="w-full">
                 <el-option v-for="item in chromosomeList" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
@@ -58,13 +59,13 @@
           <el-col :span="8">
             <el-row>
               <el-col :span="12">
-                <el-form-item label="Open position:" prop="openPos">
-                  <el-input-number v-model="adaptoRegionOfInterestForm.openPos" class="mr-20"></el-input-number>
+                <el-form-item label="Open position:" prop="openPosition">
+                  <el-input-number v-model="source.openPosition" class="mr-20"></el-input-number>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="Close position:" prop="closePos">
-                  <el-input-number v-model="adaptoRegionOfInterestForm.closePos"></el-input-number>
+                <el-form-item label="Close position:" prop="closePosition">
+                  <el-input-number v-model="source.closePosition"></el-input-number>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
@@ -83,14 +84,14 @@
 
           <el-col :span="24" v-if="showBrowser" class="flex justify-between">
             <div>
-              <el-button type="info" icon="el-icon-minus" circle @click="adaptoRegionOfInterestForm.openPos -= posValue" size="mini"></el-button>
+              <el-button type="info" icon="el-icon-minus" circle @click="source.openPosition -= posValue" size="mini"></el-button>
               <el-input-number controls-position="right" v-model="posValue" class="mx-10" size="mini"></el-input-number>
-              <el-button type="info" icon="el-icon-plus" circle @click="adaptoRegionOfInterestForm.openPos += posValue" size="mini"></el-button>
+              <el-button type="info" icon="el-icon-plus" circle @click="source.openPosition += posValue" size="mini"></el-button>
             </div>
             <div>
-              <el-button type="info" icon="el-icon-minus" circle @click="adaptoRegionOfInterestForm.closePos -= posValue" size="mini"></el-button>
+              <el-button type="info" icon="el-icon-minus" circle @click="source.closePosition -= posValue" size="mini"></el-button>
               <el-input-number controls-position="right" v-model="posValue" class="mx-10" size="mini"></el-input-number>
-              <el-button type="info" icon="el-icon-plus" circle @click="adaptoRegionOfInterestForm.closePos += posValue" size="mini"></el-button>
+              <el-button type="info" icon="el-icon-plus" circle @click="source.closePosition += posValue" size="mini"></el-button>
             </div>
           </el-col>
         </el-row>
@@ -102,7 +103,7 @@
           <p class="break-normal mb-30">Define the genome and location of your locus of interest, or provide the sequence as text or a fasta file.</p>
           <el-input
             placeholder="Alternatively you can paste the locus sequence in fasta format…"
-            v-model="textarea"
+            v-model="source.sequence"
             type="textarea"
             resize="none"
             :rows="4">
@@ -147,33 +148,38 @@ export default class CreateRegionOfInterest extends Vue {
   organismList: string[] = []
   chromosomeList: string[] = []
   posValue: number = 5000
-  textarea: string = ''
   fileList: object[] = []
-
-  adaptoRegionOfInterestForm: AdaptoRegionOfInterest = {
-    study: '',
-    project: '',
-    name: '',
-    description: '',
+  source: any = {
     organism: '',
     chromosome: '',
-    openPos: 0,
-    closePos: 0,
-    length: 200000
+    openPosition: 0,
+    closePosition: 0,
+    leftPadding: 0,
+    rightPadding: 0,
+    sequence: ''
+  }
+
+  adaptoRegionOfInterestForm: AdaptoRegionOfInterest = {
+    studyName: '',
+    projectName: '',
+    name: '',
+    description: '',
+    source: this.source
   }
 
   rules: object = {
+    studyName: [ { required: true } ],
+    projectName: [ { required: true } ],
     name: [ { required: true } ],
-    description: [ { required: true } ],
-    organism: [ { required: true } ],
-    chromosome: [ { required: true } ],
-    openPos: [ { required: true } ],
-    closePos: [ { required: true } ]
+    description: [ { required: true } ]
+    // organism: [ { required: true } ],
+    // chromosome: [ { required: true } ],
+    // openPosition: [ { required: true } ],
+    // closePosition: [ { required: true } ]
   }
 
   $refs!: {
-    adaptoRegionOfInterestForm: HTMLFormElement,
-    projectSelect: HTMLFormElement
+    adaptoRegionOfInterestForm: HTMLFormElement
   }
 
   get sendData () {
@@ -185,25 +191,25 @@ export default class CreateRegionOfInterest extends Vue {
   }
 
   get organism () {
-    return this.adaptoRegionOfInterestForm.organism === 'human' ? 'hg38'
-      : this.adaptoRegionOfInterestForm.organism === 'rat' ? 'rn6'
-        : this.adaptoRegionOfInterestForm.organism === 'mouse' ? 'mm10'
-          : this.adaptoRegionOfInterestForm.organism === 'drosophila' ? 'dm6' : null
+    return this.source.organism === 'human' ? 'hg38'
+      : this.source.organism === 'rat' ? 'rn6'
+        : this.source.organism === 'mouse' ? 'mm10'
+          : this.source.organism === 'drosophila' ? 'dm6' : null
   }
 
   get iframeSrc () {
-    return `https://genome.ucsc.edu/cgi-bin/hgTracks?db=${this.organism}&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position=${this.adaptoRegionOfInterestForm.chromosome}%3A${this.adaptoRegionOfInterestForm.openPos}-${this.adaptoRegionOfInterestForm.closePos}&hgsid=728161491_DuUswQ4Qb8YNKSSnYWajK4db9HsW`
+    return `https://genome.ucsc.edu/cgi-bin/hgTracks?db=${this.organism}&lastVirtModeType=default&lastVirtModeExtraState=&virtModeType=default&virtMode=0&nonVirtPosition=&position=${this.source.chromosome}%3A${this.source.openPosition}-${this.source.closePosition}&hgsid=728161491_DuUswQ4Qb8YNKSSnYWajK4db9HsW`
   }
 
   get lengthBp () {
-    let form = this.adaptoRegionOfInterestForm
-    return form.closePos - form.openPos
+    return this.source.closePosition - this.source.openPosition
   }
 
   /* submit Modal data */
   save (next?: string) {
+    console.log(next)
     this.$refs['adaptoRegionOfInterestForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }
@@ -211,7 +217,7 @@ export default class CreateRegionOfInterest extends Vue {
   uploadFastaFile (file: any) {
     const fileReader = new FileReader()
     fileReader.readAsText(file.raw)
-    fileReader.onload = (e: any) => { this.textarea = e.target.result }
+    fileReader.onload = (e: any) => { this.source.sequence = e.target.result }
   }
 
   /* load Modal data -> Get list of study */
@@ -228,11 +234,10 @@ export default class CreateRegionOfInterest extends Vue {
   /* Get list of projects */
   getProjectsList () {
     this.$emit('loadOn')
-    return httpService.post('query/projectNameList', { study: this.adaptoRegionOfInterestForm.study })
+    return httpService.post('query/projectNameList', { study: this.adaptoRegionOfInterestForm.studyName })
       .then((res: any) => {
         this.projectsList = []
         this.assemblyList = []
-        this.$refs.projectSelect.selectForm.name = ''
         this.adaptoRegionOfInterestForm.name = ''
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
         this.$emit('loadOff')
@@ -242,7 +247,7 @@ export default class CreateRegionOfInterest extends Vue {
   /* Get list of assemblies */
   getAssemblyList () {
     this.$emit('loadOn')
-    return httpService.post('query/projectAssemblyList', { study: this.adaptoRegionOfInterestForm.study, project: this.adaptoRegionOfInterestForm.project })
+    return httpService.post('query/projectAssemblyList', { study: this.adaptoRegionOfInterestForm.studyName, project: this.adaptoRegionOfInterestForm.projectName })
       .then((res: any) => {
         this.assemblyList = []
         this.adaptoRegionOfInterestForm.name = ''
@@ -262,7 +267,7 @@ export default class CreateRegionOfInterest extends Vue {
 
   getChromosomeList () {
     this.$emit('loadOn')
-    return httpService.post('query/adaptoUtils', { request: 'chromosomeList', organism: this.adaptoRegionOfInterestForm.organism })
+    return httpService.post('query/adaptoUtils', { request: 'chromosomeList', organism: this.source.organism })
       .then((res: any) => {
         this.chromosomeList = res.data.lims_response
         this.$emit('loadOff')
@@ -271,6 +276,13 @@ export default class CreateRegionOfInterest extends Vue {
 
   created () {
     this.getStudyList()
+      .then(() => {
+        if (this.modalData.hasOwnProperty('saveAndNextData')) {
+          this.adaptoRegionOfInterestForm.studyName = JSON.parse(this.modalData.saveAndNextData).study
+          this.adaptoRegionOfInterestForm.projectName = JSON.parse(this.modalData.saveAndNextData).name
+          this.getProjectsList()
+        }
+      })
   }
 }
 </script>

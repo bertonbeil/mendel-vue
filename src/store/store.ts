@@ -65,7 +65,9 @@ export default new Vuex.Store({
         component: 'CreateRegionOfInterest',
         title: 'Region of Interest',
         dialogCaption: 'Region of Interest',
-        dialogIntro: 'Here you can define the locus of interest that you will be building with your adapto assembly. You can specify a genome and chromosome position or paste/upload the desired locus sequence below.'
+        dialogIntro: 'Here you can define the locus of interest that you will be building with your adapto assembly. You can specify a genome and chromosome position or paste/upload the desired locus sequence below.',
+        submitUrl: 'locusRegionDesigner',
+        saveAndNext: 'CreateAdaptoAssembly'
       },
       {
         component: 'CreateAdaptoAssembly',

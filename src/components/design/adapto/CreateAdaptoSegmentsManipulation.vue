@@ -3,35 +3,40 @@
     <!-- Main modal content -->
     <div class="mb-30">
       <el-row :gutter="20">
-        <el-col :span="18">
-          <el-row :gutter="20" class="mb-30">
-            <Select
-              :name.sync='adaptoSegmentsManipulationForm.studyName'
-              :list='studyList'
-              :getList='getProjectsList'
-              label='Study' />
-            <Select
-              :name.sync='adaptoSegmentsManipulationForm.projectName'
-              :list='projectsList'
-              :getList='getRegionList'
-              label='Project'
-              ref="projectSelect" />
-            <Select
-              :name.sync='adaptoSegmentsManipulationForm.assemblyName'
-              :list='assemblyList'
-              label='Assembly'
-              ref="assemblySelect" />
-          </el-row>
-        </el-col>
-        <el-col :span="6">
           <el-form :model="adaptoSegmentsManipulationForm" label-position="top" :rules="rules" ref="adaptoSegmentsManipulationForm">
-            <el-form-item label="Action:" prop="action">
-              <el-select v-model="adaptoSegmentsManipulationForm.action" placeholder="Select region" class="w-full">
-                <el-option v-for="item in actionList" :key="item" :label="item" :value="item"></el-option>
-              </el-select>
-            </el-form-item>
+            <el-row :gutter="20" class="mb-30">
+              <el-col :span="8">
+                <el-form-item label="Study name:" prop="studyName">
+                  <el-select v-model="adaptoSegmentsManipulationForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+                    <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Project name:" prop="projectName">
+                  <el-select v-model="adaptoSegmentsManipulationForm.projectName" @change="getRegionList" placeholder="Select project" class="w-full">
+                    <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Assembly name:" prop="assemblyName">
+                  <el-select v-model="adaptoSegmentsManipulationForm.assemblyName" placeholder="Select assembly" class="w-full">
+                    <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20" class="mb-30">
+              <el-col :span="8">
+                <el-form-item label="Action:" prop="action">
+                  <el-select v-model="adaptoSegmentsManipulationForm.action" placeholder="Select region" class="w-full">
+                    <el-option v-for="item in actionList" :key="item" :label="item" :value="item"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
-        </el-col>
       </el-row>
     </div>
     <!-- Modal action buttons -->
@@ -66,13 +71,14 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   }
 
   rules: object = {
+    studyName: [ { required: true } ],
+    projectName: [ { required: true } ],
+    assemblyName: [ { required: true } ],
     action: [ { required: true } ]
   }
 
   $refs!: {
-    adaptoSegmentsManipulationForm: HTMLFormElement,
-    projectSelect: HTMLFormElement,
-    assemblySelect: HTMLFormElement
+    adaptoSegmentsManipulationForm: HTMLFormElement
   }
 
   get sendData () {
@@ -105,8 +111,8 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
       .then((res: any) => {
         this.projectsList = []
         this.assemblyList = []
-        this.$refs.projectSelect.selectForm.name = ''
-        this.$refs.assemblySelect.selectForm.name = ''
+        this.adaptoSegmentsManipulationForm.projectName = ''
+        this.adaptoSegmentsManipulationForm.assemblyName = ''
         this.adaptoSegmentsManipulationForm.action = ''
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
         this.$emit('loadOff')
@@ -119,7 +125,7 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     return httpService.post('query/locusRegionRetriever', { study: this.adaptoSegmentsManipulationForm.studyName, project: this.adaptoSegmentsManipulationForm.projectName })
       .then((res: any) => {
         this.assemblyList = []
-        this.$refs.assemblySelect.selectForm.name = ''
+        this.adaptoSegmentsManipulationForm.assemblyName = ''
         this.adaptoSegmentsManipulationForm.action = ''
         this.assemblyList = res.data.regions
         this.$emit('loadOff')

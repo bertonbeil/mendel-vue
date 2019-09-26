@@ -140,9 +140,9 @@ export default class ExportAssemblies extends Vue {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.exportAssemblyForm.study = this.modalData.saveAndNextData.study
-          this.exportAssemblyForm.project = this.modalData.saveAndNextData.project
-          this.exportAssemblyForm.assemblyName = this.modalData.saveAndNextData.dnaDesignName
+          this.exportAssemblyForm.study = JSON.parse(this.modalData.saveAndNextData).studyName
+          this.exportAssemblyForm.project = JSON.parse(this.modalData.saveAndNextData).projectName
+          this.exportAssemblyForm.assemblyName = JSON.parse(this.modalData.saveAndNextData).dnaDesignName
         }
       })
   }

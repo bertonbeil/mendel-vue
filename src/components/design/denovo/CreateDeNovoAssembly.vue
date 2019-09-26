@@ -7,8 +7,20 @@
     <div class="mb-30">
       <el-form :model="denovoAssemblyForm" label-position="top" :rules="rules" ref="denovoAssemblyForm">
         <el-row :gutter="20" class="mb-30">
-          <StudySelect :getProjectsList='getProjectsList' :studyName.sync='denovoAssemblyForm.studyName' :studyList='studyList' />
-          <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='denovoAssemblyForm.projectName' :projectList='projectsList' />
+          <el-col :span="8">
+            <el-form-item label="Study name:" prop="studyName">
+              <el-select v-model="denovoAssemblyForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+                <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Project name:" prop="projectName">
+              <el-select v-model="denovoAssemblyForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+                <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="name">
               <el-select v-model="denovoAssemblyForm.name"
@@ -188,6 +200,8 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   rules: object = {
+    studyName: [ { required: true } ],
+    projectName: [ { required: true } ],
     name: [ { required: true } ],
     openReValue: [ { required: true } ],
     closeReValue: [ { required: true } ],
@@ -197,6 +211,7 @@ export default class CreateDeNovoAssembly extends Vue {
   $refs!: {
     denovoAssemblyForm: HTMLFormElement
     visualizer: HTMLFormElement
+    projectSelect: HTMLFormElement
   }
 
   get showAssemblyTable () {
@@ -214,7 +229,7 @@ export default class CreateDeNovoAssembly extends Vue {
         httpService.post('query/assemblyNameChecker', { name: this.denovoAssemblyForm.name })
           .then((res: any) => {
             if (res.data.valid === 'true') {
-              this.$emit('save', { data: this.sendData }, next === 'next'
+              this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next'
                 ? this.modalData.saveAndNext
                 : null)
             } else this.responseMessage()
@@ -226,7 +241,12 @@ export default class CreateDeNovoAssembly extends Vue {
   /* load Modal data -> Get list of study */
   getStudyList () {
     this.$emit('loadOn')
-    return httpService.get('query/studyNameList').then((res: any) => { this.studyList = res.data.rows })
+    return httpService.get('query/studyNameList')
+      .then((res: any) => {
+        this.studyList = []
+        res.data.rows.map((item: any) => this.studyList.push(item.name))
+        this.$emit('loadOff')
+      })
   }
 
   /* Get list of projects */
@@ -234,20 +254,23 @@ export default class CreateDeNovoAssembly extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoAssemblyForm.studyName })
       .then((res: any) => {
-        this.projectsList = res.data.rows
+        this.projectsList = []
         this.assemblyList = []
+        this.denovoAssemblyForm.name = ''
+        res.data.rows.map((item: any) => this.projectsList.push(item.name))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
 
   getAssemblyList () {
     if (this.isSaveAndNext === false) this.$emit('loadOn')
-    return httpService.post('query/projectAssemblyList', { study: this.denovoAssemblyForm.studyName, project: this.denovoAssemblyForm.projectName })
-      .then((res: any) => {
-        this.assemblyList = res.data.rows
-        this.$emit('loadOff')
-      })
-      .catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    return httpService.post('query/projectAssemblyList', {
+      study: this.denovoAssemblyForm.studyName,
+      project: this.denovoAssemblyForm.projectName
+    }).then((res: any) => {
+      this.assemblyList = res.data.rows
+      this.$emit('loadOff')
+    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
 
   assemblyNameChecker () {
@@ -318,29 +341,28 @@ export default class CreateDeNovoAssembly extends Vue {
     return httpService.get('query/terminatorNameList').then((res: any) => { this.terminators = res.data.rows })
   }
 
-  /* load Modal data -> Get all lists */
-  getData () {
-    return Promise.all([
-      this.getStudyList(),
-      this.getRestrictionEnzymeList(),
-      this.getVegasAdapterNameList(),
-      this.getPromoters(),
-      this.getTerminators()
-    ]).then(() => this.$emit('loadOff'))
-  }
-
   /* response viewer */
   responseMessage () {
     this.$confirm(`Assembly name ${this.denovoAssemblyForm.name} has been used before. Please specify new name`, 'Error', { type: 'error', center: true })
   }
 
   created () {
-    this.getData().then(() => {
+    /* load Modal data -> Get all lists */
+    return Promise.all([
+      this.getStudyList(),
+      this.getRestrictionEnzymeList(),
+      this.getVegasAdapterNameList(),
+      this.getPromoters(),
+      this.getTerminators()
+    ]).then(() => {
       if (this.modalData.hasOwnProperty('saveAndNextData')) {
         this.isSaveAndNext = true
-        this.denovoAssemblyForm.studyName = this.modalData.saveAndNextData.study
-        this.denovoAssemblyForm.projectName = this.modalData.saveAndNextData.project
+        this.denovoAssemblyForm.studyName = JSON.parse(this.modalData.saveAndNextData).study
+        this.denovoAssemblyForm.projectName = JSON.parse(this.modalData.saveAndNextData).project
+        this.getProjectsList()
+        this.getAssemblyList()
       }
+      this.$emit('loadOff')
     })
   }
 }

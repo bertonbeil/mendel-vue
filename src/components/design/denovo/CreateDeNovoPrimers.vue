@@ -5,12 +5,31 @@
     </el-row>
     <!-- Main modal content -->
     <div class="mb-30">
-      <el-row :gutter="20">
-        <StudySelect :getProjectsList='getProjectsList' :studyName.sync='denovoPrimersForm.study' :studyList='studyList' />
-        <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='denovoPrimersForm.project' :projectList='projectsList' />
-        <AssemblySelect :assemblyList='assemblyList' :assemblyName.sync='denovoPrimersForm.dnaDesignName' />
-      </el-row>
-      <el-form label-position="top">
+      <el-form :model="denovoPrimersForm" label-position="top" :rules="rules" ref="denovoPrimersForm">
+        <el-row :gutter="20" class="mb-30">
+          <el-col :span="8">
+            <el-form-item label="Study name:" prop="studyName">
+              <el-select v-model="denovoPrimersForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+                <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Project name:" prop="projectName">
+              <el-select v-model="denovoPrimersForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+                <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Assembly name:" prop="dnaDesignName">
+              <el-select v-model="denovoPrimersForm.dnaDesignName" placeholder="Select assembly" class="w-full">
+                <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-row :gutter="20" class="mb-30">
           <el-col :span="24" class="mb-30">
             <h4 class="text-xl text-black mt-3">Primer parameters:</h4>
@@ -81,8 +100,9 @@ export default class CreateDeNovoPrimers extends Vue {
   assemblyList: string[] = []
 
   denovoPrimersForm: DenovoPrimers = {
-    study: '',
-    project: '',
+    studyName: '',
+    projectName: '',
+    primers: '',
     dnaDesignName: '',
     minLength: 18,
     maxLength: 30,
@@ -97,12 +117,17 @@ export default class CreateDeNovoPrimers extends Vue {
     dimerLength: 5,
     hairpinLength: 5,
     tailMinDistance: 200,
-    well: 'A1',
-    primers: ''
+    well: 'A1'
   }
 
-  get validate () {
-    return this.denovoPrimersForm.study !== '' && this.denovoPrimersForm.project !== '' && this.denovoPrimersForm.dnaDesignName !== ''
+  rules: object = {
+    studyName: [ { required: true } ],
+    projectName: [ { required: true } ],
+    dnaDesignName: [ { required: true } ]
+  }
+
+  $refs!: {
+    denovoPrimersForm: HTMLFormElement
   }
 
   get sendData () {
@@ -111,7 +136,10 @@ export default class CreateDeNovoPrimers extends Vue {
 
   /* submit Modal data */
   save (next?: string) {
-    if (this.validate) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+    this.$refs['denovoPrimersForm'].validate((valid: boolean) => {
+      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+      else return false
+    })
   }
 
   /* load Modal data -> Get list of study */
@@ -119,7 +147,8 @@ export default class CreateDeNovoPrimers extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => {
-        this.studyList = res.data.rows
+        this.studyList = []
+        res.data.rows.map((item: any) => this.studyList.push(item.name))
         this.$emit('loadOff')
       })
   }
@@ -127,12 +156,13 @@ export default class CreateDeNovoPrimers extends Vue {
   /* Get list of projects */
   getProjectsList () {
     this.$emit('loadOn')
-    return httpService.post('query/projectNameList', { study: this.denovoPrimersForm.study })
+    return httpService.post('query/projectNameList', { study: this.denovoPrimersForm.studyName })
       .then((res: any) => {
-        this.denovoPrimersForm.project = ''
-        this.denovoPrimersForm.dnaDesignName = ''
-        this.projectsList = res.data.rows
+        this.projectsList = []
         this.assemblyList = []
+        this.denovoPrimersForm.projectName = ''
+        this.denovoPrimersForm.dnaDesignName = ''
+        res.data.rows.map((item: any) => this.projectsList.push(item.name))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
@@ -140,7 +170,7 @@ export default class CreateDeNovoPrimers extends Vue {
   /* Get list of assemblies */
   getAssemblyList () {
     this.$emit('loadOn')
-    return httpService.post('query/projectAssemblyList', { study: this.denovoPrimersForm.study, project: this.denovoPrimersForm.project })
+    return httpService.post('query/projectAssemblyList', { study: this.denovoPrimersForm.studyName, project: this.denovoPrimersForm.projectName })
       .then((res: any) => {
         this.denovoPrimersForm.dnaDesignName = ''
         res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))

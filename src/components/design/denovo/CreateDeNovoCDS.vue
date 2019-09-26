@@ -92,6 +92,7 @@ import { DialogBase, DenovoCDS } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 import { capitalize } from '@/utils/helpers'
 import { alertMixin } from '@/utils/mixins'
+import { Study } from '../../../utils/interfaces'
 
 @Component({
   name: 'CreateDeNovoCDS',
@@ -145,7 +146,7 @@ export default class CreateDeNovoCDS extends Vue {
   /* submit Modal data */
   save (next?: string) {
     this.denovoCDSForm.nickname = this.tableData.map((i: any) => i.nickname).join()
-    this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+    this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
   }
 
   /* load Modal data -> Get list of study */
@@ -171,7 +172,7 @@ export default class CreateDeNovoCDS extends Vue {
   getCDSTable () {
     this.$refs['denovoCDSForm'].validate((valid: boolean) => {
       if (valid) {
-        return httpService.post('query/bioPartDesigner', this.denovoCDSForm)
+        return httpService.post('query/bioPartDesigner', JSON.stringify(this.denovoCDSForm))
           .then((res: any) => {
             const { lims_response, status } = res.data
             if (status === 'success') {
@@ -198,8 +199,8 @@ export default class CreateDeNovoCDS extends Vue {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.denovoCDSForm.study = this.modalData.saveAndNextData.study
-          this.denovoCDSForm.project = this.modalData.saveAndNextData.name
+          this.denovoCDSForm.study = JSON.parse(this.modalData.saveAndNextData).study
+          this.denovoCDSForm.project = JSON.parse(this.modalData.saveAndNextData).name
           this.getProjectsList()
         }
       })

@@ -81,14 +81,16 @@ export default class Home extends Vue {
     this.showLoader()
     httpService.post(`query/${this.tempModalData.submitUrl}`, modalData.data)
       .then((res: any) => {
-        if (res.data.status === 'error') this.responseMessage(res.data)
-
-        if (to) {
-          this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: modalData.data }
-          this.isLoading.close()
-        } else {
+        if (res.data.status === 'error') {
           this.responseMessage(res.data)
-          this.isLoading.close()
+        } else {
+          if (to) {
+            this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: modalData.data }
+            this.isLoading.close()
+          } else {
+            this.responseMessage(res.data)
+            this.isLoading.close()
+          }
         }
       }).catch((err: any) => { this.isLoading = false; console.log(err) })
   }

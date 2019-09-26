@@ -94,8 +94,10 @@ export default class CreateProject extends Vue {
   /* submit Modal data */
   save (next?: string) {
     this.$refs['projectForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
-      else return false
+      if (valid) {
+        this.modalData.saveAndNext = this.projectType === 'adapto' ? 'CreateRegionOfInterest' : 'CreateDeNovoCDS'
+        this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+      } else return false
     })
   }
 
@@ -112,7 +114,9 @@ export default class CreateProject extends Vue {
   created () {
     this.getStudyList()
       .then(() => {
-        if (this.modalData.hasOwnProperty('saveAndNextData')) this.projectForm.study = this.modalData.saveAndNextData.new_study.name
+        if (this.modalData.hasOwnProperty('saveAndNextData')) {
+          this.projectForm.study = JSON.parse(this.modalData.saveAndNextData).new_study.name
+        }
       })
   }
 }

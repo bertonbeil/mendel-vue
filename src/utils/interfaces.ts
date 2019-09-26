@@ -58,8 +58,8 @@ export interface DenovoAssembly {
 }
 
 export interface DenovoSegment {
-  study?: string
-  project?: string
+  studyName?: string
+  projectName?: string
   dnaDesignName?: string
   assemblyVectorName?: string
   maxLen?: number
@@ -75,8 +75,9 @@ export interface DenovoSegment {
 }
 
 export interface DenovoPrimers {
-  study?: string
-  project?: string
+  studyName?: string
+  projectName?: string
+  primers?: string
   dnaDesignName?: string
   minLength?: number
   maxLength?: number
@@ -92,19 +93,19 @@ export interface DenovoPrimers {
   hairpinLength?: number
   tailMinDistance?: number
   well?: string
-  primers?: string
 }
 
 export interface AdaptoRegionOfInterest {
-  study?: string,
-  project?: string,
+  studyName?: string,
+  projectName?: string,
   name?: string,
   description?: string,
   organism?: string,
   chromosome?: string,
   openPos?: number,
   closePos?: number,
-  length?: number
+  length?: number,
+  source?: object
 }
 
 export interface AdaptoAssembly {
@@ -116,8 +117,8 @@ export interface AdaptoAssembly {
 }
 
 export interface AdaptoSegmentRequest {
-  study?: string
-  project?: string
+  studyName?: string
+  projectName?: string
   assemblyVectorName?: string
   dnaDesignName?: string
   assembly?: string
@@ -129,6 +130,8 @@ export interface AdaptoSegmentRequest {
   maxOverlap?: number
   optOverlap?: number
   sequences?: string
+  firstSegmentIdx?: number
+  lastSegmentIdx?: number
 }
 
 export interface AdaptoSegmentsManipulation {
@@ -159,10 +162,10 @@ export interface AdaptoPrimersRequest {
 }
 
 export interface AdaptoPrimers {
-  study?: string
-  project?: string
-  dnaDesignName?: string
+  studyName?: string
+  projectName?: string
   primers?: string
+  dnaDesignName?: string
   minLength?: number
   maxLength?: number
   minTemperature?: number

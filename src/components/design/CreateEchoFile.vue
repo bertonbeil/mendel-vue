@@ -262,9 +262,8 @@ export default class CreateEchoFile extends Vue {
     this.assemblies = this.tableData.filter((item: any) => item.name !== '')
     this.assemblies.map((item: any) => { delete item.assemblyList; delete item.project; delete item.primersLoc })
     this.assemblies.map((item: any) => this.primers.push({ location: item.primersLoc } as any))
-    // console.log({ ...this.echoFileForm, assemblies: this.assemblies, primers: this.primers })
     this.$refs['echoFileForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: { ...this.echoFileForm, assemblies: this.assemblies, primers: this.primers } })
+      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
       else return false
     })
   }

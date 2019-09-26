@@ -7,8 +7,20 @@
     <div class="mb-30">
       <el-form :model="denovoSegmentForm" label-position="top" :rules="rules" ref="denovoSegmentForm">
         <el-row :gutter="20" class="mb-30">
-          <StudySelect :getProjectsList='getProjectsList' :studyName.sync='denovoSegmentForm.study' :studyList='studyList' />
-          <ProjectSelect :getAssemblyList='getAssemblyList' :projectName.sync='denovoSegmentForm.project' :projectList='projectsList' />
+          <el-col :span="8">
+            <el-form-item label="Study name:" prop="studyName">
+              <el-select v-model="denovoSegmentForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+                <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Project name:" prop="projectName">
+              <el-select v-model="denovoSegmentForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+                <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="dnaDesignName">
               <el-select v-model="denovoSegmentForm.dnaDesignName"
@@ -138,10 +150,11 @@ export default class CreateDeNovoSegments extends Vue {
   type: string = ''
   assemblyVector: any = { yeastMarker: 'URA3', bacterialCopy: 'pUC' }
   assemblyLength: number = 0
+  isSaveAndNext: boolean = false
 
   denovoSegmentForm: DenovoSegment = {
-    study: '',
-    project: '',
+    studyName: '',
+    projectName: '',
     dnaDesignName: '',
     assemblyVectorName: `${this.assemblyVector.yeastMarker},${this.assemblyVector.bacterialCopy}`,
     maxLen: 5000,
@@ -157,6 +170,8 @@ export default class CreateDeNovoSegments extends Vue {
   }
 
   rules: object = {
+    studyName: [ { required: true } ],
+    projectName: [ { required: true } ],
     dnaDesignName: [ { required: true } ],
     restrictionEnzyme5: [ { required: true } ],
     restrictionEnzyme3: [ { required: true } ]
@@ -164,6 +179,7 @@ export default class CreateDeNovoSegments extends Vue {
 
   $refs!: {
     denovoSegmentForm: HTMLFormElement
+    projectSelect: HTMLFormElement
   }
 
   get sendData () {
@@ -178,7 +194,7 @@ export default class CreateDeNovoSegments extends Vue {
   /* submit Modal data */
   save (next?: string) {
     this.$refs['denovoSegmentForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }
@@ -188,7 +204,8 @@ export default class CreateDeNovoSegments extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => {
-        this.studyList = res.data.rows
+        this.studyList = []
+        res.data.rows.map((item: any) => this.studyList.push(item.name))
         this.$emit('loadOff')
       })
   }
@@ -196,30 +213,30 @@ export default class CreateDeNovoSegments extends Vue {
   /* Get list of projects */
   getProjectsList () {
     this.$emit('loadOn')
-    return httpService.post('query/projectNameList', { study: this.denovoSegmentForm.study })
+    return httpService.post('query/projectNameList', { study: this.denovoSegmentForm.studyName })
       .then((res: any) => {
-        this.denovoSegmentForm.project = ''
-        this.denovoSegmentForm.dnaDesignName = ''
-        this.projectsList = res.data.rows
+        this.projectsList = []
         this.assemblyList = []
+        res.data.rows.map((item: any) => this.projectsList.push(item.name))
         this.$emit('loadOff')
       }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
 
   /* Get list of assemblies */
   getAssemblyList () {
-    this.$emit('loadOn')
-    return httpService.post('query/projectAssemblyList', { study: this.denovoSegmentForm.study, project: this.denovoSegmentForm.project })
-      .then((res: any) => {
-        this.denovoSegmentForm.dnaDesignName = ''
-        this.assemblyList = res.data.rows
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    if (this.isSaveAndNext === false) this.$emit('loadOn')
+    return httpService.post('query/projectAssemblyList', {
+      study: this.denovoSegmentForm.studyName,
+      project: this.denovoSegmentForm.projectName
+    }).then((res: any) => {
+      this.assemblyList = res.data.rows
+      this.$emit('loadOff')
+    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
 
   latestDnaDesign () {
     this.$emit('loadOn')
-    return httpService.get('query/latestDnaDesign', { study: this.denovoSegmentForm.study, project: this.denovoSegmentForm.project })
+    return httpService.get('query/latestDnaDesign', { study: this.denovoSegmentForm.studyName, project: this.denovoSegmentForm.projectName })
       .then((res: any) => {
         res.data.rows.filter((i: any) => {
           if (i.name === this.denovoSegmentForm.dnaDesignName) this.assemblyLength = i.value.length
@@ -238,10 +255,15 @@ export default class CreateDeNovoSegments extends Vue {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.denovoSegmentForm.study = this.modalData.saveAndNextData.studyName
-          this.denovoSegmentForm.project = this.modalData.saveAndNextData.projectName
-          this.denovoSegmentForm.dnaDesignName = this.modalData.saveAndNextData.name
+          this.isSaveAndNext = true
+          this.denovoSegmentForm.studyName = JSON.parse(this.modalData.saveAndNextData).studyName
+          this.denovoSegmentForm.projectName = JSON.parse(this.modalData.saveAndNextData).projectName
+          this.denovoSegmentForm.dnaDesignName = JSON.parse(this.modalData.saveAndNextData).name
+          this.getProjectsList()
+          this.getAssemblyList()
+          this.getRestrictionEnzymeList()
         }
+        this.$emit('loadOff')
       })
   }
 }
