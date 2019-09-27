@@ -92,7 +92,8 @@ export default new Vuex.Store({
       {
         component: 'CreateAdaptoSegmentsManipulation',
         title: 'Segments manipulation',
-        dialogCaption: 'Segment manipulation'
+        dialogCaption: 'Segment manipulation',
+        submitUrl: 'adaptoSegmentDesigner'
       },
       {
         component: 'CreateAdaptoPrimers',
