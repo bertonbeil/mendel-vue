@@ -56,6 +56,7 @@ export default class EchoFileRow extends Vue {
   @Prop({ required: true }) rowDataIndex!: number
   @Prop({ required: true }) studyList: any
   @Prop({ required: true }) assemblyList: any
+  @Prop({ required: true }) location!: string
 
   echoRowData = {} as any
   projectsList: object[] = []
@@ -80,7 +81,7 @@ export default class EchoFileRow extends Vue {
     this.echoRowData.name = ''
     this.echoRowData.templates = 1
     this.echoRowData.segments = 0
-    this.echoRowData.location = 'A1'
+    this.echoRowData.location = this.location
     this.echoRowData.step = 'None'
   }
 

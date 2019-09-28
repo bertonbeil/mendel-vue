@@ -1,9 +1,9 @@
 <template>
   <div>
-    <MainHeader @select="onSelect" />
-
+    <!-- <MainHeader @select="onSelect" /> -->
+    <Test :title.sync="title" @custom="logEvent"></Test>
     <!-- Main modal wrapper -->
-    <el-dialog
+    <!-- <el-dialog
       :title="tempModalData.dialogCaption"
       :visible="dialogVisible"
       :close-on-click-modal="false"
@@ -30,7 +30,7 @@
           <pre>{{ $refs.modalRef.sendData }}</pre>
         </el-col>
       </el-row>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -61,12 +61,18 @@ export default class Home extends Vue {
     closeOnPressEscape: false
   }
 
+  title = 'Some awesome title'
+
   $refs!: {
     modalRef: any
   }
 
   get debugMode () {
     return this.$store.state.debugMode
+  }
+
+  logEvent (value: any) {
+    console.log('event value: ', value)
   }
 
   /* open root Modal with passed prop */

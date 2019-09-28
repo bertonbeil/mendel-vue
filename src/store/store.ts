@@ -11,6 +11,8 @@ export default new Vuex.Store({
       id: '',
       role: ''
     },
+    number: 0,
+    framework: 'React',
     modalDataList: [
       {
         component: 'CreateStudy',
@@ -130,6 +132,10 @@ export default new Vuex.Store({
 
     set_user (state, value) {
       state.user = value
+    },
+
+    set_NewNumber (state, value) {
+      state.number = value
     }
   },
 
@@ -144,6 +150,10 @@ export default new Vuex.Store({
           commit('set_user', res.data.user)
         })
         .catch((err: any) => { throw new Error(err) })
+    },
+
+    incrementNumber ({ commit }: any, value: number) {
+      commit('set_NewNumber', value)
     }
   }
 })

@@ -25,8 +25,10 @@
 
           <el-col :span="20">
             <!--  -->
+            {{tableData}}
             <template v-for="(echoRow, index) in tableData">
-              <EchoFileRow :row-data.sync="tableData[index]" :row-data-index="index" :study-list='studyList' :assembly-list="assemblyList" :key="echoRow.location"></EchoFileRow>
+              {{echoRow.location}}
+              <EchoFileRow :row-data.sync="tableData[index]" :row-data-index="index" :study-list='studyList' :assembly-list="assemblyList" :location="echoRow.location" :key="echoRow.location"></EchoFileRow>
             </template>
 
             <!-- <el-table :data="tableData" style="width: 100%" cell-class-name="table-cell">
@@ -320,7 +322,6 @@ export default class CreateEchoFile extends Vue {
       this.getAssemblyList()
     ])
       .finally(() => {
-        console.log('fff')
         this.$emit('loadOff')
       })
   }
