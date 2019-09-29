@@ -207,7 +207,6 @@ export default class CreateRegionOfInterest extends Vue {
 
   /* submit Modal data */
   save (next?: string) {
-    console.log(next)
     this.$refs['adaptoRegionOfInterestForm'].validate((valid: boolean) => {
       if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
