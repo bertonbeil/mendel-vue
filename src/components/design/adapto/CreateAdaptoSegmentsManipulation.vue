@@ -54,12 +54,38 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row :gutter="20" class="mb-30" v-show="adaptoSegmentsManipulationForm.action === 'Replace'">
+              <el-col :span="8">
+                <el-form-item label="New name:">
+                  <el-input v-model="segment_request.newName" placeholder="New name"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
+      </el-row>
+      {{ this.segment_request.customSegments }}
+      <el-row :gutter="20" v-if="adaptoSegmentsManipulationForm.action === 'Replace'">
+        <draggable class="p-3" :list="replaceRows">
+          <div v-for="(replaceRow, index) in replaceRows" :key="index">
+            <el-row>
+              <el-col :span="23">
+                <ReplaceRows
+                  :replace-row.sync="replaceRows[index]"
+                  :studyName='segment_request.studyName'
+                  :projectName='segment_request.projectName'
+                  :typesList='customSegmentTypeList' />
+              </el-col>
+              <el-col :span="1" class="flex justify-center mt-10">
+                <i class="el-icon-more cursor-pointer"></i>
+              </el-col>
+            </el-row>
+          </div>
+        </draggable>
       </el-row>
     </div>
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
-      <el-button type="success" v-if="adaptoSegmentsManipulationForm.action === 'Replace'">Add</el-button>
+      <el-button type="success" v-if="adaptoSegmentsManipulationForm.action === 'Replace'" @click="addRow">Add</el-button>
       <el-button type="warning" v-if="adaptoSegmentsManipulationForm.action === 'Replace'">Delete</el-button>
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
       <el-button type="primary" @click="save">Save</el-button>
@@ -70,6 +96,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { httpService } from '@/services/http.service'
+import ReplaceRows from '../../shared/SegmentManipulation/ReplaceRows.vue'
 import {
   DialogBase,
   AdaptoSegmentsManipulation,
@@ -88,13 +115,39 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   assemblyList: string[] = []
   actionList: string[] = [ 'Delete', 'Swap', 'Replace' ]
   dnaSegmentList: any = []
+  customSegmentTypeList: string[] = []
+  checkedRows: any = []
+
+  replaceRowMock = {
+    study: '',
+    project: '',
+    name: '',
+    value: '',
+    segment_type: '',
+    created_by: '',
+    timestamp: '',
+    description: ''
+  }
+
+  replaceRows: object[] = [{
+    study: '',
+    project: '',
+    name: '',
+    value: '',
+    segment_type: '',
+    created_by: '',
+    timestamp: '',
+    description: ''
+  }]
 
   segment_request: AdaptoSegmentsManipulationSegmentRequest = {
     studyName: '',
     projectName: '',
     dnaDesignName: '',
     firstSegmentIdx: null,
-    lastSegmentIdx: null
+    lastSegmentIdx: null,
+    newName: '',
+    customSegments: []
   }
 
   primers_request: AdaptoSegmentsManipulationPrimersRequest = {
@@ -139,19 +192,19 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     segment_request: HTMLFormElement
   }
 
-  @Watch('segment_request.studyName')
-  onChangeStudyName () {
+  @Watch('segment_request', { deep: true })
+  onChangeSegmentRequest () {
     this.primers_request.studyName = this.segment_request.studyName
-  }
-
-  @Watch('segment_request.projectName')
-  onChangeProjectName () {
     this.primers_request.projectName = this.segment_request.projectName
+    this.primers_request.dnaDesignName = this.segment_request.dnaDesignName
   }
 
-  @Watch('segment_request.dnaDesignName')
-  onChangeDnaDesignName () {
-    this.primers_request.dnaDesignName = this.segment_request.dnaDesignName
+  @Watch('replaceRows', { deep: true })
+  onChangeReplaceRows () {
+    this.segment_request.customSegments = []
+    this.replaceRows.map((item: any) => {
+      this.segment_request.customSegments.push({ sequence: item.value, direction: item.direction })
+    })
   }
 
   get sendData () {
@@ -218,12 +271,33 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     }).then((res: any) => {
       res.data.rows.map((item: any) => this.dnaSegmentList.push(item.segment))
       this.adaptoSegmentsManipulationForm.requestType = `Adapto${$event}SegmentRequest`
+      if (this.adaptoSegmentsManipulationForm.action !== 'Replace') {
+        delete this.segment_request.newName
+        delete this.segment_request.customSegments
+      }
       this.$emit('loadOff')
     }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
   }
 
+  getCustomSegmentTypeList () {
+    return httpService.get('query/customSegmentTypeList')
+      .then((res: any) => {
+        res.data.rows.map((item: any) => this.customSegmentTypeList.push(item.name))
+        this.$emit('loadOff')
+      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+  }
+
+  addRow () {
+    this.replaceRows.push(this.replaceRowMock)
+  }
+
   created () {
     this.getStudyList()
+    this.getCustomSegmentTypeList()
+    if (this.adaptoSegmentsManipulationForm.action !== 'Replace') {
+      delete this.segment_request.newName
+      delete this.segment_request.customSegments
+    }
   }
 }
 </script>

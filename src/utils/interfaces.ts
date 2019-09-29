@@ -146,7 +146,9 @@ export interface AdaptoSegmentsManipulationSegmentRequest {
   projectName?: string,
   dnaDesignName?: string,
   firstSegmentIdx?: number | null,
-  lastSegmentIdx?: number | null
+  lastSegmentIdx?: number | null,
+  newName?: string,
+  customSegments?: any
 }
 
 export interface AdaptoSegmentsManipulationPrimersRequest {
