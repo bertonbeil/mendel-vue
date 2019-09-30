@@ -116,7 +116,6 @@ export default new Vuex.Store({
         dialogIntro: 'This page allows you to import CDS’ designed outside of MenDEL. You will provide the desired DNA sequence of your CDS’, which will not be further recoded.',
         dialogInfo: '<p>One way to distinguish between Studies and Projects is to think of Studies as general focus areas and to think of Projects as questions within that focus area that you would like to answer. Under each Project, you will then be able to create multiple assemblies, which is useful if, say, you want to create multiple versions of the same pathway.</p><br><p>Example: You create a study titled ‘Prototrophic Mammalian Cell Line’ and you create a Project titled ‘Valine biosynthesis’. Within this Project, you are able to create multiple versions of the valine biosynthetic pathway e.g. by swapping out CDSes and regulatory elements.</p>',
         submitUrl: 'bioPartDesigner',
-        saveAndNext: 'ImportCDS'
       },
       {
         component: 'ExportAssembly',

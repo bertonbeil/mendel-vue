@@ -133,7 +133,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="primary" @click="save('next')">Save and import another CDS</el-button>
+      <el-button type="primary" @click="importAnotherCDS">Save and import another CDS</el-button>
       <el-button type="success" @click="save">Save</el-button>
     </div>
   </div>
@@ -143,6 +143,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase, ImportsCDS } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
+import { alertMixin } from '@/utils/mixins'
 
 @Component({ name: 'ImportCDS' })
 
@@ -189,13 +190,31 @@ export default class ImportCDS extends Vue {
   }
 
   /* submit Modal data */
-  save (next?: string) {
+  save () {
+    this.$refs['importCDSForm'].validate((valid: boolean) => {
+      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
+      else return false
+    })
+  }
+
+  /* submit */
+  importAnotherCDS () {
     this.$refs['importCDSForm'].validate((valid: boolean) => {
       if (valid) {
-        this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next'
-          ? (this.$refs['importCDSForm'].resetFields(), this.modalData.saveAndNext)
-          : null)
-      } else return false
+        this.$emit('loadOn')
+        httpService.post('query/bioPartDesigner', JSON.stringify(this.sendData))
+          .then((res: any) => {
+            if (res.data.status === 'success') {
+              (this as any).$message({ message: res.data.lims_response, type: res.data.status })
+              this.$refs['importCDSForm'].resetFields()
+            } else (this as any).alert({ type: res.data.status, msg: res.data.lims_response })
+          })
+          .catch((err: any) => { throw new Error(err) })
+          .finally(() => this.$emit('loadOff'))
+      } else {
+        this.$emit('loadOff')
+        return false
+      }
     })
   }
 
