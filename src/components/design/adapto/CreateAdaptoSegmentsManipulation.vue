@@ -3,88 +3,91 @@
     <!-- Main modal content -->
     <div class="mb-30">
       <el-row :gutter="20">
-          <el-form :model="segment_request" label-position="top" :rules="rules" ref="segment_request">
-            <el-row :gutter="20" class="mb-30">
-              <el-col :span="8">
-                <el-form-item label="Study name:" prop="studyName">
-                  <el-select v-model="segment_request.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
-                    <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="Project name:" prop="projectName">
-                  <el-select
-                    v-model="segment_request.projectName"
-                    @change="getRegionList"
-                    placeholder="Select project"
-                    :disabled="!segment_request.studyName"
-                    class="w-full">
-                    <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="Assembly name:" prop="dnaDesignName">
-                  <el-select
-                    v-model="segment_request.dnaDesignName"
-                    placeholder="Select assembly"
-                    :disabled="!segment_request.projectName"
-                    class="w-full">
-                    <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="20" class="mb-30">
-              <el-col :span="8">
-                <el-form-item label="Action:" prop="action">
-                  <el-select
-                    v-model="adaptoSegmentsManipulationForm.action"
-                    @change="getDnaSegmentList"
-                    placeholder="Select region"
-                    :disabled="!segment_request.dnaDesignName"
-                    class="w-full">
-                    <el-option v-for="item in actionList" :key="item" :label="item" :value="item"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="First:" prop="firstSegmentIdx">
-                  <el-select
-                    v-model="segment_request.firstSegmentIdx"
-                    placeholder="Select segment"
-                    :disabled="!adaptoSegmentsManipulationForm.action"
-                    class="w-full">
-                    <el-option v-for="item in dnaSegmentList" :key="item" :label="item" :value="item"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="Last:" prop="lastSegmentIdx">
-                  <el-select
-                    v-model="segment_request.lastSegmentIdx"
-                    placeholder="Select segment"
-                    :disabled="!segment_request.firstSegmentIdx"
-                    class="w-full">
-                    <el-option v-for="item in dnaSegmentList" :key="item" :label="item" :value="item"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="20" class="mb-30" v-show="adaptoSegmentsManipulationForm.action === 'Replace'">
-              <el-col :span="8">
-                <el-form-item label="New name:">
-                  <el-input v-model="segment_request.newName" placeholder="New name"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
+        <el-form :model="segment_request" label-position="top" :rules="rules" ref="segment_request">
+          <el-row :gutter="20" class="mb-30">
+            <el-col :span="8">
+              <el-form-item label="Study name:" prop="studyName">
+                <el-select v-model="segment_request.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+                  <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="Project name:" prop="projectName">
+                <el-select
+                  v-model="segment_request.projectName"
+                  @change="getRegionList"
+                  placeholder="Select project"
+                  :disabled="!segment_request.studyName"
+                  class="w-full">
+                  <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="Assembly name:" prop="dnaDesignName">
+                <el-select
+                  v-model="segment_request.dnaDesignName"
+                  placeholder="Select assembly"
+                  :disabled="!segment_request.projectName"
+                  class="w-full">
+                  <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20" class="mb-30">
+            <el-col :span="8">
+              <el-form-item label="Action:">
+                <el-select
+                  v-model="adaptoSegmentsManipulationForm.action"
+                  @change="getDnaSegmentList"
+                  placeholder="Select region"
+                  :disabled="!segment_request.dnaDesignName"
+                  class="w-full"
+                  required>
+                  <el-option v-for="item in actionList" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="First:" prop="firstSegmentIdx">
+                <el-select
+                  v-model="segment_request.firstSegmentIdx"
+                  placeholder="Select segment"
+                  :disabled="!adaptoSegmentsManipulationForm.action"
+                  class="w-full">
+                  <el-option v-for="item in dnaSegmentList" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="Last:" prop="lastSegmentIdx">
+                <el-select
+                  v-model="segment_request.lastSegmentIdx"
+                  placeholder="Select segment"
+                  :disabled="!segment_request.firstSegmentIdx"
+                  class="w-full">
+                  <el-option v-for="item in dnaSegmentList" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20" class="mb-30" v-show="isActionReplace">
+            <el-col :span="8">
+              <el-form-item label="New name:">
+                <el-input v-model="segment_request.newName" placeholder="New name"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </el-row>
-      {{ replaceRows }}
-      <el-row :gutter="20" v-if="adaptoSegmentsManipulationForm.action === 'Replace'">
-        <draggable class="p-3" :list="replaceRows">
-          <div v-for="(replaceRow, index) in replaceRows" :key="index">
+
+      <el-row :gutter="20" v-if="isActionReplace">
+        <draggable class="p-3" v-model="replaceRows" handle='.el-icon-more'>
+          <div v-for="(replaceRow, index) in replaceRows" :key="replaceRow.id">
             <el-row>
               <el-col :span="22">
                 <ReplaceRows
@@ -94,7 +97,7 @@
                   :typesList='customSegmentTypeList' />
               </el-col>
               <el-col :span="2" class="flex justify-center">
-                <el-button type="danger" icon="el-icon-delete" circle @click="replaceRows.splice(index, 1)"></el-button>
+                <el-button type="danger" icon="el-icon-delete" circle @click="deleteRow(index)"></el-button>
                 <i class="el-icon-more cursor-pointer"></i>
               </el-col>
             </el-row>
@@ -104,12 +107,7 @@
     </div>
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
-      <el-button
-        type="primary"
-        v-if="adaptoSegmentsManipulationForm.action === 'Replace'"
-        @click="replaceRows.push(replaceRowMock)">
-        Add
-      </el-button>
+      <el-button type="primary" v-if="isActionReplace" @click="addRow">Add</el-button>
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
       <el-button type="success" @click="save">Save</el-button>
     </div>
@@ -137,9 +135,8 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   projectsList: string[] = []
   assemblyList: string[] = []
   actionList: string[] = [ 'Delete', 'Swap', 'Replace' ]
-  dnaSegmentList: any = []
   customSegmentTypeList: string[] = []
-  checkedRows: any = []
+  dnaSegmentList: any = []
 
   replaceRowMock = {
     study: '',
@@ -160,7 +157,8 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     segment_type: '',
     created_by: '',
     timestamp: '',
-    description: ''
+    description: '',
+    id: Date.now()
   }]
 
   segment_request: AdaptoSegmentsManipulationSegmentRequest = {
@@ -206,7 +204,6 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     studyName: [ { required: true } ],
     projectName: [ { required: true } ],
     dnaDesignName: [ { required: true } ],
-    // action: [ { required: true } ],
     firstSegmentIdx: [ { required: true } ],
     lastSegmentIdx: [ { required: true } ]
   }
@@ -231,7 +228,11 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   }
 
   get sendData () {
-    return { ...this.adaptoSegmentsManipulationForm }
+    return this.adaptoSegmentsManipulationForm
+  }
+
+  get isActionReplace () {
+    return this.adaptoSegmentsManipulationForm.action === 'Replace'
   }
 
   /* submit Modal data */
@@ -311,11 +312,11 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   }
 
   addRow () {
-
+    this.replaceRows.push({ ...this.replaceRowMock, id: Date.now() })
   }
 
   deleteRow (index: number) {
-
+    this.replaceRows.splice(index, 1)
   }
 
   created () {

@@ -68,9 +68,7 @@
           </el-col>
           <el-col :span="12" class="mb-30">
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Upload .bed formatted mask file:</h4>
-            <el-upload action="https://jsonplaceholder.typicode.com/posts/" :file-list="fileList" class="mt-10" :on-change="uploadBedFile">
-              <el-button size="mini" type="primary">Click to upload</el-button>
-            </el-upload>
+            <UploadFile @getUploadFile='file => segmentRequest.mask = file' :accept='".bed"'/>
           </el-col>
 
           <el-col :span="24" class="mb-30">
