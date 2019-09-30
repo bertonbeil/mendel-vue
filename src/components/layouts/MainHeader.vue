@@ -81,7 +81,8 @@ export default class MainHeader extends Vue {
       items: [
         { component: 'ImportCDS', title: 'CDS' },
         { component: 'ImportAssembly', title: 'Assembly' },
-        { component: 'ImportSegments', title: 'Segments' }
+        { component: 'ImportSegments', title: 'Segments' },
+        { component: 'CustomParts', title: 'Custom parts' }
       ]
     },
     { menuTitle: 'Export',

@@ -29,7 +29,7 @@
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="CDS description:">
+            <el-form-item label="CDS description:" prop="description">
               <el-input v-model="importCDSForm.description" placeholder="Enter a detailed description of how and why you designed the CDS outside of MenDEL"></el-input>
             </el-form-item>
           </el-col>
@@ -42,7 +42,7 @@
           </el-col>
 
           <el-col :span="6">
-            <el-form-item label="Host Organism:">
+            <el-form-item label="Host Organism:" prop="organism">
               <el-select v-model="importCDSForm.organism" placeholder="Select host organism" class="w-full">
                 <el-option v-for="item in organismsList" :key="item" :label="item" :value="item"></el-option>
               </el-select>
@@ -51,19 +51,21 @@
           </el-col>
 
           <el-col :span="6">
-            <el-form-item label="Source organism:">
-              <el-input v-model="importCDSForm.source" placeholder="Enter a 3 letter code for the source organism"></el-input>
+            <el-form-item label="Source organism:" prop="sourceOrganism">
+              <el-input placeholder="Enter a 3 letter code for the source organism"></el-input>
+              <p class="text-grey-dark break-words">If the protein encoded by the CDS does not exist in nature (i.e. chimeric or fluorescently tagged), use ‘Com’ (for complex). If the sequence does exist in nature, enter the 3-letter code for the organism in which it is found, defined as the first letter of the genus and first two letters of the species (e.g. Homo sapiens = Hsa).</p>
             </el-form-item>
           </el-col>
 
           <el-col :span="6">
-            <el-form-item label="Accession number:">
+            <el-form-item label="Accession number:" prop="accession">
               <el-input v-model="importCDSForm.accession" placeholder="Enter an accession number if there is one"></el-input>
+              <p class="text-grey-dark break-words">If the protein encoded by the CDS does not exist in nature (ie. chimeric or fluorescently tagged protein) enter anything start from "!" and MenDEL will assign a serial number.</p>
             </el-form-item>
           </el-col>
 
           <el-col :span="6">
-            <el-form-item label="Nickname:">
+            <el-form-item label="Nickname:" prop="nickname">
               <el-input v-model="importCDSForm.nickname" placeholder="provide an easily recognizable nickname as defined in the pathway schema"></el-input>
               <p class="text-grey-dark break-words">Nicknames must follow the guidelines in the pathway schema. The nickname will appear in the CDS name, which will be visible during assembly design.</p>
             </el-form-item>
@@ -75,9 +77,7 @@
             <h4 class="text-xl text-black mt-3">Sequence</h4>
             <p>Provide the CDS sequence here. You can either paste the DNA sequence, or upload a fasta file.</p>
           </el-col>
-        </el-row>
 
-        <el-row :gutter="20" class="mb-30">
           <el-col :span="24" class="mb-30">
             <h4 class="text-xl text-black mt-3">Paste DNA sequence:</h4>
             <p class="break-normal mb-30">Define the genome and location of your locus of interest, or provide the sequence as text or a fasta file.</p>
@@ -105,7 +105,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="primary">Save and import another CDS</el-button>
+      <el-button type="primary" @click="save">Save and import another CDS</el-button>
       <el-button type="success" @click="save">Save</el-button>
     </div>
   </div>
@@ -143,7 +143,11 @@ export default class ImportCDS extends Vue {
 
   rules: object = {
     study: [ { required: true } ],
-    project: [ { required: true } ]
+    project: [ { required: true } ],
+    description: [ { required: true } ],
+    organism: [ { required: true } ],
+    accession: [ { required: true } ],
+    nickname: [ { required: true } ]
   }
 
   $refs!: {
