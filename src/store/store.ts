@@ -118,6 +118,14 @@ export default new Vuex.Store({
         submitUrl: 'bioPartDesigner'
       },
       {
+        component: 'ImportAssembly',
+        title: 'Import Assembly',
+        dialogCaption: 'Import Assembly',
+        dialogIntro: 'This page allows you to import a completely designed assembly sequence done outside MenDEL (i.e. in SnapGene or Geneious). If you rather want to design a de novo or adapto assembly, you should carry out the design within MenDEL.',
+        dialogInfo: '<p>Note: The imported sequence will not be modified in any way upon import. For example, terminal restriction sites will not be added. Once imported the sequence will be inserted into the selected assembly vector for segmentation and primer design steps.</p>',
+        submitUrl: 'dnaDesigner'
+      },
+      {
         component: 'ExportAssembly',
         title: 'Assembly',
         dialogCaption: 'Export assembly',

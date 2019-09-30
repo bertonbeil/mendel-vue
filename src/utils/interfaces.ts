@@ -199,6 +199,15 @@ export interface ImportsCDS {
   source?: string
 }
 
+export interface importAssembly {
+  study?: string
+  projectName?: string
+  name?: string,
+  description?: string,
+  pathway?: '',
+  parts?: string,
+}
+
 export interface EchoFile {
   project?: string
   dna_amount?: number
