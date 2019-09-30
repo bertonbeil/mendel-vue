@@ -72,6 +72,7 @@ export interface DenovoSegment {
   homopolymerLen?: number
   homopolymerDistance?: number
   sequences?: string
+  type?: string
 }
 
 export interface DenovoPrimers {
@@ -130,8 +131,8 @@ export interface AdaptoSegmentRequest {
   maxOverlap?: number
   optOverlap?: number
   sequences?: string
-  firstSegmentIdx?: number
-  lastSegmentIdx?: number
+  firstSegmentIdx?: number | null
+  lastSegmentIdx?: number | null
 }
 
 export interface AdaptoSegmentsManipulation {

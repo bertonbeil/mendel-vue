@@ -17,12 +17,12 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="Study name:" prop="name">
-              <el-input v-model="studyForm.name"></el-input>
+              <el-input v-model="studyForm.name" placeholder="Study name"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Study description (optional):">
-              <el-input v-model="studyForm.description"></el-input>
+              <el-input v-model="studyForm.description" placeholder="Enter a brief but memorable description of your study"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -100,7 +100,7 @@ export default class CreateStudy extends Vue {
   }
 
   rules: object = {
-    name: [ { required: true, message: 'Please input Study name', trigger: 'blur' } ]
+    name: [ { required: true, message: 'Study name is required' } ]
   }
 
   $refs!: {
