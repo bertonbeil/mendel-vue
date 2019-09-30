@@ -125,7 +125,7 @@ export default class Home extends Vue {
   /* response viewer */
   responseMessage ({ lims_response, status }: any) {
     (this as any).alert({ type: status, msg: lims_response })
-      .then(() => { this.isLoading.close() })
+      .then(() => { this.isLoading.close(); this.closeModal() })
       .catch(() => { this.isLoading.close(); this.closeModal() })
   }
 }

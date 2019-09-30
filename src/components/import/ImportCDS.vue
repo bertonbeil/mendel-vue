@@ -5,7 +5,7 @@
       <el-col :span="1">
         <el-popover placement="top-start" width="300" trigger="hover">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-          <div v-html="modalData.dialogInfo"></div>
+          <div v-html="modalData.dialogInfo" class="break-word"></div>
         </el-popover>
       </el-col>
     </el-row>
@@ -62,7 +62,7 @@
                 class="w-full">
                 <el-option v-for="item in organismsList" :key="item" :label="item" :value="item"></el-option>
               </el-select>
-              <p class="text-grey-dark break-words">Specify the organism where this CDS will be expressed. Primarily used for naming purposes, the CDS will not be recoded for expression in this organism.</p>
+              <p class="text-grey-dark break-word">Specify the organism where this CDS will be expressed. Primarily used for naming purposes, the CDS will not be recoded for expression in this organism.</p>
             </el-form-item>
           </el-col>
 
@@ -73,7 +73,7 @@
                 placeholder="Enter a 3 letter code for the source organism"
                 :disabled="!importCDSForm.organism">
               </el-input>
-              <p class="text-grey-dark break-words">If the protein encoded by the CDS does not exist in nature (i.e. chimeric or fluorescently tagged), use ‘Com’ (for complex). If the sequence does exist in nature, enter the 3-letter code for the organism in which it is found, defined as the first letter of the genus and first two letters of the species (e.g. Homo sapiens = Hsa).</p>
+              <p class="text-grey-dark break-word">If the protein encoded by the CDS does not exist in nature (i.e. chimeric or fluorescently tagged), use ‘Com’ (for complex). If the sequence does exist in nature, enter the 3-letter code for the organism in which it is found, defined as the first letter of the genus and first two letters of the species (e.g. Homo sapiens = Hsa).</p>
             </el-form-item>
           </el-col>
 
@@ -84,7 +84,7 @@
                 placeholder="Enter an accession number if there is one"
                 :disabled="!importCDSForm.source">
               </el-input>
-              <p class="text-grey-dark break-words">If the protein encoded by the CDS does not exist in nature (ie. chimeric or fluorescently tagged protein) enter anything start from "!" and MenDEL will assign a serial number.</p>
+              <p class="text-grey-dark break-word">If the protein encoded by the CDS does not exist in nature (ie. chimeric or fluorescently tagged protein) enter anything start from "!" and MenDEL will assign a serial number.</p>
             </el-form-item>
           </el-col>
 
@@ -95,7 +95,7 @@
                 placeholder="provide an easily recognizable nickname as defined in the pathway schema"
                 :disabled="!importCDSForm.accession">
               </el-input>
-              <p class="text-grey-dark break-words">Nicknames must follow the guidelines in the pathway schema. The nickname will appear in the CDS name, which will be visible during assembly design.</p>
+              <p class="text-grey-dark break-word">Nicknames must follow the guidelines in the pathway schema. The nickname will appear in the CDS name, which will be visible during assembly design.</p>
             </el-form-item>
           </el-col>
         </el-row>
@@ -133,7 +133,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="primary" @click="save">Save and import another CDS</el-button>
+      <el-button type="primary" @click="importAnotherCDS">Save and import another CDS</el-button>
       <el-button type="success" @click="save">Save</el-button>
     </div>
   </div>
@@ -143,6 +143,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase, ImportsCDS } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
+import { alertMixin } from '@/utils/mixins'
 
 @Component({ name: 'ImportCDS' })
 
@@ -185,16 +186,35 @@ export default class ImportCDS extends Vue {
   }
 
   get sendData () {
-    delete this.importCDSForm.study
-    delete this.importCDSForm.source
     return this.importCDSForm
   }
 
   /* submit Modal data */
-  save (next?: string) {
+  save () {
     this.$refs['importCDSForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
       else return false
+    })
+  }
+
+  /* submit */
+  importAnotherCDS () {
+    this.$refs['importCDSForm'].validate((valid: boolean) => {
+      if (valid) {
+        this.$emit('loadOn')
+        httpService.post('query/bioPartDesigner', JSON.stringify(this.sendData))
+          .then((res: any) => {
+            if (res.data.status === 'success') {
+              (this as any).$message({ message: res.data.lims_response, type: res.data.status })
+              this.$refs['importCDSForm'].resetFields()
+            } else (this as any).alert({ type: res.data.status, msg: res.data.lims_response })
+          })
+          .catch((err: any) => { throw new Error(err) })
+          .finally(() => this.$emit('loadOff'))
+      } else {
+        this.$emit('loadOff')
+        return false
+      }
     })
   }
 

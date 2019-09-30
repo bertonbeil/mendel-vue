@@ -41,7 +41,7 @@
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Assembly vector:
               <el-popover class="absolute top-0 right-0" placement="top-start" width="300" trigger="hover">
                 <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-                <div>Choose the features of your assembly vector. Yeast CEN/ARS is automatically assigned. For assemblies 30kb high copy number bacterial vector is permissible.</div>
+                <div class="break-word">Choose the features of your assembly vector. Yeast CEN/ARS is automatically assigned. For assemblies 30kb high copy number bacterial vector is permissible.</div>
               </el-popover>
             </h4>
             <el-row class="mt-10">
@@ -67,7 +67,7 @@
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Terminal restriction sites for segments:
               <el-popover class="absolute top-0 right-0" placement="top-start" width="300" trigger="hover">
                 <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-                <div>Choose restrictions sites that will flank the segments of your assembly. These RE are non-cutters that should not exist in your assembly (but you will need to check this after finalizing the design).</div>
+                <div class="break-word">Choose restrictions sites that will flank the segments of your assembly. These RE are non-cutters that should not exist in your assembly (but you will need to check this after finalizing the design).</div>
               </el-popover>
             </h4>
             <el-row :gutter="20">
