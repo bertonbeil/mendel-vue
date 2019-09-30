@@ -7,7 +7,7 @@
       <el-col :span="1">
         <el-popover placement="top-start" width="300" trigger="hover">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-          <div v-html="modalData.dialogInfo"></div>
+          <div v-html="modalData.dialogInfo" class="break-word"></div>
         </el-popover>
       </el-col>
     </el-row>
