@@ -15,14 +15,22 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="12">
             <el-form-item label="Study name:" prop="study">
-              <el-select v-model="importCDSForm.study" @change="getProjectsList" placeholder="Select study" class="w-full">
+              <el-select
+                v-model="importCDSForm.study"
+                @change="getProjectsList"
+                placeholder="Select study"
+                class="w-full">
                 <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Project name:" prop="project">
-              <el-select v-model="importCDSForm.project" placeholder="Select project" class="w-full">
+              <el-select
+                v-model="importCDSForm.project"
+                placeholder="Select project"
+                :disabled="!importCDSForm.study"
+                class="w-full">
                 <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
@@ -30,7 +38,11 @@
 
           <el-col :span="24">
             <el-form-item label="CDS description:" prop="description">
-              <el-input v-model="importCDSForm.description" placeholder="Enter a detailed description of how and why you designed the CDS outside of MenDEL"></el-input>
+              <el-input
+                v-model="importCDSForm.description"
+                placeholder="Enter a detailed description of how and why you designed the CDS outside of MenDEL"
+                :disabled="!importCDSForm.project">
+              </el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -43,7 +55,11 @@
 
           <el-col :span="6">
             <el-form-item label="Host Organism:" prop="organism">
-              <el-select v-model="importCDSForm.organism" placeholder="Select host organism" class="w-full">
+              <el-select
+                v-model="importCDSForm.organism"
+                placeholder="Select host organism"
+                :disabled="!importCDSForm.description"
+                class="w-full">
                 <el-option v-for="item in organismsList" :key="item" :label="item" :value="item"></el-option>
               </el-select>
               <p class="text-grey-dark break-words">Specify the organism where this CDS will be expressed. Primarily used for naming purposes, the CDS will not be recoded for expression in this organism.</p>
@@ -51,22 +67,34 @@
           </el-col>
 
           <el-col :span="6">
-            <el-form-item label="Source organism:" prop="sourceOrganism">
-              <el-input placeholder="Enter a 3 letter code for the source organism"></el-input>
+            <el-form-item label="Source organism:" prop="source">
+              <el-input
+                v-model="importCDSForm.source"
+                placeholder="Enter a 3 letter code for the source organism"
+                :disabled="!importCDSForm.organism">
+              </el-input>
               <p class="text-grey-dark break-words">If the protein encoded by the CDS does not exist in nature (i.e. chimeric or fluorescently tagged), use ‘Com’ (for complex). If the sequence does exist in nature, enter the 3-letter code for the organism in which it is found, defined as the first letter of the genus and first two letters of the species (e.g. Homo sapiens = Hsa).</p>
             </el-form-item>
           </el-col>
 
           <el-col :span="6">
             <el-form-item label="Accession number:" prop="accession">
-              <el-input v-model="importCDSForm.accession" placeholder="Enter an accession number if there is one"></el-input>
+              <el-input
+                v-model="importCDSForm.accession"
+                placeholder="Enter an accession number if there is one"
+                :disabled="!importCDSForm.source">
+              </el-input>
               <p class="text-grey-dark break-words">If the protein encoded by the CDS does not exist in nature (ie. chimeric or fluorescently tagged protein) enter anything start from "!" and MenDEL will assign a serial number.</p>
             </el-form-item>
           </el-col>
 
           <el-col :span="6">
             <el-form-item label="Nickname:" prop="nickname">
-              <el-input v-model="importCDSForm.nickname" placeholder="provide an easily recognizable nickname as defined in the pathway schema"></el-input>
+              <el-input
+                v-model="importCDSForm.nickname"
+                placeholder="provide an easily recognizable nickname as defined in the pathway schema"
+                :disabled="!importCDSForm.accession">
+              </el-input>
               <p class="text-grey-dark break-words">Nicknames must follow the guidelines in the pathway schema. The nickname will appear in the CDS name, which will be visible during assembly design.</p>
             </el-form-item>
           </el-col>
@@ -138,7 +166,8 @@ export default class ImportCDS extends Vue {
     nickname: '',
     forbiddenRegions: '',
     excludeRestrictionEnzymes: false,
-    excludeForbiddenRegions: false
+    excludeForbiddenRegions: false,
+    source: ''
   }
 
   rules: object = {
@@ -146,6 +175,7 @@ export default class ImportCDS extends Vue {
     project: [ { required: true } ],
     description: [ { required: true } ],
     organism: [ { required: true } ],
+    source: [ { required: true } ],
     accession: [ { required: true } ],
     nickname: [ { required: true } ]
   }
@@ -155,6 +185,8 @@ export default class ImportCDS extends Vue {
   }
 
   get sendData () {
+    delete this.importCDSForm.study
+    delete this.importCDSForm.source
     return this.importCDSForm
   }
 

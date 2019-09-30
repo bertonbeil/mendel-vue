@@ -195,7 +195,8 @@ export interface ImportsCDS {
   nickname?: string,
   forbiddenRegions?: string,
   excludeRestrictionEnzymes?: boolean,
-  excludeForbiddenRegions?: boolean
+  excludeForbiddenRegions?: boolean,
+  source?: string
 }
 
 export interface EchoFile {
