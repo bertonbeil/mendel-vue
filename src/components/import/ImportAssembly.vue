@@ -7,19 +7,19 @@
       <el-col :span="1">
         <el-popover placement="top-start" width="300" trigger="hover">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-          <div v-html="modalData.dialogInfo"></div>
+          <div v-html="modalData.dialogInfo" class="break-word"></div>
         </el-popover>
       </el-col>
     </el-row>
-    <div class="mb-30">
+    <div>
       <el-form :model="importAssemblyForm" label-position="top" :rules="rules" ref="importAssemblyForm">
-        <el-row :gutter="10">
+        <el-row :gutter="10" class="mb-30">
           <el-col :span="8">
-            <el-form-item label="Study:" prop="study">
+            <el-form-item label="Study:" prop="studyName">
               <el-select
-                v-model="importAssemblyForm.study"
+                v-model="importAssemblyForm.studyName"
                 @change="getProjectsList"
-                placeholder="Select Study.."
+                placeholder="Select study"
                 class="w-full">
                 <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name">
                 </el-option>
@@ -30,8 +30,8 @@
             <el-form-item label="Project:" prop="project">
               <el-select
                 v-model="importAssemblyForm.projectName"
-                :disabled="!importAssemblyForm.study"
-                placeholder="Select Project.."
+                :disabled="!importAssemblyForm.studyName"
+                placeholder="Select project"
                 class="w-full">
                 <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name">
                 </el-option>
@@ -40,7 +40,11 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="name">
-              <el-input v-model="importAssemblyForm.name" placeholder="Enter or choose an assembly name"></el-input>
+              <el-input
+                v-model="importAssemblyForm.name"
+                :disabled="!importAssemblyForm.projectName"
+                placeholder="Enter or choose an assembly name">
+              </el-input>
               <div>
                 <p>If you are importing a completely new assembly, use a short descriptive name. If you are importing a variant of an existing assembly, use a standardized version naming (e.g. Assembly_v2)</p>
               </div>
@@ -50,8 +54,9 @@
           <el-col :span="24">
             <el-form-item label="Assembly description:" prop="description">
               <el-input
-                placeholder="Enter a detailed description of how and why you designed the assembly outside MenDEL"
-                v-model="importAssemblyForm.description">
+                v-model="importAssemblyForm.description"
+                :disabled="!importAssemblyForm.name"
+                placeholder="Enter a detailed description of how and why you designed the assembly outside MenDEL">
               </el-input>
             </el-form-item>
           </el-col>
@@ -86,7 +91,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="primary" @click="save">Save and import another CDS</el-button>
+      <el-button type="primary" @click="save">Save and segment</el-button>
       <el-button type="success" @click="save">Save</el-button>
     </div>
   </div>
@@ -105,7 +110,7 @@ export default class ImportAssembly extends Vue {
   projectsList: string[] = []
 
   importAssemblyForm: importAssembly = {
-    study: '',
+    studyName: '',
     projectName: '',
     name: '',
     description: '',
@@ -114,10 +119,10 @@ export default class ImportAssembly extends Vue {
   }
 
   rules: object = {
-    study: [{ required: true }],
-    projectName: [{ required: true }],
-    name: [{ required: true }],
-    description: [{ required: true }]
+    studyName: [{ required: true, message: 'Study name is required' }],
+    projectName: [{ required: true, message: 'Project name is required' }],
+    name: [{ required: true, message: 'Assembly name is required' }],
+    description: [{ required: true, message: 'Description is required' }]
   }
 
   $refs!: {
@@ -130,9 +135,18 @@ export default class ImportAssembly extends Vue {
 
   /* submit Modal data */
   save (next?: string) {
-    this.$refs['importAssemblyForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
-      else return false
+    return httpService.post('query/assemblyNameChecker', {
+      studyName: this.importAssemblyForm.studyName,
+      projectName: this.importAssemblyForm.projectName,
+      name: this.importAssemblyForm.name
+    }).then((res: any) => {
+      if (res.data.valid === 'false') this.responseMessage()
+      else {
+        this.$refs['importAssemblyForm'].validate((valid: boolean) => {
+          if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
+          else return false
+        })
+      }
     })
   }
 
@@ -148,13 +162,18 @@ export default class ImportAssembly extends Vue {
   /* Get list of projects */
   getProjectsList () {
     this.$emit('loadOn')
-    return httpService.post('query/projectNameList', { study: this.importAssemblyForm.study })
+    return httpService.post('query/projectNameList', { study: this.importAssemblyForm.studyName })
       .then((res: any) => {
         this.importAssemblyForm.projectName = ''
         this.projectsList = res.data.rows
       })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
+  }
+
+  /* response viewer */
+  responseMessage () {
+    this.$confirm(`Assembly name ${this.importAssemblyForm.name} has been used before. Please specify new name`, 'Error', { type: 'error', center: true })
   }
 
   created () {

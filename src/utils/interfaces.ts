@@ -233,11 +233,11 @@ export interface ImportsCDS {
 }
 
 export interface importAssembly {
-  study?: string
+  studyName?: string
   projectName?: string
   name?: string,
   description?: string,
-  pathway?: '',
+  pathway?: string,
   parts?: string,
 }
 

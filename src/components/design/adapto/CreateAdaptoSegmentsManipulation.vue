@@ -224,11 +224,11 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
-    dnaDesignName: [ { required: true } ],
-    firstSegmentIdx: [ { required: true } ],
-    lastSegmentIdx: [ { required: true } ]
+    studyName: [ { required: true, message: 'Study name is required' } ],
+    projectName: [ { required: true, message: 'Project name is required' } ],
+    dnaDesignName: [ { required: true, message: 'Assembly name is required' } ],
+    firstSegmentIdx: [ { required: true, message: 'First segment index is required' } ],
+    lastSegmentIdx: [ { required: true, message: 'Last segment index is required' } ]
   }
 
   $refs!: {

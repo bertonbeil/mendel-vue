@@ -73,9 +73,9 @@ export default class ExportAssemblies extends Vue {
   }
 
   rules: object = {
-    study: [ { required: true } ],
-    project: [ { required: true } ],
-    assemblyName: [ { required: true } ]
+    study: [ { required: true, message: 'Study name is required' } ],
+    project: [ { required: true, message: 'Project name is required' } ],
+    assemblyName: [ { required: true, message: 'Assembly name is required' } ]
   }
 
   $refs!: {

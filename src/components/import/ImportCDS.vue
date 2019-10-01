@@ -10,7 +10,7 @@
       </el-col>
     </el-row>
     <!-- Main modal content -->
-    <div class="mb-30">
+    <div>
       <el-form :model="importCDSForm" label-position="top" :rules="rules" ref="importCDSForm">
         <el-row :gutter="20" class="mb-30">
           <el-col :span="12">
@@ -165,13 +165,13 @@ export default class ImportCDS extends Vue {
   }
 
   rules: object = {
-    study: [ { required: true } ],
-    project: [ { required: true } ],
-    description: [ { required: true } ],
-    organism: [ { required: true } ],
-    source: [ { required: true } ],
-    accession: [ { required: true } ],
-    nickname: [ { required: true } ]
+    study: [ { required: true, message: 'Study name is required' } ],
+    project: [ { required: true, message: 'Project name is required' } ],
+    description: [ { required: true, message: 'Description is required' } ],
+    organism: [ { required: true, message: 'Organism is required' } ],
+    source: [ { required: true, message: 'Source is required' } ],
+    accession: [ { required: true, message: 'Accession is required' } ],
+    nickname: [ { required: true, message: 'Nickname is required' } ]
   }
 
   $refs!: {
