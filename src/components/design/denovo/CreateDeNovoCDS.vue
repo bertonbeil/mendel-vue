@@ -204,7 +204,6 @@ export default class CreateDeNovoCDS extends Vue {
   }
 
   created () {
-    this.$emit('update:title', 'Create new CDSs')
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {

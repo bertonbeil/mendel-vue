@@ -90,7 +90,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="Length (bp):" prop="length">
-              <el-input-number v-model="lengthBp" class="w-full" disabled></el-input-number>
+              <el-input-number :value="lengthBp" class="w-full" disabled></el-input-number>
               <p class="text-grey-dark -mt-5 ml-5 break-normal">This is the default length for a single entered coordinate view. Edit for a custom length, or enter a range in the coordinate field for custom coordinate endpoints.</p>
             </el-form-item>
           </el-col>
@@ -157,7 +157,6 @@ export default class CreateRegionOfInterest extends Vue {
   organismList: string[] = []
   chromosomeList: string[] = []
   posValue: number = 5000
-  fileList: object[] = []
   source: any = {
     organism: '',
     chromosome: '',
@@ -200,6 +199,7 @@ export default class CreateRegionOfInterest extends Vue {
   }
 
   get organism () {
+    // TODO: use switch
     return this.source.organism === 'human' ? 'hg38'
       : this.source.organism === 'rat' ? 'rn6'
         : this.source.organism === 'mouse' ? 'mm10'
@@ -220,12 +220,6 @@ export default class CreateRegionOfInterest extends Vue {
       if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
-  }
-
-  uploadFastaFile (file: any) {
-    const fileReader = new FileReader()
-    fileReader.readAsText(file.raw)
-    fileReader.onload = (e: any) => { this.source.sequence = e.target.result }
   }
 
   /* load Modal data -> Get list of study */
