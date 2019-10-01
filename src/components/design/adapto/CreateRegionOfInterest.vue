@@ -126,13 +126,7 @@
         </el-col>
         <el-col :span="24">
           <h4 class="text-xl text-black mt-3">Upload fasta:</h4>
-          <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :file-list="fileList" class="mt-10"
-            :on-change="uploadFastaFile"
-            accept=".fa,.fasta">
-            <el-button size="mini" type="primary">Click to upload</el-button>
-          </el-upload>
+          <UploadFile @getUploadFile='file => segmentRequest.mask = file' :accept='".fa,.fasta"'/>
         </el-col>
       </el-row>
     </div>
@@ -241,8 +235,7 @@ export default class CreateRegionOfInterest extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -254,8 +247,7 @@ export default class CreateRegionOfInterest extends Vue {
         this.assemblyList = []
         this.adaptoRegionOfInterestForm.name = ''
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -266,34 +258,29 @@ export default class CreateRegionOfInterest extends Vue {
         this.assemblyList = []
         this.adaptoRegionOfInterestForm.name = ''
         res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   getOrganismList () {
     this.$emit('loadOn')
     return httpService.post('query/adaptoUtils', { request: 'organismList' })
-      .then((res: any) => {
-        this.organismList = res.data.lims_response
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      .then((res: any) => { this.organismList = res.data.lims_response })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   getChromosomeList () {
     this.$emit('loadOn')
     return httpService.post('query/adaptoUtils', { request: 'chromosomeList', organism: this.source.organism })
-      .then((res: any) => {
-        this.chromosomeList = res.data.lims_response
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      .then((res: any) => { this.chromosomeList = res.data.lims_response })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.adaptoRegionOfInterestForm.studyName = JSON.parse(this.modalData.saveAndNextData).study
-          this.adaptoRegionOfInterestForm.projectName = JSON.parse(this.modalData.saveAndNextData).name
+          this.adaptoRegionOfInterestForm.studyName = this.modalData.saveAndNextData.study
+          this.adaptoRegionOfInterestForm.projectName = this.modalData.saveAndNextData.name
           this.getProjectsList()
         }
       })

@@ -177,8 +177,7 @@ export default class CreateAdaptoPrimers extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -191,8 +190,7 @@ export default class CreateAdaptoPrimers extends Vue {
         this.adaptoPrimersForm.projectName = ''
         this.adaptoPrimersForm.dnaDesignName = ''
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -205,17 +203,16 @@ export default class CreateAdaptoPrimers extends Vue {
       this.assemblyList = []
       this.adaptoPrimersForm.dnaDesignName = ''
       res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
-      this.$emit('loadOff')
-    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.adaptoPrimersForm.studyName = JSON.parse(this.modalData.saveAndNextData).studyName
-          this.adaptoPrimersForm.projectName = JSON.parse(this.modalData.saveAndNextData).projectName
-          this.adaptoPrimersForm.dnaDesignName = JSON.parse(this.modalData.saveAndNextData).name
+          this.adaptoPrimersForm.studyName = this.modalData.saveAndNextData.studyName
+          this.adaptoPrimersForm.projectName = this.modalData.saveAndNextData.projectName
+          this.adaptoPrimersForm.dnaDesignName = this.modalData.saveAndNextData.name
         }
       })
   }

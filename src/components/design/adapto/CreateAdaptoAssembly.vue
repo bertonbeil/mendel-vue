@@ -126,8 +126,7 @@ export default class CreateAdaptoAssembly extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -138,8 +137,7 @@ export default class CreateAdaptoAssembly extends Vue {
         this.projectsList = []
         this.locusNameList = []
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -152,18 +150,16 @@ export default class CreateAdaptoAssembly extends Vue {
       this.locusNameList = []
       this.adaptoAssemblyForm.locusName = ''
       this.locusNameList = res.data.regions
-      this.$emit('loadOff')
-    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          console.log(JSON.parse(this.modalData.saveAndNextData))
-          this.adaptoAssemblyForm.studyName = JSON.parse(this.modalData.saveAndNextData).studyName
-          this.adaptoAssemblyForm.projectName = JSON.parse(this.modalData.saveAndNextData).projectName
-          this.adaptoAssemblyForm.locusName = JSON.parse(this.modalData.saveAndNextData).name
+          this.adaptoAssemblyForm.studyName = this.modalData.saveAndNextData.studyName
+          this.adaptoAssemblyForm.projectName = this.modalData.saveAndNextData.projectName
+          this.adaptoAssemblyForm.locusName = this.modalData.saveAndNextData.name
           this.getProjectsList()
         }
       })

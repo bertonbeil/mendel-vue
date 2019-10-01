@@ -275,18 +275,15 @@ export default class CreateEchoFile extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
   getProjectsList (index: any) {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.tableData[index].study })
-      .then((res: any) => {
-        this.projectsList = res.data.rows
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      .then((res: any) => { this.projectsList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -299,8 +296,7 @@ export default class CreateEchoFile extends Vue {
         const name = this.tableData[index].project
         const assemblies = res.data.rows.filter((a: any) => a.project === name)
         this.tableData[index].assemblyList = assemblies
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get segments of rows */
@@ -308,11 +304,10 @@ export default class CreateEchoFile extends Vue {
     this.tableData[index].assemblyList.map((item: any) => {
       if (item.assembly === this.tableData[index].name) this.tableData[index].segments = item.segments
     })
-    console.log(this.tableData[index].segments)
   }
 
   changeStep (index: any) {
-    console.log(index)
+
   }
 
   created () {

@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   Checkbox,
+  CheckboxGroup,
   Container,
   Col,
   Dialog,
@@ -13,6 +14,7 @@ import {
   Form,
   FormItem,
   Input,
+  Icon,
   InputNumber,
   Loading,
   RadioButton,
@@ -42,6 +44,7 @@ Vue.use(Alert)
 Vue.use(Button)
 Vue.use(Card)
 Vue.use(Checkbox)
+Vue.use(CheckboxGroup)
 Vue.use(Container)
 Vue.use(Col)
 Vue.use(Dialog)
@@ -51,6 +54,7 @@ Vue.use(DropdownItem)
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Input)
+Vue.use(Icon)
 Vue.use(InputNumber)
 Vue.use(Loading)
 Vue.use(RadioButton)

@@ -136,10 +136,42 @@ export interface AdaptoSegmentRequest {
 }
 
 export interface AdaptoSegmentsManipulation {
-  studyName?: string
-  projectName?: string
-  assemblyName?: string
-  action?: string
+  requestType?: string,
+  action?: string,
+  segment_request?: object,
+  primers_request?: object
+}
+
+export interface AdaptoSegmentsManipulationSegmentRequest {
+  studyName?: string,
+  projectName?: string,
+  dnaDesignName?: string,
+  firstSegmentIdx?: number | null,
+  lastSegmentIdx?: number | null,
+  newName?: string,
+  customSegments?: any
+}
+
+export interface AdaptoSegmentsManipulationPrimersRequest {
+  studyName?: string,
+  projectName?: string,
+  dnaDesignName?: string,
+  primers?: string,
+  minTemperature?: number,
+  maxTemperature?: number,
+  saltConcentration?: number,
+  dnaConcentration?: number,
+  minPercentGC?: number,
+  maxPercentGC?: number,
+  minLength?: number,
+  maxLength?: number,
+  minDistance?: number,
+  maxDistance?: number,
+  dimerLength?: number,
+  hairpinLength?:number,
+  tailMinDistance?: number,
+  type?: string,
+  well?: string
 }
 
 export interface AdaptoPrimersRequest {

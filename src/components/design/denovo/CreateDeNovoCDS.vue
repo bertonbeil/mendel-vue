@@ -169,20 +169,16 @@ export default class CreateDeNovoCDS extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = res.data.rows
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
   getProjectsList () {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoCDSForm.study })
-      .then((res: any) => {
-        this.projectsList = res.data.rows
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      .then((res: any) => { this.projectsList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   getCDSTable () {
@@ -195,11 +191,8 @@ export default class CreateDeNovoCDS extends Vue {
               if (lims_response.rows.length) this.tableData = lims_response.rows.map((i: any) => ({ ...i, nickname: '' }))
               this.CDSNaming = true
               this.$emit('update:title', 'CDS Naming')
-              this.$emit('loadOff')
-            } else {
-              (this as any).alert({ type: status, msg: lims_response })
-            }
-          }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+            } else (this as any).alert({ type: status, msg: lims_response })
+          }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
       } else return false
     })
   }
@@ -215,8 +208,8 @@ export default class CreateDeNovoCDS extends Vue {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.denovoCDSForm.study = JSON.parse(this.modalData.saveAndNextData).study
-          this.denovoCDSForm.project = JSON.parse(this.modalData.saveAndNextData).name
+          this.denovoCDSForm.study = this.modalData.saveAndNextData.study
+          this.denovoCDSForm.project = this.modalData.saveAndNextData.name
           this.getProjectsList()
         }
       })

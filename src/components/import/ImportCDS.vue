@@ -119,13 +119,7 @@
           </el-col>
           <el-col :span="24">
             <h4 class="text-xl text-black mt-3">Upload fasta:</h4>
-            <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :file-list="fileList" class="mt-10"
-              :on-change="uploadFastaFile"
-              accept=".fa,.fasta">
-              <el-button size="mini" type="primary">Click to upload</el-button>
-            </el-upload>
+            <UploadFile @getUploadFile='file => importCDSForm.dna_sequence = file' :accept='".fa,.fasta"' />
           </el-col>
         </el-row>
       </el-form>
@@ -154,7 +148,6 @@ export default class ImportCDS extends Vue {
   studyList: string[] = []
   projectsList: string[] = []
   organismsList: string[] = [ 'Yeast', 'Human' ]
-  fileList: object[] = []
 
   importCDSForm: ImportsCDS = {
     study: '',
@@ -208,9 +201,7 @@ export default class ImportCDS extends Vue {
               (this as any).$message({ message: res.data.lims_response, type: res.data.status })
               this.$refs['importCDSForm'].resetFields()
             } else (this as any).alert({ type: res.data.status, msg: res.data.lims_response })
-          })
-          .catch((err: any) => { throw new Error(err) })
-          .finally(() => this.$emit('loadOff'))
+          }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
       } else {
         this.$emit('loadOff')
         return false
@@ -222,10 +213,8 @@ export default class ImportCDS extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = res.data.rows
-        this.$emit('loadOff')
-      })
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -235,14 +224,7 @@ export default class ImportCDS extends Vue {
       .then((res: any) => {
         this.importCDSForm.project = ''
         this.projectsList = res.data.rows
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
-  }
-
-  uploadFastaFile (file: any) {
-    const fileReader = new FileReader()
-    fileReader.readAsText(file.raw)
-    fileReader.onload = (e: any) => { this.importCDSForm.dna_sequence = e.target.result }
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {
