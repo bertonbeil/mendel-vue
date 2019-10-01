@@ -179,13 +179,13 @@ export default class ImportCDS extends Vue {
   }
 
   get sendData () {
-    return this.importCDSForm
+    return JSON.stringify(this.importCDSForm)
   }
 
   /* submit Modal data */
   save () {
     this.$refs['importCDSForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
+      if (valid) this.$emit('save', { data: this.sendData })
       else return false
     })
   }
@@ -195,7 +195,7 @@ export default class ImportCDS extends Vue {
     this.$refs['importCDSForm'].validate((valid: boolean) => {
       if (valid) {
         this.$emit('loadOn')
-        httpService.post('query/bioPartDesigner', JSON.stringify(this.sendData))
+        httpService.post('query/bioPartDesigner', this.sendData)
           .then((res: any) => {
             if (res.data.status === 'success') {
               (this as any).$message({ message: res.data.lims_response, type: res.data.status })

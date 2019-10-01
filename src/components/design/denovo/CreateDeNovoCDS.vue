@@ -156,13 +156,13 @@ export default class CreateDeNovoCDS extends Vue {
   }
 
   get sendData () {
-    return this.denovoCDSForm
+    this.denovoCDSForm.nickname = this.tableData.map((i: any) => i.nickname).join()
+    return JSON.stringify(this.denovoCDSForm)
   }
 
   /* submit Modal data */
   save (next?: string) {
-    this.denovoCDSForm.nickname = this.tableData.map((i: any) => i.nickname).join()
-    this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+    this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
   }
 
   /* load Modal data -> Get list of study */

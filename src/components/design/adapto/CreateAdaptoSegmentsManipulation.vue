@@ -250,18 +250,18 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     })
   }
 
-  get sendData () {
-    return this.adaptoSegmentsManipulationForm
-  }
-
   get isActionReplace () {
     return this.adaptoSegmentsManipulationForm.action === 'Replace'
+  }
+
+  get sendData () {
+    return JSON.stringify(this.adaptoSegmentsManipulationForm)
   }
 
   /* submit Modal data */
   save () {
     this.$refs['segment_request'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.adaptoSegmentsManipulationForm) })
+      if (valid) this.$emit('save', { data: this.sendData })
       else return false
     })
   }

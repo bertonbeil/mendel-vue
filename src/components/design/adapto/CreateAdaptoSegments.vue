@@ -227,13 +227,13 @@ export default class CreateAdaptoSegments extends Vue {
   }
 
   get sendData () {
-    return this.adaptoSegmentForm
+    return JSON.stringify(this.adaptoSegmentForm)
   }
 
   /* submit Modal data */
   save (next?: string) {
     this.$refs['segmentRequest'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }

@@ -144,13 +144,13 @@ export default class CreateDeNovoPrimers extends Vue {
   }
 
   get sendData () {
-    return this.denovoPrimersForm
+    return JSON.stringify(this.denovoPrimersForm)
   }
 
   /* submit Modal data */
   save (next?: string) {
     this.$refs['denovoPrimersForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }

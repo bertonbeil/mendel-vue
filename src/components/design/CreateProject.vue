@@ -89,16 +89,15 @@ export default class CreateProject extends Vue {
   }
 
   get sendData () {
-    return { ...this.projectForm, type: this.projectType }
+    this.modalData.saveAndNext = this.projectType === 'adapto' ? 'CreateRegionOfInterest' : 'CreateDeNovoCDS'
+    return JSON.stringify({ ...this.projectForm, type: this.projectType })
   }
 
   /* submit Modal data */
   save (next?: string) {
     this.$refs['projectForm'].validate((valid: boolean) => {
-      if (valid) {
-        this.modalData.saveAndNext = this.projectType === 'adapto' ? 'CreateRegionOfInterest' : 'CreateDeNovoCDS'
-        this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
-      } else return false
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+      else return false
     })
   }
 

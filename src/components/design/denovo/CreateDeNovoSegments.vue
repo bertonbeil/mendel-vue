@@ -200,10 +200,6 @@ export default class CreateDeNovoSegments extends Vue {
     projectSelect: HTMLFormElement
   }
 
-  get sendData () {
-    return this.denovoSegmentForm
-  }
-
   @Watch('assemblyVector', { deep: true })
   onChangeYeastMarker () {
     this.denovoSegmentForm.assemblyVectorName = `${this.assemblyVector.yeastMarker},${this.assemblyVector.bacterialCopy}`
@@ -215,10 +211,14 @@ export default class CreateDeNovoSegments extends Vue {
     else delete this.denovoSegmentForm.type
   }
 
+  get sendData () {
+    return JSON.stringify(this.denovoSegmentForm)
+  }
+
   /* submit Modal data */
   save (next?: string) {
     this.$refs['denovoSegmentForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }

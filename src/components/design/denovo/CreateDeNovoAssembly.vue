@@ -246,7 +246,7 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   get sendData () {
-    return this.denovoAssemblyForm
+    return JSON.stringify(this.denovoAssemblyForm)
   }
 
   /* submit Modal data */
@@ -255,10 +255,9 @@ export default class CreateDeNovoAssembly extends Vue {
       if (valid) {
         httpService.post('query/assemblyNameChecker', { name: this.denovoAssemblyForm.name })
           .then((res: any) => {
-            if (res.data.valid === 'true') {
-              this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next'
-                ? this.modalData.saveAndNext : null)
-            } else this.responseMessage()
+            res.data.valid === 'true'
+              ? this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+              : this.responseMessage()
           })
           .catch((err: any) => { throw new Error(err) })
           .finally(() => this.$emit('loadOff'))
