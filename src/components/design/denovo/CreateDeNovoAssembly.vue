@@ -377,7 +377,7 @@ export default class CreateDeNovoAssembly extends Vue {
     this.$confirm(`Assembly name ${this.denovoAssemblyForm.name} has been used before. Please specify new name`, 'Error', { type: 'error', center: true })
   }
 
-  created () {
+  getInitialData () {
     /* load Modal data -> Get all lists */
     return Promise.all([
       this.getStudyList(),
@@ -395,6 +395,10 @@ export default class CreateDeNovoAssembly extends Vue {
       }
     }).catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
+  }
+
+  created () {
+    this.getInitialData()
   }
 }
 </script>

@@ -111,13 +111,17 @@ export default class CreateProject extends Vue {
       .finally(() => this.$emit('loadOff'))
   }
 
-  created () {
+  getInitialData () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
           this.projectForm.study = this.modalData.saveAndNextData.new_study.name
         }
       })
+  }
+
+  created () {
+    this.getInitialData()
   }
 }
 </script>

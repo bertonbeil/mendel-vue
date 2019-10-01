@@ -257,7 +257,7 @@ export default class CreateRegionOfInterest extends Vue {
       .finally(() => this.$emit('loadOff'))
   }
 
-  created () {
+  getInitialData () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
@@ -266,6 +266,10 @@ export default class CreateRegionOfInterest extends Vue {
           this.getProjectsList()
         }
       })
+  }
+
+  created () {
+    this.getInitialData()
   }
 }
 </script>

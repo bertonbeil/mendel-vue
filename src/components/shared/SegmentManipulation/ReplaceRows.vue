@@ -57,13 +57,13 @@ export default class ReplaceRows extends Vue {
     this.localReplaceRow = { ...this.localReplaceRow, description, value }
   }
 
-  created () {
-    this.localReplaceRow = _cloneDeep(this.replaceRow)
-  }
-
   @Watch('localReplaceRow', { deep: true })
   handleReplaceRowChange () {
     this.$emit('update:replaceRow', this.localReplaceRow)
+  }
+
+  created () {
+    this.localReplaceRow = _cloneDeep(this.replaceRow)
   }
 }
 </script>

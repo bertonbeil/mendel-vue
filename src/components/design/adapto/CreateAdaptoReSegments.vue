@@ -314,7 +314,7 @@ export default class CreateAdaptoSegments extends Vue {
       .finally(() => this.$emit('loadOff'))
   }
 
-  created () {
+  getInitialData () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
@@ -323,6 +323,10 @@ export default class CreateAdaptoSegments extends Vue {
           this.dnaDesignName = this.modalData.saveAndNextData.name
         }
       })
+  }
+
+  created () {
+    this.getInitialData()
   }
 }
 </script>

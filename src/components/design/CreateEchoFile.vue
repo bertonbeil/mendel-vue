@@ -309,7 +309,7 @@ export default class CreateEchoFile extends Vue {
 
   }
 
-  getModalData () {
+  getInitialData () {
     this.$emit('loadOn')
     Promise.all([
       this.getStudyList(),
@@ -322,7 +322,7 @@ export default class CreateEchoFile extends Vue {
   }
 
   created () {
-    this.getModalData()
+    this.getInitialData()
   }
 }
 </script>

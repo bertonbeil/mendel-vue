@@ -338,13 +338,17 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     this.replaceRows.splice(index, 1)
   }
 
-  created () {
+  getInitialData () {
     this.getStudyList()
     this.getCustomSegmentTypeList()
     if (this.adaptoSegmentsManipulationForm.action !== 'Replace') {
       delete this.segment_request.newName
       delete this.segment_request.customSegments
     }
+  }
+
+  created () {
+    this.getInitialData()
   }
 }
 </script>

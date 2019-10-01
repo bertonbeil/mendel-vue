@@ -273,7 +273,7 @@ export default class CreateDeNovoSegments extends Vue {
     return httpService.get('query/restrictionEnzymeList').then((res: any) => { this.restrictionEnzymes = res.data.rows })
   }
 
-  created () {
+  getInitialData () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
@@ -288,6 +288,10 @@ export default class CreateDeNovoSegments extends Vue {
       })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
+  }
+
+  created () {
+    this.getInitialData()
   }
 }
 </script>

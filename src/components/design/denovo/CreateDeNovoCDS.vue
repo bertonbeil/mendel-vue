@@ -207,7 +207,7 @@ export default class CreateDeNovoCDS extends Vue {
     this.tableData = []
   }
 
-  created () {
+  getInitialData () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
@@ -216,6 +216,10 @@ export default class CreateDeNovoCDS extends Vue {
           this.getProjectsList()
         }
       })
+  }
+
+  created () {
+    this.getInitialData()
   }
 }
 </script>

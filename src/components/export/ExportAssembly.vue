@@ -146,7 +146,7 @@ export default class ExportAssemblies extends Vue {
       .finally(() => this.$emit('loadOff'))
   }
 
-  created () {
+  getInitialData () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
@@ -158,6 +158,10 @@ export default class ExportAssemblies extends Vue {
           this.getAssemblyList()
         }
       })
+  }
+
+  created () {
+    this.getInitialData()
   }
 }
 </script>
