@@ -24,7 +24,12 @@
           </el-col>
 
           <el-col :span="20">
-            <el-table :data="tableData" style="width: 100%" cell-class-name="table-cell">
+            <!--  -->
+            <template v-for="(echoRow, index) in tableData">
+              <EchoFileRow :row-data.sync="tableData[index]" :row-data-index="index" :study-list='studyList' :assembly-list="assemblyList" :key="echoRow.location"></EchoFileRow>
+            </template>
+
+            <!-- <el-table :data="tableData" style="width: 100%" cell-class-name="table-cell">
               <el-table-column prop="study" label="Study">
                 <template slot-scope="scope">
                   <el-form-item size="mini">
@@ -102,7 +107,7 @@
                   </el-form-item>
                 </template>
               </el-table-column>
-            </el-table>
+            </el-table> -->
           </el-col>
           <el-col :span="4" class="mt-35">
             <div v-for="(item, i) in echoCalcRows" :key="i" class="mt-25">
@@ -270,7 +275,7 @@ export default class CreateEchoFile extends Vue {
 
   /* load Modal data -> Get list of study */
   getStudyList () {
-    this.$emit('loadOn')
+    // this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => {
         this.studyList = []
@@ -280,23 +285,18 @@ export default class CreateEchoFile extends Vue {
 
   /* Get list of projects */
   getProjectsList (index: any) {
-    this.$emit('loadOn')
+    // this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.tableData[index].study })
       .then((res: any) => { this.projectsList = res.data.rows })
       .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
-  getAssemblyList (index: number) {
-    this.rowIndex = index
-    this.$emit('loadOn')
+  getAssemblyList () {
     return httpService.get('query/projectAssemblyList')
       .then((res: any) => {
         this.assemblyList = res.data.rows
-        const name = this.tableData[index].project
-        const assemblies = res.data.rows.filter((a: any) => a.project === name)
-        this.tableData[index].assemblyList = assemblies
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      }).catch((err: any) => { console.log(err) })
   }
 
   /* Get segments of rows */
@@ -310,8 +310,20 @@ export default class CreateEchoFile extends Vue {
 
   }
 
+  getModalData () {
+    this.$emit('loadOn')
+    Promise.all([
+      this.getStudyList(),
+      this.getAssemblyList()
+    ])
+      .finally(() => {
+        console.log('fff')
+        this.$emit('loadOff')
+      })
+  }
+
   created () {
-    this.getStudyList()
+    this.getModalData()
   }
 }
 </script>

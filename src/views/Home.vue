@@ -13,7 +13,6 @@
       top="60px"
       width="100%">
         <component
-          :title.sync="tempModalData.dialogCaption"
           :is="tempModalData.component"
           :modalData="tempModalData"
           :isLoading.sync="isLoading"
