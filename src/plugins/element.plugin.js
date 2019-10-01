@@ -21,6 +21,7 @@ import {
   Row,
   Menu,
   MenuItem,
+  Message,
   MessageBox,
   Option,
   Popover,
@@ -74,3 +75,4 @@ Vue.use(Upload)
 
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$alert = MessageBox.alert
+Vue.prototype.$message = Message

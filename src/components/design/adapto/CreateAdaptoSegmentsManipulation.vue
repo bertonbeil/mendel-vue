@@ -96,13 +96,31 @@
                   :projectName='segment_request.projectName'
                   :typesList='customSegmentTypeList' />
               </el-col>
-              <el-col :span="2" class="flex justify-center">
-                <el-button type="danger" icon="el-icon-delete" circle @click="deleteRow(index)"></el-button>
-                <i class="el-icon-more cursor-pointer"></i>
+              <el-col :span="8">
+                <el-form-item label="Project name:" prop="projectName">
+                  <el-select v-model="adaptoSegmentsManipulationForm.projectName" @change="getRegionList" placeholder="Select project" class="w-full">
+                    <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Assembly name:" prop="assemblyName">
+                  <el-select v-model="adaptoSegmentsManipulationForm.assemblyName" placeholder="Select assembly" class="w-full">
+                    <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
+                  </el-select>
+                </el-form-item>
               </el-col>
             </el-row>
-          </div>
-        </draggable>
+            <el-row :gutter="20" class="mb-30">
+              <el-col :span="8">
+                <el-form-item label="Action:" prop="action">
+                  <el-select v-model="adaptoSegmentsManipulationForm.action" placeholder="Select region" class="w-full">
+                    <el-option v-for="item in actionList" :key="item" :label="item" :value="item"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
       </el-row>
     </div>
     <!-- Modal action buttons -->

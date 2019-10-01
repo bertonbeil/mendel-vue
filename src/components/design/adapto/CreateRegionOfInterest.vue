@@ -9,23 +9,34 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
             <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="adaptoRegionOfInterestForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+              <el-select
+                v-model="adaptoRegionOfInterestForm.studyName"
+                @change="getProjectsList"
+                placeholder="Select study"
+                class="w-full">
                 <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="adaptoRegionOfInterestForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+              <el-select
+                v-model="adaptoRegionOfInterestForm.projectName"
+                @change="getAssemblyList"
+                :disabled="!adaptoRegionOfInterestForm.studyName"
+                placeholder="Select project"
+                class="w-full">
                 <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Name:" prop="name">
-              <el-input v-model="adaptoRegionOfInterestForm.name"
+              <el-input
+                v-model="adaptoRegionOfInterestForm.name"
                 @change="getOrganismList"
-                placeholder="Enter name for this locus"
+                :disabled="!adaptoRegionOfInterestForm.projectName"
+                placeholder="Enter name for this region"
                 class="w-full">
               </el-input>
             </el-form-item>
@@ -33,7 +44,11 @@
 
           <el-col :span="24" class="mb-30">
             <el-form-item label="Description:" prop="description">
-              <el-input v-model="adaptoRegionOfInterestForm.description" placeholder="Enter a short but memorable description for this region"></el-input>
+              <el-input
+                v-model="adaptoRegionOfInterestForm.description"
+                :disabled="!adaptoRegionOfInterestForm.name"
+                placeholder="Enter a short but memorable description for this region">
+              </el-input>
             </el-form-item>
           </el-col>
 
@@ -162,10 +177,10 @@ export default class CreateRegionOfInterest extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
-    name: [ { required: true } ],
-    description: [ { required: true } ]
+    studyName: [ { required: true, message: 'Study name is required' } ],
+    projectName: [ { required: true, message: 'Project name is required' } ],
+    name: [ { required: true, message: 'Region name is required' } ],
+    description: [ { required: true, message: 'Description is required' } ]
     // organism: [ { required: true } ],
     // chromosome: [ { required: true } ],
     // openPosition: [ { required: true } ],
@@ -201,7 +216,6 @@ export default class CreateRegionOfInterest extends Vue {
 
   /* submit Modal data */
   save (next?: string) {
-    console.log(next)
     this.$refs['adaptoRegionOfInterestForm'].validate((valid: boolean) => {
       if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false

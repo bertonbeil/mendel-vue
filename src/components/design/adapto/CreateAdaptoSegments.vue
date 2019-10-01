@@ -9,21 +9,34 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
             <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="segmentRequest.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+              <el-select
+                v-model="segmentRequest.studyName"
+                @change="getProjectsList"
+                placeholder="Select study"
+                class="w-full">
                 <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="segmentRequest.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+              <el-select
+                v-model="segmentRequest.projectName"
+                @change="getAssemblyList"
+                :disabled="!segmentRequest.studyName"
+                placeholder="Select project"
+                class="w-full">
                 <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="dnaDesignName">
-              <el-select v-model="dnaDesignName" placeholder="Select assembly" class="w-full">
+              <el-select
+                v-model="dnaDesignName"
+                :disabled="!segmentRequest.projectName"
+                placeholder="Select assembly"
+                class="w-full">
                 <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
@@ -39,7 +52,7 @@
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Assembly vector:
               <el-popover class="absolute top-0 right-0" placement="top-start" width="300" trigger="hover">
                 <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-                <div>All vectors are kanamycin resistant for bacterial selection, and are inducible to high copy number in bacteria for isolation. All contain CEN/ARS for low copy yeast maintenance.</div>
+                <div class="break-word">All vectors are kanamycin resistant for bacterial selection, and are inducible to high copy number in bacteria for isolation. All contain CEN/ARS for low copy yeast maintenance.</div>
               </el-popover>
             </h4>
             <div class="flex items-center mt-10">
@@ -198,9 +211,9 @@ export default class CreateAdaptoSegments extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
-    dnaDesignName: [ { required: true } ]
+    studyName: [ { required: true, message: 'Study name is required' } ],
+    projectName: [ { required: true, message: 'Project name is required' } ],
+    dnaDesignName: [ { required: true, message: 'Assembly name is required' } ]
   }
 
   $refs!: {

@@ -9,26 +9,37 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
             <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="denovoAssemblyForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+              <el-select
+                v-model="denovoAssemblyForm.studyName"
+                @change="getProjectsList"
+                placeholder="Select study"
+                class="w-full">
                 <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="denovoAssemblyForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+              <el-select
+                v-model="denovoAssemblyForm.projectName"
+                :disabled="!denovoAssemblyForm.studyName"
+                @change="getAssemblyList"
+                placeholder="Select project"
+                class="w-full">
                 <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="name">
-              <el-select v-model="denovoAssemblyForm.name"
+              <el-select
+                v-model="denovoAssemblyForm.name"
                 filterable
                 allow-create
                 default-first-option
                 placeholder="Select assembly"
                 class="w-full"
+                :disabled="!denovoAssemblyForm.projectName"
                 @change="assemblyNameChecker">
                 <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
@@ -37,7 +48,10 @@
 
           <el-col :span="24">
             <el-form-item label="Assembly description (optional):">
-              <el-input v-model="denovoAssemblyForm.description" placeholder="Enter a brief but memorable description of your assembly"></el-input>
+              <el-input
+                v-model="denovoAssemblyForm.description"
+                placeholder="Enter a brief but memorable description of your assembly">
+              </el-input>
             </el-form-item>
           </el-col>
 
@@ -51,14 +65,22 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item prop="openReValue">
-                  <el-select v-model="denovoAssemblyForm.openReValue" placeholder="5' RE" class="w-full">
+                  <el-select
+                    v-model="denovoAssemblyForm.openReValue"
+                    :disabled="!denovoAssemblyForm.name"
+                    placeholder="5' RE"
+                    class="w-full">
                     <el-option v-for="item in restrictionEnzymes" :key="item.name" :label="item.name" :value="item.sequence"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="closeReValue">
-                  <el-select v-model="denovoAssemblyForm.closeReValue" placeholder="3' RE" class="w-full">
+                  <el-select
+                    v-model="denovoAssemblyForm.closeReValue"
+                    :disabled="!denovoAssemblyForm.openReValue"
+                    placeholder="3' RE"
+                    class="w-full">
                     <el-option v-for="item in restrictionEnzymes" :key="item.name" :label="item.name" :value="item.sequence"></el-option>
                   </el-select>
                 </el-form-item>
@@ -69,7 +91,12 @@
           <el-col :span="5">
             <h4 class="text-xl text-black mt-3">Organism:</h4>
             <el-form-item prop="organism">
-              <el-select v-model="denovoAssemblyForm.organism" @change="addRow()" placeholder="Select host organism" class="w-full">
+              <el-select
+                v-model="denovoAssemblyForm.organism"
+                :disabled="!denovoAssemblyForm.closeReValue"
+                @change="addRow()"
+                placeholder="Select host organism"
+                class="w-full">
                 <el-option v-for="item in organisms" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
@@ -200,12 +227,12 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
-    name: [ { required: true } ],
-    openReValue: [ { required: true } ],
-    closeReValue: [ { required: true } ],
-    organism: [ { required: true } ]
+    studyName: [ { required: true, message: 'Study name is required' } ],
+    projectName: [ { required: true, message: 'Project name is required' } ],
+    name: [ { required: true, message: 'Assembly name is required' } ],
+    openReValue: [ { required: true, message: 'Restrictions sites is required' } ],
+    closeReValue: [ { required: true, message: 'Restrictions sites is required' } ],
+    organism: [ { required: true, message: 'Organism is required' } ]
   }
 
   $refs!: {

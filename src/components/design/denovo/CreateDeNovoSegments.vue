@@ -9,22 +9,33 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
             <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="denovoSegmentForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+              <el-select
+                v-model="denovoSegmentForm.studyName"
+                @change="getProjectsList"
+                placeholder="Select study"
+                class="w-full">
                 <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="denovoSegmentForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+              <el-select
+                v-model="denovoSegmentForm.projectName"
+                @change="getAssemblyList"
+                :disabled="!denovoSegmentForm.studyName"
+                placeholder="Select project"
+                class="w-full">
                 <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="dnaDesignName">
-              <el-select v-model="denovoSegmentForm.dnaDesignName"
+              <el-select
+                v-model="denovoSegmentForm.dnaDesignName"
                 @change="[getRestrictionEnzymeList(), latestDnaDesign()]"
+                :disabled="!denovoSegmentForm.projectName"
                 placeholder="Select assembly"
                 class="w-full">
                 <el-option v-for="(item, i) in assemblyList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
@@ -41,7 +52,7 @@
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Assembly vector:
               <el-popover class="absolute top-0 right-0" placement="top-start" width="300" trigger="hover">
                 <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-                <div>Choose the features of your assembly vector. Yeast CEN/ARS is automatically assigned. For assemblies 30kb high copy number bacterial vector is permissible.</div>
+                <div class="break-word">Choose the features of your assembly vector. Yeast CEN/ARS is automatically assigned. For assemblies 30kb high copy number bacterial vector is permissible.</div>
               </el-popover>
             </h4>
             <el-row class="mt-10">
@@ -67,20 +78,28 @@
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Terminal restriction sites for segments:
               <el-popover class="absolute top-0 right-0" placement="top-start" width="300" trigger="hover">
                 <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-                <div>Choose restrictions sites that will flank the segments of your assembly. These RE are non-cutters that should not exist in your assembly (but you will need to check this after finalizing the design).</div>
+                <div class="break-word">Choose restrictions sites that will flank the segments of your assembly. These RE are non-cutters that should not exist in your assembly (but you will need to check this after finalizing the design).</div>
               </el-popover>
             </h4>
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item prop='restrictionEnzyme5'>
-                  <el-select v-model="denovoSegmentForm.restrictionEnzyme5" placeholder="5' RE" class="w-full">
+                  <el-select
+                    v-model="denovoSegmentForm.restrictionEnzyme5"
+                    :disabled="!denovoSegmentForm.dnaDesignName"
+                    placeholder="5' RE"
+                    class="w-full">
                     <el-option v-for="item in restrictionEnzymes" :key="item.name" :label="item.name" :value="item.sequence"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop='restrictionEnzyme3'>
-                  <el-select v-model="denovoSegmentForm.restrictionEnzyme3" placeholder="3' RE" class="w-full">
+                  <el-select
+                    v-model="denovoSegmentForm.restrictionEnzyme3"
+                    :disabled="!denovoSegmentForm.dnaDesignName"
+                    placeholder="3' RE"
+                    class="w-full">
                     <el-option v-for="item in restrictionEnzymes" :key="item.name" :label="item.name" :value="item.sequence"></el-option>
                   </el-select>
                 </el-form-item>
@@ -116,7 +135,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-checkbox v-model="segmentVegasAdapters" class="mb-10">Segment by VEGAS adapters</el-checkbox>
+            <el-checkbox v-model="type" class="mb-10">Segment by VEGAS adapters</el-checkbox>
             <p>This will result in segmentation of your assembly at the VEGAS adapters such that the VEGAS adapters will provide terminal homology for in yeasto assembly. If a transcription unit exceeds 5 kb, it will be segmented into two parts.</p>
           </el-col>
         </el-row>
@@ -146,8 +165,7 @@ export default class CreateDeNovoSegments extends Vue {
   projectsList: string[] = []
   assemblyList: string[] = []
   restrictionEnzymes: object[] = []
-  segmentVegasAdapters: boolean = false
-  type: string = ''
+  type: boolean = false
   assemblyVector: any = { yeastMarker: 'URA3', bacterialCopy: 'pUC' }
   assemblyLength: number = 0
   isSaveAndNext: boolean = false
@@ -170,11 +188,11 @@ export default class CreateDeNovoSegments extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
-    dnaDesignName: [ { required: true } ],
-    restrictionEnzyme5: [ { required: true } ],
-    restrictionEnzyme3: [ { required: true } ]
+    studyName: [ { required: true, message: 'Study name is required' } ],
+    projectName: [ { required: true, message: 'Project name is required' } ],
+    dnaDesignName: [ { required: true, message: 'Assembly name is required' } ],
+    restrictionEnzyme5: [ { required: true, message: 'Restriction sites is required' } ],
+    restrictionEnzyme3: [ { required: true, message: 'Restriction sites is required' } ]
   }
 
   $refs!: {
@@ -189,6 +207,12 @@ export default class CreateDeNovoSegments extends Vue {
   @Watch('assemblyVector', { deep: true })
   onChangeYeastMarker () {
     this.denovoSegmentForm.assemblyVectorName = `${this.assemblyVector.yeastMarker},${this.assemblyVector.bacterialCopy}`
+  }
+
+  @Watch('type')
+  onChangeType () {
+    if (this.type) this.denovoSegmentForm.type = 'Vegas'
+    else delete this.denovoSegmentForm.type
   }
 
   /* submit Modal data */
