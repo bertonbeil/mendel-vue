@@ -47,10 +47,8 @@ export default class ReplaceRows extends Vue {
       study: this.studyName,
       project: this.projectName,
       type: value
-    }).then((res: any) => {
-      this.localCustomSegments = res.data.rows
-      this.$emit('loadOff')
-    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    }).then((res: any) => { this.localCustomSegments = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   handleNameChange (name: string) {

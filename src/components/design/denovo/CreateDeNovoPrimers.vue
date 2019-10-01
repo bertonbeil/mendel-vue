@@ -162,8 +162,7 @@ export default class CreateDeNovoPrimers extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -176,8 +175,7 @@ export default class CreateDeNovoPrimers extends Vue {
         this.denovoPrimersForm.projectName = ''
         this.denovoPrimersForm.dnaDesignName = ''
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -187,8 +185,7 @@ export default class CreateDeNovoPrimers extends Vue {
       .then((res: any) => {
         this.denovoPrimersForm.dnaDesignName = ''
         res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {

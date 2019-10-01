@@ -120,7 +120,8 @@
                 </el-form-item>
               </el-col>
             </el-row>
-          </el-form>
+          </div>
+        </draggable>
       </el-row>
     </div>
     <!-- Modal action buttons -->
@@ -268,8 +269,7 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -284,8 +284,7 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
         this.adaptoSegmentsManipulationForm.requestType = ''
         this.adaptoSegmentsManipulationForm.action = ''
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -300,8 +299,7 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
       this.adaptoSegmentsManipulationForm.requestType = ''
       this.adaptoSegmentsManipulationForm.action = ''
       this.assemblyList = res.data.regions
-      this.$emit('loadOff')
-    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   getDnaSegmentList ($event: any) {
@@ -317,16 +315,13 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
         delete this.segment_request.newName
         delete this.segment_request.customSegments
       }
-      this.$emit('loadOff')
-    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   getCustomSegmentTypeList () {
     return httpService.get('query/customSegmentTypeList')
-      .then((res: any) => {
-        res.data.rows.map((item: any) => this.customSegmentTypeList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      .then((res: any) => res.data.rows.map((item: any) => this.customSegmentTypeList.push(item.name)))
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   addRow () {

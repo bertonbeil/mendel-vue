@@ -190,7 +190,6 @@ export default class CreateAdaptoSegments extends Vue {
   segmentVegasAdapters: boolean = false
   type: string = ''
   dnaDesignName: string = ''
-  fileList: object[] = []
   bedFile: string = ''
 
   segmentRequest: AdaptoSegmentRequest = {
@@ -268,12 +267,6 @@ export default class CreateAdaptoSegments extends Vue {
     })
   }
 
-  uploadBedFile (file: any) {
-    const fileReader = new FileReader()
-    fileReader.readAsText(file.raw)
-    fileReader.onload = (e: any) => { this.segmentRequest.mask = e.target.result }
-  }
-
   /* load Modal data -> Get list of study */
   getStudyList () {
     this.$emit('loadOn')
@@ -281,8 +274,7 @@ export default class CreateAdaptoSegments extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -295,8 +287,7 @@ export default class CreateAdaptoSegments extends Vue {
         this.segmentRequest.projectName = ''
         this.segmentRequest.dnaDesignName = ''
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -307,8 +298,7 @@ export default class CreateAdaptoSegments extends Vue {
         this.assemblyList = []
         this.segmentRequest.dnaDesignName = ''
         res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of dna segments */
@@ -321,17 +311,16 @@ export default class CreateAdaptoSegments extends Vue {
     }).then((res: any) => {
       this.dnaSegmentsList = []
       res.data.rows.map((item: any) => this.dnaSegmentsList.push(item.segment))
-      this.$emit('loadOff')
-    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.segmentRequest.studyName = JSON.parse(this.modalData.saveAndNextData).studyName
-          this.segmentRequest.projectName = JSON.parse(this.modalData.saveAndNextData).projectName
-          this.dnaDesignName = JSON.parse(this.modalData.saveAndNextData).name
+          this.segmentRequest.studyName = this.modalData.saveAndNextData.studyName
+          this.segmentRequest.projectName = this.modalData.saveAndNextData.projectName
+          this.dnaDesignName = this.modalData.saveAndNextData.name
         }
       })
   }

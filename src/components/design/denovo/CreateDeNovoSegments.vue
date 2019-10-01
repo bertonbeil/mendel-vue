@@ -230,8 +230,7 @@ export default class CreateDeNovoSegments extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -242,8 +241,7 @@ export default class CreateDeNovoSegments extends Vue {
         this.projectsList = []
         this.assemblyList = []
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -252,10 +250,8 @@ export default class CreateDeNovoSegments extends Vue {
     return httpService.post('query/projectAssemblyList', {
       study: this.denovoSegmentForm.studyName,
       project: this.denovoSegmentForm.projectName
-    }).then((res: any) => {
-      this.assemblyList = res.data.rows
-      this.$emit('loadOff')
-    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    }).then((res: any) => { this.assemblyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   latestDnaDesign () {
@@ -266,8 +262,7 @@ export default class CreateDeNovoSegments extends Vue {
           if (i.name === this.denovoSegmentForm.dnaDesignName) this.assemblyLength = i.value.length
           return this.assemblyLength
         })
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* load Modal data -> Get list of restriction enzymes */
@@ -280,15 +275,14 @@ export default class CreateDeNovoSegments extends Vue {
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
           this.isSaveAndNext = true
-          this.denovoSegmentForm.studyName = JSON.parse(this.modalData.saveAndNextData).studyName
-          this.denovoSegmentForm.projectName = JSON.parse(this.modalData.saveAndNextData).projectName
-          this.denovoSegmentForm.dnaDesignName = JSON.parse(this.modalData.saveAndNextData).name
+          this.denovoSegmentForm.studyName = this.modalData.saveAndNextData.studyName
+          this.denovoSegmentForm.projectName = this.modalData.saveAndNextData.projectName
+          this.denovoSegmentForm.dnaDesignName = this.modalData.saveAndNextData.name
           this.getProjectsList()
           this.getAssemblyList()
           this.getRestrictionEnzymeList()
         }
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 }
 </script>

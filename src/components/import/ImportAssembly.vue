@@ -121,39 +121,39 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { DialogBase, importAssembly } from "@/utils/interfaces";
-import { httpService } from "@/services/http.service";
+import { Component, Vue, Prop } from 'vue-property-decorator'
+import { DialogBase, importAssembly } from '@/utils/interfaces'
+import { httpService } from '@/services/http.service'
 
-@Component({ name: "ImportAssembly" })
+@Component({ name: 'ImportAssembly' })
 export default class ImportAssembly extends Vue {
-  @Prop({ required: true }) modalData!: DialogBase;
+  @Prop({ required: true }) modalData!: DialogBase
 
-  studyList: string[] = [];
-  projectsList: string[] = [];
+  studyList: string[] = []
+  projectsList: string[] = []
   fileList: any = []
 
   importAssemblyForm: importAssembly = {
-    study: "",
-    projectName: "",
-    name: "",
-    description: "",
+    study: '',
+    projectName: '',
+    name: '',
+    description: '',
     pathway: '',
-    parts:'None',
-  };
+    parts: 'None'
+  }
 
   rules: object = {
     study: [{ required: true }],
     projectName: [{ required: true }],
     name: [{ required: true }],
-    description: [{required: true}],
-  };
+    description: [{ required: true }]
+  }
 
   $refs!: {
-    importAssemblyForm: HTMLFormElement;
-  };
+    importAssemblyForm: HTMLFormElement
+  }
 
-    get sendData () {
+  get sendData () {
     return this.importAssemblyForm
   }
 
@@ -166,38 +166,31 @@ export default class ImportAssembly extends Vue {
   }
 
   /* load Modal data -> Get list of study */
-  getStudyList() {
-    this.$emit("loadOn");
-    return httpService.get("query/studyNameList").then((res: any) => {
-      this.studyList = res.data.rows;
-      this.$emit("loadOff");
-    });
+  getStudyList () {
+    this.$emit('loadOn')
+    return httpService.get('query/studyNameList')
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
-  getProjectsList() {
-    this.$emit("loadOn");
-    return httpService
-      .post("query/projectNameList", { study: this.importAssemblyForm.study })
+  getProjectsList () {
+    this.$emit('loadOn')
+    return httpService.post('query/projectNameList', { study: this.importAssemblyForm.study })
       .then((res: any) => {
-        this.importAssemblyForm.projectName = "";
-        this.projectsList = res.data.rows;
-        this.$emit("loadOff");
-      })
-      .catch((err: any) => {
-        this.$emit("loadOff");
-        console.log(err);
-      });
+        this.importAssemblyForm.projectName = ''
+        this.projectsList = res.data.rows
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
-   uploadFastaFile (file: any) {
+  uploadFastaFile (file: any) {
     const fileReader = new FileReader()
     fileReader.readAsText(file.raw)
     fileReader.onload = (e: any) => { this.importAssemblyForm.pathway = e.target.result }
   }
 
-  created() {
-    this.getStudyList();
+  created () {
+    this.getStudyList()
   }
 }
 </script>

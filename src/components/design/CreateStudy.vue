@@ -123,10 +123,8 @@ export default class CreateStudy extends Vue {
   getCollaboratorList () {
     this.$emit('loadOn')
     return httpService.get('query/collaboratorList')
-      .then((res: any) => {
-        this.investigators = res.data.rows.map((investigator: any) => investigator.id)
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      .then((res: any) => { this.investigators = res.data.rows.map((investigator: any) => investigator.id) })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {
