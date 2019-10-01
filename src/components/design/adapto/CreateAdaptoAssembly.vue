@@ -9,21 +9,34 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
             <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="adaptoAssemblyForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+              <el-select
+                v-model="adaptoAssemblyForm.studyName"
+                @change="getProjectsList"
+                placeholder="Select study"
+                class="w-full">
                 <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="adaptoAssemblyForm.projectName" @change="getRegionList" placeholder="Select project" class="w-full">
+              <el-select
+                v-model="adaptoAssemblyForm.projectName"
+                @change="getRegionList"
+                :disabled="!adaptoAssemblyForm.studyName"
+                placeholder="Select project"
+                class="w-full">
                 <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Region name:" prop="locusName">
-              <el-select v-model="adaptoAssemblyForm.locusName" placeholder="Select region" class="w-full">
+              <el-select
+                v-model="adaptoAssemblyForm.locusName"
+                :disabled="!adaptoAssemblyForm.projectName"
+                placeholder="Select region"
+                class="w-full">
                 <el-option v-for="(item, i) in locusNameList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
@@ -32,12 +45,20 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="6">
             <el-form-item label="Name:" prop="name">
-              <el-input v-model="adaptoAssemblyForm.name" placeholder="Enter assembly name"></el-input>
+              <el-input
+                v-model="adaptoAssemblyForm.name"
+                :disabled="!adaptoAssemblyForm.locusName"
+                placeholder="Enter assembly name">
+              </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="18">
             <el-form-item label="Description:" prop="description">
-              <el-input v-model="adaptoAssemblyForm.description" placeholder="Enter a short but memorable description for this region"></el-input>
+              <el-input
+                v-model="adaptoAssemblyForm.description"
+                :disabled="!adaptoAssemblyForm.name"
+                placeholder="Enter a short but memorable description for this region">
+              </el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -75,11 +96,11 @@ export default class CreateAdaptoAssembly extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
-    locusName: [ { required: true } ],
-    name: [ { required: true } ],
-    description: [ { required: true } ]
+    studyName: [ { required: true, message: 'Study name is required' } ],
+    projectName: [ { required: true, message: 'Project name is required' } ],
+    locusName: [ { required: true, message: 'Region name is required' } ],
+    name: [ { required: true, message: 'Assembly name is required' } ],
+    description: [ { required: true, message: 'Description is required' } ]
   }
 
   $refs!: {
@@ -105,8 +126,7 @@ export default class CreateAdaptoAssembly extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -117,8 +137,7 @@ export default class CreateAdaptoAssembly extends Vue {
         this.projectsList = []
         this.locusNameList = []
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -131,18 +150,16 @@ export default class CreateAdaptoAssembly extends Vue {
       this.locusNameList = []
       this.adaptoAssemblyForm.locusName = ''
       this.locusNameList = res.data.regions
-      this.$emit('loadOff')
-    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          console.log(JSON.parse(this.modalData.saveAndNextData))
-          this.adaptoAssemblyForm.studyName = JSON.parse(this.modalData.saveAndNextData).studyName
-          this.adaptoAssemblyForm.projectName = JSON.parse(this.modalData.saveAndNextData).projectName
-          this.adaptoAssemblyForm.locusName = JSON.parse(this.modalData.saveAndNextData).name
+          this.adaptoAssemblyForm.studyName = this.modalData.saveAndNextData.studyName
+          this.adaptoAssemblyForm.projectName = this.modalData.saveAndNextData.projectName
+          this.adaptoAssemblyForm.locusName = this.modalData.saveAndNextData.name
           this.getProjectsList()
         }
       })

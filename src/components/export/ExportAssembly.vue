@@ -53,6 +53,7 @@ export default class ExportAssemblies extends Vue {
   studyList: string[] = []
   projectsList: string[] = []
   assemblyList: string[] = []
+  isSaveAndNext: boolean = false
 
   exportAssemblyForm: ExportAssembly = {
     study: '',
@@ -106,10 +107,8 @@ export default class ExportAssemblies extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = res.data.rows
-        this.$emit('loadOff')
-      })
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -117,32 +116,29 @@ export default class ExportAssemblies extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.exportAssemblyForm.study })
       .then((res: any) => {
-        this.exportAssemblyForm.project = ''
-        this.exportAssemblyForm.assemblyName = ''
         this.projectsList = res.data.rows
         this.assemblyList = []
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
   getAssemblyList () {
-    this.$emit('loadOn')
+    if (this.isSaveAndNext === false) this.$emit('loadOn')
     return httpService.post('query/projectAssemblyList', { study: this.exportAssemblyForm.study, project: this.exportAssemblyForm.project })
-      .then((res: any) => {
-        this.exportAssemblyForm.assemblyName = ''
-        this.assemblyList = res.data.rows
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      .then((res: any) => { this.assemblyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.exportAssemblyForm.study = JSON.parse(this.modalData.saveAndNextData).studyName
-          this.exportAssemblyForm.project = JSON.parse(this.modalData.saveAndNextData).projectName
-          this.exportAssemblyForm.assemblyName = JSON.parse(this.modalData.saveAndNextData).dnaDesignName
+          this.isSaveAndNext = true
+          this.exportAssemblyForm.study = this.modalData.saveAndNextData.studyName
+          this.exportAssemblyForm.project = this.modalData.saveAndNextData.projectName
+          this.exportAssemblyForm.assemblyName = this.modalData.saveAndNextData.dnaDesignName
+          this.getProjectsList()
+          this.getAssemblyList()
         }
       })
   }

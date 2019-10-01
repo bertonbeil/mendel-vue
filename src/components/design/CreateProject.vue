@@ -10,7 +10,7 @@
           width="300"
           trigger="hover">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-          <div v-html="modalData.dialogInfo"></div>
+          <div v-html="modalData.dialogInfo" class="break-word"></div>
         </el-popover>
       </el-col>
     </el-row>
@@ -20,7 +20,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="Study name:" prop="study">
-              <el-select v-model="projectForm.study" placeholder="Select" class="w-full">
+              <el-select v-model="projectForm.study" placeholder="Select study" class="w-full">
                 <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name">
                 </el-option>
               </el-select>
@@ -28,12 +28,13 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="Project name:" prop="name">
-              <el-input v-model="projectForm.name"></el-input>
+              <el-input v-model="projectForm.name" placeholder="Project name" :disabled="!projectForm.study">
+              </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="Project description (optional):">
-              <el-input v-model="projectForm.description"></el-input>
+              <el-input v-model="projectForm.description" placeholder="Enter a brief but memorable description of your project"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -79,8 +80,8 @@ export default class CreateProject extends Vue {
   }
 
   rules: object = {
-    study: [ { required: true } ],
-    name: [ { required: true, message: 'Please input Project name', trigger: 'blur' } ]
+    study: [ { required: true, message: 'Study name is required' } ],
+    name: [ { required: true, message: 'Project name is required' } ]
   }
 
   $refs!: {
@@ -105,17 +106,15 @@ export default class CreateProject extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = res.data.rows
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.projectForm.study = JSON.parse(this.modalData.saveAndNextData).new_study.name
+          this.projectForm.study = this.modalData.saveAndNextData.new_study.name
         }
       })
   }

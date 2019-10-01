@@ -9,21 +9,34 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
             <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="segmentRequest.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+              <el-select
+                v-model="segmentRequest.studyName"
+                @change="getProjectsList"
+                placeholder="Select study"
+                class="w-full">
                 <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="segmentRequest.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+              <el-select
+                v-model="segmentRequest.projectName"
+                @change="getAssemblyList"
+                :disabled="!segmentRequest.studyName"
+                placeholder="Select project"
+                class="w-full">
                 <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="dnaDesignName">
-              <el-select v-model="dnaDesignName" placeholder="Select assembly" class="w-full">
+              <el-select
+                v-model="dnaDesignName"
+                :disabled="!segmentRequest.projectName"
+                placeholder="Select assembly"
+                class="w-full">
                 <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
@@ -32,15 +45,23 @@
 
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
-            <el-form-item label="First:">
-              <el-select v-model="segmentRequest.firstSegmentIdx" class="w-full">
+            <el-form-item label="First:" prop="firstSegmentIdx">
+              <el-select
+                v-model="segmentRequest.firstSegmentIdx"
+                :disabled="!dnaDesignName"
+                placeholder="Select segment"
+                class="w-full">
                 <el-option v-for="(item, i) in dnaSegmentsList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="First:">
-              <el-select v-model="segmentRequest.lastSegmentIdx" class="w-full">
+            <el-form-item label="Last:" prop="lastSegmentIdx">
+              <el-select
+                v-model="segmentRequest.lastSegmentIdx"
+                :disabled="!dnaDesignName"
+                placeholder="Select segment"
+                class="w-full">
                 <el-option v-for="(item, i) in dnaSegmentsList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
@@ -55,7 +76,7 @@
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Assembly vector:
               <el-popover class="absolute top-0 right-0" placement="top-start" width="300" trigger="hover">
                 <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-                <div>All vectors are kanamycin resistant for bacterial selection, and are inducible to high copy number in bacteria for isolation. All contain CEN/ARS for low copy yeast maintenance.</div>
+                <div class="break-word">All vectors are kanamycin resistant for bacterial selection, and are inducible to high copy number in bacteria for isolation. All contain CEN/ARS for low copy yeast maintenance.</div>
               </el-popover>
             </h4>
             <div class="flex items-center mt-10">
@@ -68,9 +89,7 @@
           </el-col>
           <el-col :span="12" class="mb-30">
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Upload .bed formatted mask file:</h4>
-            <el-upload action="https://jsonplaceholder.typicode.com/posts/" :file-list="fileList" class="mt-10" :on-change="uploadBedFile">
-              <el-button size="mini" type="primary">Click to upload</el-button>
-            </el-upload>
+            <UploadFile @getUploadFile='file => segmentRequest.mask = file' :accept='".bed"'/>
           </el-col>
 
           <el-col :span="24" class="mb-30">
@@ -171,7 +190,6 @@ export default class CreateAdaptoSegments extends Vue {
   segmentVegasAdapters: boolean = false
   type: string = ''
   dnaDesignName: string = ''
-  fileList: object[] = []
   bedFile: string = ''
 
   segmentRequest: AdaptoSegmentRequest = {
@@ -188,8 +206,8 @@ export default class CreateAdaptoSegments extends Vue {
     maxOverlap: 600,
     optOverlap: 300,
     sequences: 'None',
-    firstSegmentIdx: 0,
-    lastSegmentIdx: 0
+    firstSegmentIdx: null,
+    lastSegmentIdx: null
   }
 
   primersRequest: AdaptoPrimersRequest = {
@@ -219,9 +237,11 @@ export default class CreateAdaptoSegments extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
-    dnaDesignName: [ { required: true } ]
+    studyName: [ { required: true, message: 'Study name is required' } ],
+    projectName: [ { required: true, message: 'Project name is required' } ],
+    dnaDesignName: [ { required: true, message: 'Assembly name is required' } ],
+    firstSegmentIdx: [ { required: true, message: 'First segment index name is required' } ],
+    lastSegmentIdx: [ { required: true, message: 'Last segment index name is required' } ]
   }
 
   $refs!: {
@@ -247,12 +267,6 @@ export default class CreateAdaptoSegments extends Vue {
     })
   }
 
-  uploadBedFile (file: any) {
-    const fileReader = new FileReader()
-    fileReader.readAsText(file.raw)
-    fileReader.onload = (e: any) => { this.segmentRequest.mask = e.target.result }
-  }
-
   /* load Modal data -> Get list of study */
   getStudyList () {
     this.$emit('loadOn')
@@ -260,8 +274,7 @@ export default class CreateAdaptoSegments extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -274,8 +287,7 @@ export default class CreateAdaptoSegments extends Vue {
         this.segmentRequest.projectName = ''
         this.segmentRequest.dnaDesignName = ''
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -286,8 +298,7 @@ export default class CreateAdaptoSegments extends Vue {
         this.assemblyList = []
         this.segmentRequest.dnaDesignName = ''
         res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of dna segments */
@@ -300,17 +311,16 @@ export default class CreateAdaptoSegments extends Vue {
     }).then((res: any) => {
       this.dnaSegmentsList = []
       res.data.rows.map((item: any) => this.dnaSegmentsList.push(item.segment))
-      this.$emit('loadOff')
-    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.segmentRequest.studyName = JSON.parse(this.modalData.saveAndNextData).studyName
-          this.segmentRequest.projectName = JSON.parse(this.modalData.saveAndNextData).projectName
-          this.dnaDesignName = JSON.parse(this.modalData.saveAndNextData).name
+          this.segmentRequest.studyName = this.modalData.saveAndNextData.studyName
+          this.segmentRequest.projectName = this.modalData.saveAndNextData.projectName
+          this.dnaDesignName = this.modalData.saveAndNextData.name
         }
       })
   }

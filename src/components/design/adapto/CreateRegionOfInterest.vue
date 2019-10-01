@@ -9,23 +9,34 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
             <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="adaptoRegionOfInterestForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+              <el-select
+                v-model="adaptoRegionOfInterestForm.studyName"
+                @change="getProjectsList"
+                placeholder="Select study"
+                class="w-full">
                 <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="adaptoRegionOfInterestForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+              <el-select
+                v-model="adaptoRegionOfInterestForm.projectName"
+                @change="getAssemblyList"
+                :disabled="!adaptoRegionOfInterestForm.studyName"
+                placeholder="Select project"
+                class="w-full">
                 <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Name:" prop="name">
-              <el-input v-model="adaptoRegionOfInterestForm.name"
+              <el-input
+                v-model="adaptoRegionOfInterestForm.name"
                 @change="getOrganismList"
-                placeholder="Enter name for this locus"
+                :disabled="!adaptoRegionOfInterestForm.projectName"
+                placeholder="Enter name for this region"
                 class="w-full">
               </el-input>
             </el-form-item>
@@ -33,7 +44,11 @@
 
           <el-col :span="24" class="mb-30">
             <el-form-item label="Description:" prop="description">
-              <el-input v-model="adaptoRegionOfInterestForm.description" placeholder="Enter a short but memorable description for this region"></el-input>
+              <el-input
+                v-model="adaptoRegionOfInterestForm.description"
+                :disabled="!adaptoRegionOfInterestForm.name"
+                placeholder="Enter a short but memorable description for this region">
+              </el-input>
             </el-form-item>
           </el-col>
 
@@ -75,7 +90,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="Length (bp):" prop="length">
-              <el-input-number v-model="lengthBp" class="w-full" disabled></el-input-number>
+              <el-input-number :value="lengthBp" class="w-full" disabled></el-input-number>
               <p class="text-grey-dark -mt-5 ml-5 break-normal">This is the default length for a single entered coordinate view. Edit for a custom length, or enter a range in the coordinate field for custom coordinate endpoints.</p>
             </el-form-item>
           </el-col>
@@ -111,13 +126,7 @@
         </el-col>
         <el-col :span="24">
           <h4 class="text-xl text-black mt-3">Upload fasta:</h4>
-          <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :file-list="fileList" class="mt-10"
-            :on-change="uploadFastaFile"
-            accept=".fa,.fasta">
-            <el-button size="mini" type="primary">Click to upload</el-button>
-          </el-upload>
+          <UploadFile @getUploadFile='file => segmentRequest.mask = file' :accept='".fa,.fasta"'/>
         </el-col>
       </el-row>
     </div>
@@ -148,7 +157,6 @@ export default class CreateRegionOfInterest extends Vue {
   organismList: string[] = []
   chromosomeList: string[] = []
   posValue: number = 5000
-  fileList: object[] = []
   source: any = {
     organism: '',
     chromosome: '',
@@ -168,10 +176,10 @@ export default class CreateRegionOfInterest extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
-    name: [ { required: true } ],
-    description: [ { required: true } ]
+    studyName: [ { required: true, message: 'Study name is required' } ],
+    projectName: [ { required: true, message: 'Project name is required' } ],
+    name: [ { required: true, message: 'Region name is required' } ],
+    description: [ { required: true, message: 'Description is required' } ]
     // organism: [ { required: true } ],
     // chromosome: [ { required: true } ],
     // openPosition: [ { required: true } ],
@@ -191,6 +199,7 @@ export default class CreateRegionOfInterest extends Vue {
   }
 
   get organism () {
+    // TODO: use switch
     return this.source.organism === 'human' ? 'hg38'
       : this.source.organism === 'rat' ? 'rn6'
         : this.source.organism === 'mouse' ? 'mm10'
@@ -207,17 +216,10 @@ export default class CreateRegionOfInterest extends Vue {
 
   /* submit Modal data */
   save (next?: string) {
-    console.log(next)
     this.$refs['adaptoRegionOfInterestForm'].validate((valid: boolean) => {
       if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
-  }
-
-  uploadFastaFile (file: any) {
-    const fileReader = new FileReader()
-    fileReader.readAsText(file.raw)
-    fileReader.onload = (e: any) => { this.source.sequence = e.target.result }
   }
 
   /* load Modal data -> Get list of study */
@@ -227,8 +229,7 @@ export default class CreateRegionOfInterest extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -240,8 +241,7 @@ export default class CreateRegionOfInterest extends Vue {
         this.assemblyList = []
         this.adaptoRegionOfInterestForm.name = ''
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -252,34 +252,29 @@ export default class CreateRegionOfInterest extends Vue {
         this.assemblyList = []
         this.adaptoRegionOfInterestForm.name = ''
         res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   getOrganismList () {
     this.$emit('loadOn')
     return httpService.post('query/adaptoUtils', { request: 'organismList' })
-      .then((res: any) => {
-        this.organismList = res.data.lims_response
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      .then((res: any) => { this.organismList = res.data.lims_response })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   getChromosomeList () {
     this.$emit('loadOn')
     return httpService.post('query/adaptoUtils', { request: 'chromosomeList', organism: this.source.organism })
-      .then((res: any) => {
-        this.chromosomeList = res.data.lims_response
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      .then((res: any) => { this.chromosomeList = res.data.lims_response })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.adaptoRegionOfInterestForm.studyName = JSON.parse(this.modalData.saveAndNextData).study
-          this.adaptoRegionOfInterestForm.projectName = JSON.parse(this.modalData.saveAndNextData).name
+          this.adaptoRegionOfInterestForm.studyName = this.modalData.saveAndNextData.study
+          this.adaptoRegionOfInterestForm.projectName = this.modalData.saveAndNextData.name
           this.getProjectsList()
         }
       })

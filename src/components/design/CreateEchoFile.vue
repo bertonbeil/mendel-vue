@@ -280,17 +280,15 @@ export default class CreateEchoFile extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item))
-        // this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
   getProjectsList (index: any) {
     // this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.tableData[index].study })
-      .then((res: any) => {
-        this.projectsList = res.data.rows
-      }).catch((err: any) => { console.log(err) })
+      .then((res: any) => { this.projectsList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -306,11 +304,10 @@ export default class CreateEchoFile extends Vue {
     this.tableData[index].assemblyList.map((item: any) => {
       if (item.assembly === this.tableData[index].name) this.tableData[index].segments = item.segments
     })
-    console.log(this.tableData[index].segments)
   }
 
   changeStep (index: any) {
-    console.log(index)
+
   }
 
   getModalData () {

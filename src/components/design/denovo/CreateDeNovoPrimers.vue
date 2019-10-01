@@ -9,21 +9,34 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
             <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="denovoPrimersForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+              <el-select
+                v-model="denovoPrimersForm.studyName"
+                @change="getProjectsList"
+                placeholder="Select study"
+                class="w-full">
                 <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="denovoPrimersForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+              <el-select
+                v-model="denovoPrimersForm.projectName"
+                :disabled="!denovoPrimersForm.studyName"
+                @change="getAssemblyList"
+                placeholder="Select project"
+                class="w-full">
                 <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="dnaDesignName">
-              <el-select v-model="denovoPrimersForm.dnaDesignName" placeholder="Select assembly" class="w-full">
+              <el-select
+                v-model="denovoPrimersForm.dnaDesignName"
+                :disabled="!denovoPrimersForm.projectName"
+                placeholder="Select assembly"
+                class="w-full">
                 <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
@@ -121,9 +134,9 @@ export default class CreateDeNovoPrimers extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
-    dnaDesignName: [ { required: true } ]
+    studyName: [ { required: true, message: 'Study name is required' } ],
+    projectName: [ { required: true, message: 'Project name is required' } ],
+    dnaDesignName: [ { required: true, message: 'Assembly name is required' } ]
   }
 
   $refs!: {
@@ -149,8 +162,7 @@ export default class CreateDeNovoPrimers extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -163,8 +175,7 @@ export default class CreateDeNovoPrimers extends Vue {
         this.denovoPrimersForm.projectName = ''
         this.denovoPrimersForm.dnaDesignName = ''
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -174,8 +185,7 @@ export default class CreateDeNovoPrimers extends Vue {
       .then((res: any) => {
         this.denovoPrimersForm.dnaDesignName = ''
         res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   created () {

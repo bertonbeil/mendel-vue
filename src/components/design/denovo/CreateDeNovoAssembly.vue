@@ -9,26 +9,37 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
             <el-form-item label="Study name:" prop="studyName">
-              <el-select v-model="denovoAssemblyForm.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
+              <el-select
+                v-model="denovoAssemblyForm.studyName"
+                @change="getProjectsList"
+                placeholder="Select study"
+                class="w-full">
                 <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="projectName">
-              <el-select v-model="denovoAssemblyForm.projectName" @change="getAssemblyList" placeholder="Select project" class="w-full">
+              <el-select
+                v-model="denovoAssemblyForm.projectName"
+                :disabled="!denovoAssemblyForm.studyName"
+                @change="getAssemblyList"
+                placeholder="Select project"
+                class="w-full">
                 <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="name">
-              <el-select v-model="denovoAssemblyForm.name"
+              <el-select
+                v-model="denovoAssemblyForm.name"
                 filterable
                 allow-create
                 default-first-option
                 placeholder="Select assembly"
                 class="w-full"
+                :disabled="!denovoAssemblyForm.projectName"
                 @change="assemblyNameChecker">
                 <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
@@ -37,7 +48,10 @@
 
           <el-col :span="24">
             <el-form-item label="Assembly description (optional):">
-              <el-input v-model="denovoAssemblyForm.description" placeholder="Enter a brief but memorable description of your assembly"></el-input>
+              <el-input
+                v-model="denovoAssemblyForm.description"
+                placeholder="Enter a brief but memorable description of your assembly">
+              </el-input>
             </el-form-item>
           </el-col>
 
@@ -51,14 +65,22 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item prop="openReValue">
-                  <el-select v-model="denovoAssemblyForm.openReValue" placeholder="5' RE" class="w-full">
+                  <el-select
+                    v-model="denovoAssemblyForm.openReValue"
+                    :disabled="!denovoAssemblyForm.name"
+                    placeholder="5' RE"
+                    class="w-full">
                     <el-option v-for="item in restrictionEnzymes" :key="item.name" :label="item.name" :value="item.sequence"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item prop="closeReValue">
-                  <el-select v-model="denovoAssemblyForm.closeReValue" placeholder="3' RE" class="w-full">
+                  <el-select
+                    v-model="denovoAssemblyForm.closeReValue"
+                    :disabled="!denovoAssemblyForm.openReValue"
+                    placeholder="3' RE"
+                    class="w-full">
                     <el-option v-for="item in restrictionEnzymes" :key="item.name" :label="item.name" :value="item.sequence"></el-option>
                   </el-select>
                 </el-form-item>
@@ -69,7 +91,12 @@
           <el-col :span="5">
             <h4 class="text-xl text-black mt-3">Organism:</h4>
             <el-form-item prop="organism">
-              <el-select v-model="denovoAssemblyForm.organism" @change="addRow()" placeholder="Select host organism" class="w-full">
+              <el-select
+                v-model="denovoAssemblyForm.organism"
+                :disabled="!denovoAssemblyForm.closeReValue"
+                @change="addRow()"
+                placeholder="Select host organism"
+                class="w-full">
                 <el-option v-for="item in organisms" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
@@ -200,12 +227,12 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true } ],
-    projectName: [ { required: true } ],
-    name: [ { required: true } ],
-    openReValue: [ { required: true } ],
-    closeReValue: [ { required: true } ],
-    organism: [ { required: true } ]
+    studyName: [ { required: true, message: 'Study name is required' } ],
+    projectName: [ { required: true, message: 'Project name is required' } ],
+    name: [ { required: true, message: 'Assembly name is required' } ],
+    openReValue: [ { required: true, message: 'Restrictions sites is required' } ],
+    closeReValue: [ { required: true, message: 'Restrictions sites is required' } ],
+    organism: [ { required: true, message: 'Organism is required' } ]
   }
 
   $refs!: {
@@ -233,7 +260,7 @@ export default class CreateDeNovoAssembly extends Vue {
                 ? this.modalData.saveAndNext
                 : null)
             } else this.responseMessage()
-          })
+          }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
       } else return false
     })
   }
@@ -245,8 +272,7 @@ export default class CreateDeNovoAssembly extends Vue {
       .then((res: any) => {
         this.studyList = []
         res.data.rows.map((item: any) => this.studyList.push(item.name))
-        this.$emit('loadOff')
-      })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -258,8 +284,7 @@ export default class CreateDeNovoAssembly extends Vue {
         this.assemblyList = []
         this.denovoAssemblyForm.name = ''
         res.data.rows.map((item: any) => this.projectsList.push(item.name))
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   getAssemblyList () {
@@ -267,10 +292,8 @@ export default class CreateDeNovoAssembly extends Vue {
     return httpService.post('query/projectAssemblyList', {
       study: this.denovoAssemblyForm.studyName,
       project: this.denovoAssemblyForm.projectName
-    }).then((res: any) => {
-      this.assemblyList = res.data.rows
-      this.$emit('loadOff')
-    }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+    }).then((res: any) => { this.assemblyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   assemblyNameChecker () {
@@ -280,14 +303,10 @@ export default class CreateDeNovoAssembly extends Vue {
         if (res.data.valid === 'false') {
           this.$emit('loadOn')
           httpService.post('query/assemblyRequestRetriever', { name: this.denovoAssemblyForm.name })
-            .then((res: any) => {
-              this.handleResponse(res.data.rows[0])
-              this.$emit('loadOff')
-            })
-            .catch((err: any) => console.log(err))
+            .then((res: any) => { this.handleResponse(res.data.rows[0]) })
+            .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
         }
-      })
-      .catch(err => console.log(err))
+      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   handleResponse (res: any) {
@@ -318,27 +337,31 @@ export default class CreateDeNovoAssembly extends Vue {
     return httpService.get('query/restrictionEnzymeList').then((res: any) => {
       res.data.rows[0].sequence = 'None'
       this.restrictionEnzymes = res.data.rows
-    })
+    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 
   /* load Modal data -> Get list of vegas adapters */
   getVegasAdapterNameList () {
-    return httpService.get('query/vegasAdapterNameList').then((res: any) => { this.vegasAdapters = res.data.rows })
+    return httpService.get('query/vegasAdapterNameList')
+      .then((res: any) => { this.vegasAdapters = res.data.rows })
   }
 
   /* load Modal data -> Get list of promoters */
   getPromoters () {
-    return httpService.get('query/promoterNameList').then((res: any) => { this.promoters = res.data.rows })
+    return httpService.get('query/promoterNameList')
+      .then((res: any) => { this.promoters = res.data.rows })
   }
 
   /* Get list of CDS */
   getCDS () {
-    return httpService.get(`query/bioPartsNameList?project=${this.denovoAssemblyForm.projectName}`).then((res: any) => { this.cds = res.data.rows })
+    return httpService.get(`query/bioPartsNameList?project=${this.denovoAssemblyForm.projectName}`)
+      .then((res: any) => { this.cds = res.data.rows })
   }
 
   /* load Modal data -> Get list of terminators */
   getTerminators () {
-    return httpService.get('query/terminatorNameList').then((res: any) => { this.terminators = res.data.rows })
+    return httpService.get('query/terminatorNameList')
+      .then((res: any) => { this.terminators = res.data.rows })
   }
 
   /* response viewer */
@@ -357,13 +380,12 @@ export default class CreateDeNovoAssembly extends Vue {
     ]).then(() => {
       if (this.modalData.hasOwnProperty('saveAndNextData')) {
         this.isSaveAndNext = true
-        this.denovoAssemblyForm.studyName = JSON.parse(this.modalData.saveAndNextData).study
-        this.denovoAssemblyForm.projectName = JSON.parse(this.modalData.saveAndNextData).project
+        this.denovoAssemblyForm.studyName = this.modalData.saveAndNextData.study
+        this.denovoAssemblyForm.projectName = this.modalData.saveAndNextData.project
         this.getProjectsList()
         this.getAssemblyList()
       }
-      this.$emit('loadOff')
-    })
+    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
   }
 }
 </script>

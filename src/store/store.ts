@@ -92,7 +92,8 @@ export default new Vuex.Store({
       {
         component: 'CreateAdaptoSegmentsManipulation',
         title: 'Segments manipulation',
-        dialogCaption: 'Segment manipulation'
+        dialogCaption: 'Segment manipulation',
+        submitUrl: 'adaptoSegmentDesigner'
       },
       {
         component: 'CreateAdaptoPrimers',
@@ -103,17 +104,33 @@ export default new Vuex.Store({
         saveAndNext: 'ExportAssembly'
       },
       {
-        component: 'ExportAssembly',
-        title: 'Assembly',
-        dialogCaption: 'Export assembly',
-        dialogIntro: 'Export a CSV file and a Genbank file with all information about your assembly.'
-      },
-      {
         component: 'CreateEchoFile',
         title: 'Echo file',
         dialogCaption: 'Create new Echo file',
         dialogIntro: 'Use this tool to design the Echo file to analyse your assembly using junction primers designed by MenDEL.',
         submitUrl: 'echoDesigner'
+      },
+      {
+        component: 'ImportCDS',
+        title: 'Import CDS',
+        dialogCaption: 'Import CDS',
+        dialogIntro: 'This page allows you to import CDS’ designed outside of MenDEL. You will provide the desired DNA sequence of your CDS’, which will not be further recoded.',
+        dialogInfo: '<p>One way to distinguish between Studies and Projects is to think of Studies as general focus areas and to think of Projects as questions within that focus area that you would like to answer. Under each Project, you will then be able to create multiple assemblies, which is useful if, say, you want to create multiple versions of the same pathway.</p><br><p>Example: You create a study titled ‘Prototrophic Mammalian Cell Line’ and you create a Project titled ‘Valine biosynthesis’. Within this Project, you are able to create multiple versions of the valine biosynthetic pathway e.g. by swapping out CDSes and regulatory elements.</p>',
+        submitUrl: 'bioPartDesigner'
+      },
+      {
+        component: 'ImportAssembly',
+        title: 'Import Assembly',
+        dialogCaption: 'Import Assembly',
+        dialogIntro: 'This page allows you to import a completely designed assembly sequence done outside MenDEL (i.e. in SnapGene or Geneious). If you rather want to design a de novo or adapto assembly, you should carry out the design within MenDEL.',
+        dialogInfo: '<p>Note: The imported sequence will not be modified in any way upon import. For example, terminal restriction sites will not be added. Once imported the sequence will be inserted into the selected assembly vector for segmentation and primer design steps.</p>',
+        submitUrl: 'dnaDesigner'
+      },
+      {
+        component: 'ExportAssembly',
+        title: 'Assembly',
+        dialogCaption: 'Export assembly',
+        dialogIntro: 'Export a CSV file and a Genbank file with all information about your assembly.'
       },
       {
         component: 'AccountInfo',

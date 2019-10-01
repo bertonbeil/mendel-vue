@@ -84,7 +84,7 @@ export default class Home extends Vue {
           this.responseMessage(res.data)
         } else {
           if (to) {
-            this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: modalData.data }
+            this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: JSON.parse(modalData.data) }
             this.isLoading.close()
           } else {
             this.responseMessage(res.data)
@@ -124,7 +124,7 @@ export default class Home extends Vue {
   /* response viewer */
   responseMessage ({ lims_response, status }: any) {
     (this as any).alert({ type: status, msg: lims_response })
-      .then(() => { this.isLoading.close() })
+      .then(() => { this.isLoading.close(); this.closeModal() })
       .catch(() => { this.isLoading.close(); this.closeModal() })
   }
 }
