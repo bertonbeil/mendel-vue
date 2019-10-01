@@ -185,10 +185,28 @@ export interface AdaptoPrimers {
   well?: string
 }
 
-export interface ExportAssembly {
+export interface ImportsCDS {
   study?: string
   project?: string
-  assemblyName?: string
+  organism?: string
+  suffix?: string
+  description?: string
+  accession?: string,
+  dna_sequence?: string,
+  nickname?: string,
+  forbiddenRegions?: string,
+  excludeRestrictionEnzymes?: boolean,
+  excludeForbiddenRegions?: boolean,
+  source?: string
+}
+
+export interface importAssembly {
+  study?: string
+  projectName?: string
+  name?: string,
+  description?: string,
+  pathway?: '',
+  parts?: string,
 }
 
 export interface EchoFile {
@@ -196,4 +214,10 @@ export interface EchoFile {
   dna_amount?: number
   primer_amount?: number
   primer_control_location?: string
+}
+
+export interface ExportAssembly {
+  study?: string
+  project?: string
+  assemblyName?: string
 }
