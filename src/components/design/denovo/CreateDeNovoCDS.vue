@@ -170,7 +170,8 @@ export default class CreateDeNovoCDS extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -178,7 +179,8 @@ export default class CreateDeNovoCDS extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoCDSForm.study })
       .then((res: any) => { this.projectsList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   getCDSTable () {
@@ -192,7 +194,9 @@ export default class CreateDeNovoCDS extends Vue {
               this.CDSNaming = true
               this.$emit('update:title', 'CDS Naming')
             } else (this as any).alert({ type: status, msg: lims_response })
-          }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+          })
+          .catch((err: any) => { throw new Error(err) })
+          .finally(() => this.$emit('loadOff'))
       } else return false
     })
   }

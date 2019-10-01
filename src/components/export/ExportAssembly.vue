@@ -9,22 +9,33 @@
         <el-row :gutter="20" class="mb-30">
           <el-col :span="8">
             <el-form-item label="Study name:" prop="study">
-              <el-select v-model="exportAssemblyForm.study" @change="getProjectsList" placeholder="Select study" class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
+              <el-select
+                v-model="exportAssemblyForm.study"
+                @change="getProjectsList"
+                placeholder="Select study"
+                class="w-full">
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Project name:" prop="project">
-              <el-select v-model="exportAssemblyForm.project" @change="getAssemblyList" placeholder="Select project" class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
+              <el-select
+                v-model="exportAssemblyForm.project"
+                @change="getAssemblyList"
+                placeholder="Select project"
+                class="w-full">
+                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="assemblyName">
-              <el-select v-model="exportAssemblyForm.assemblyName" placeholder="Select assembly" class="w-full">
-                <el-option v-for="(item, i) in assemblyList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
+              <el-select
+                v-model="exportAssemblyForm.assemblyName"
+                placeholder="Select assembly"
+                class="w-full">
+                <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -108,7 +119,8 @@ export default class ExportAssemblies extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -116,17 +128,22 @@ export default class ExportAssemblies extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.exportAssemblyForm.study })
       .then((res: any) => {
-        this.projectsList = res.data.rows
         this.assemblyList = []
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+        this.projectsList = res.data.rows
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
   getAssemblyList () {
     if (this.isSaveAndNext === false) this.$emit('loadOn')
-    return httpService.post('query/projectAssemblyList', { study: this.exportAssemblyForm.study, project: this.exportAssemblyForm.project })
-      .then((res: any) => { this.assemblyList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+    return httpService.post('query/projectAssemblyList', {
+      study: this.exportAssemblyForm.study,
+      project: this.exportAssemblyForm.project
+    }).then((res: any) => { this.assemblyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

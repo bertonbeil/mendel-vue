@@ -14,7 +14,7 @@
                 @change="getProjectsList"
                 placeholder="Select study"
                 class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -26,7 +26,7 @@
                 :disabled="!adaptoAssemblyForm.studyName"
                 placeholder="Select project"
                 class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -37,7 +37,7 @@
                 :disabled="!adaptoAssemblyForm.projectName"
                 placeholder="Select region"
                 class="w-full">
-                <el-option v-for="(item, i) in locusNameList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in locusNameList" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -123,10 +123,9 @@ export default class CreateAdaptoAssembly extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = []
-        res.data.rows.map((item: any) => this.studyList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -134,10 +133,11 @@ export default class CreateAdaptoAssembly extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.adaptoAssemblyForm.studyName })
       .then((res: any) => {
-        this.projectsList = []
         this.locusNameList = []
-        res.data.rows.map((item: any) => this.projectsList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+        this.projectsList = res.data.rows
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -147,10 +147,10 @@ export default class CreateAdaptoAssembly extends Vue {
       study: this.adaptoAssemblyForm.studyName,
       project: this.adaptoAssemblyForm.projectName
     }).then((res: any) => {
-      this.locusNameList = []
       this.adaptoAssemblyForm.locusName = ''
       this.locusNameList = res.data.regions
-    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+    }).catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

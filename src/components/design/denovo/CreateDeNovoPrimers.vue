@@ -14,7 +14,7 @@
                 @change="getProjectsList"
                 placeholder="Select study"
                 class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -26,7 +26,7 @@
                 @change="getAssemblyList"
                 placeholder="Select project"
                 class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -37,7 +37,7 @@
                 :disabled="!denovoPrimersForm.projectName"
                 placeholder="Select assembly"
                 class="w-full">
-                <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -159,10 +159,9 @@ export default class CreateDeNovoPrimers extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = []
-        res.data.rows.map((item: any) => this.studyList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -170,12 +169,13 @@ export default class CreateDeNovoPrimers extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoPrimersForm.studyName })
       .then((res: any) => {
-        this.projectsList = []
         this.assemblyList = []
         this.denovoPrimersForm.projectName = ''
         this.denovoPrimersForm.dnaDesignName = ''
-        res.data.rows.map((item: any) => this.projectsList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+        this.projectsList = res.data.rows
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -184,8 +184,10 @@ export default class CreateDeNovoPrimers extends Vue {
     return httpService.post('query/projectAssemblyList', { study: this.denovoPrimersForm.studyName, project: this.denovoPrimersForm.projectName })
       .then((res: any) => {
         this.denovoPrimersForm.dnaDesignName = ''
-        res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+        this.assemblyList = res.data.rows
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

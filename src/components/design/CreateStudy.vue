@@ -50,21 +50,15 @@
         <el-row :gutter="20" class="mb-30 flex">
           <el-col :span="12">
             <draggable class="p-3 rounded shadow-lg" v-model="investigators" group="collaborators">
-              <div class="inline-block w-1/2 p-1 cursor-pointer"
-                v-for="investigator in investigators" :key="investigator">
-                <el-card shadow="hover" body-style="padding:10px">
-                  {{ investigator }}
-                </el-card>
+              <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="investigator in investigators" :key="investigator">
+                <el-card shadow="hover" body-style="padding:10px">{{ investigator }}</el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="12">
             <draggable class="min-h-full p-3 rounded shadow-lg" v-model="collaborators" group="collaborators">
-              <div class="inline-block w-1/2 p-1 cursor-pointer"
-                v-for="collaborator in collaborators" :key="collaborator">
-                <el-card shadow="hover" body-style="padding:10px">
-                  {{ collaborator }}
-                </el-card>
+              <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="collaborator in collaborators" :key="collaborator">
+                <el-card shadow="hover" body-style="padding:10px">{{ collaborator }}</el-card>
               </div>
             </draggable>
           </el-col>
@@ -124,7 +118,8 @@ export default class CreateStudy extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/collaboratorList')
       .then((res: any) => { this.investigators = res.data.rows.map((investigator: any) => investigator.id) })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

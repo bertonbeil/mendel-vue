@@ -12,13 +12,8 @@
       </el-col>
     </el-row>
     <div class="mb-30">
-      <el-form
-        :model="importAssemblyForm"
-        label-position="top"
-        :rules="rules"
-        ref="importAssemblyForm">
+      <el-form :model="importAssemblyForm" label-position="top" :rules="rules" ref="importAssemblyForm">
         <el-row :gutter="10">
-
           <el-col :span="8">
             <el-form-item label="Study:" prop="study">
               <el-select
@@ -26,45 +21,28 @@
                 @change="getProjectsList"
                 placeholder="Select Study.."
                 class="w-full">
-                <el-option
-                  v-for="(item, i) in studyList"
-                  :key="i"
-                  :label="item.name"
-                  :value="item.name">
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
-
           <el-col :span="8">
             <el-form-item label="Project:" prop="project">
               <el-select
                 v-model="importAssemblyForm.projectName"
+                :disabled="!importAssemblyForm.study"
                 placeholder="Select Project.."
-                class="w-full"
-                :disabled="!importAssemblyForm.study">
-                <el-option
-                  v-for="(item, i) in projectsList"
-                  :key="i"
-                  :label="item.name"
-                  :value="item.name">
+                class="w-full">
+                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
-
           <el-col :span="8">
             <el-form-item label="Assembly name:" prop="name">
-              <el-input
-                placeholder="Enter or choose an assembly name .."
-                v-model="importAssemblyForm.name"
-              ></el-input>
-              <div class="sup_title">
-                <p>
-                  If you are importing a completely new assembly,
-                  use a short descriptive name. If you are importing a variant
-                  of an existing assembly, use a standardized version naming (e.g. Assembly_v2)
-                </p>
+              <el-input v-model="importAssemblyForm.name" placeholder="Enter or choose an assembly name"></el-input>
+              <div>
+                <p>If you are importing a completely new assembly, use a short descriptive name. If you are importing a variant of an existing assembly, use a standardized version naming (e.g. Assembly_v2)</p>
               </div>
             </el-form-item>
           </el-col>
@@ -72,7 +50,7 @@
           <el-col :span="24">
             <el-form-item label="Assembly description:" prop="description">
               <el-input
-                placeholder="Enter a detailed description of how and why you designed the assembly outside MenDEL "
+                placeholder="Enter a detailed description of how and why you designed the assembly outside MenDEL"
                 v-model="importAssemblyForm.description">
               </el-input>
             </el-form-item>
@@ -89,7 +67,7 @@
             <h4 class="text-xl text-black mt-3">Paste DNA sequence:</h4>
             <p class="break-normal mb-30">Define the genome and location of your locus of interest, or provide the sequence as text or a fasta file.</p>
             <el-input
-              placeholder="Alternatively you can paste the locus sequence in fasta format…"
+              placeholder="Alternatively you can paste the locus sequence in fasta format"
               v-model="importAssemblyForm.pathway"
               type="textarea"
               resize="none"
@@ -99,13 +77,7 @@
 
           <el-col :span="24">
             <h4 class="text-xl text-black mt-3">Upload fasta:</h4>
-            <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :file-list="fileList" class="mt-10"
-              :on-change="uploadFastaFile"
-              accept=".fa,.fasta">
-              <el-button size="mini" type="primary">Click to upload</el-button>
-            </el-upload>
+            <UploadFile @getUploadFile='file => importAssemblyForm.pathway = file' :accept='".fa,.fasta"'/>
           </el-col>
         </el-row>
       </el-form>
@@ -131,7 +103,6 @@ export default class ImportAssembly extends Vue {
 
   studyList: string[] = []
   projectsList: string[] = []
-  fileList: any = []
 
   importAssemblyForm: importAssembly = {
     study: '',
@@ -170,7 +141,8 @@ export default class ImportAssembly extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -180,13 +152,9 @@ export default class ImportAssembly extends Vue {
       .then((res: any) => {
         this.importAssemblyForm.projectName = ''
         this.projectsList = res.data.rows
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
-  }
-
-  uploadFastaFile (file: any) {
-    const fileReader = new FileReader()
-    fileReader.readAsText(file.raw)
-    fileReader.onload = (e: any) => { this.importAssemblyForm.pathway = e.target.result }
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

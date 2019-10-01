@@ -14,7 +14,7 @@
                 @change="getProjectsList"
                 placeholder="Select study"
                 class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -26,7 +26,7 @@
                 :disabled="!segmentRequest.studyName"
                 placeholder="Select project"
                 class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -37,7 +37,7 @@
                 :disabled="!segmentRequest.projectName"
                 placeholder="Select assembly"
                 class="w-full">
-                <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -51,7 +51,7 @@
                 :disabled="!dnaDesignName"
                 placeholder="Select segment"
                 class="w-full">
-                <el-option v-for="(item, i) in dnaSegmentsList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="(item, i) in dnaSegmentsList" :key="i" :label="item.segment" :value="item.segment"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -62,7 +62,7 @@
                 :disabled="!dnaDesignName"
                 placeholder="Select segment"
                 class="w-full">
-                <el-option v-for="(item, i) in dnaSegmentsList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="(item, i) in dnaSegmentsList" :key="i" :label="item.segment" :value="item.segment"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -271,10 +271,9 @@ export default class CreateAdaptoSegments extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = []
-        res.data.rows.map((item: any) => this.studyList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -282,12 +281,13 @@ export default class CreateAdaptoSegments extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.segmentRequest.studyName })
       .then((res: any) => {
-        this.projectsList = []
         this.assemblyList = []
         this.segmentRequest.projectName = ''
         this.segmentRequest.dnaDesignName = ''
-        res.data.rows.map((item: any) => this.projectsList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+        this.projectsList = res.data.rows
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -295,10 +295,11 @@ export default class CreateAdaptoSegments extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectAssemblyList', { study: this.segmentRequest.studyName, project: this.segmentRequest.projectName })
       .then((res: any) => {
-        this.assemblyList = []
         this.segmentRequest.dnaDesignName = ''
-        res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+        this.assemblyList = res.data.rows
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of dna segments */
@@ -308,10 +309,9 @@ export default class CreateAdaptoSegments extends Vue {
       study: this.segmentRequest.studyName,
       project: this.segmentRequest.projectName,
       assembly: this.dnaDesignName
-    }).then((res: any) => {
-      this.dnaSegmentsList = []
-      res.data.rows.map((item: any) => this.dnaSegmentsList.push(item.segment))
-    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+    }).then((res: any) => { this.dnaSegmentsList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

@@ -275,20 +275,19 @@ export default class CreateEchoFile extends Vue {
 
   /* load Modal data -> Get list of study */
   getStudyList () {
-    // this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = []
-        res.data.rows.map((item: any) => this.studyList.push(item))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
   getProjectsList (index: any) {
-    // this.$emit('loadOn')
+    this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.tableData[index].study })
       .then((res: any) => { this.projectsList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */

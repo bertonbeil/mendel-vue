@@ -14,7 +14,7 @@
                 @change="getProjectsList"
                 placeholder="Select study"
                 class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -26,7 +26,7 @@
                 @change="getAssemblyList"
                 placeholder="Select project"
                 class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -257,10 +257,11 @@ export default class CreateDeNovoAssembly extends Vue {
           .then((res: any) => {
             if (res.data.valid === 'true') {
               this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next'
-                ? this.modalData.saveAndNext
-                : null)
+                ? this.modalData.saveAndNext : null)
             } else this.responseMessage()
-          }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+          })
+          .catch((err: any) => { throw new Error(err) })
+          .finally(() => this.$emit('loadOff'))
       } else return false
     })
   }
@@ -269,10 +270,9 @@ export default class CreateDeNovoAssembly extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = []
-        res.data.rows.map((item: any) => this.studyList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -280,11 +280,12 @@ export default class CreateDeNovoAssembly extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoAssemblyForm.studyName })
       .then((res: any) => {
-        this.projectsList = []
         this.assemblyList = []
         this.denovoAssemblyForm.name = ''
-        res.data.rows.map((item: any) => this.projectsList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+        this.projectsList = res.data.rows
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   getAssemblyList () {
@@ -293,7 +294,8 @@ export default class CreateDeNovoAssembly extends Vue {
       study: this.denovoAssemblyForm.studyName,
       project: this.denovoAssemblyForm.projectName
     }).then((res: any) => { this.assemblyList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   assemblyNameChecker () {
@@ -304,9 +306,12 @@ export default class CreateDeNovoAssembly extends Vue {
           this.$emit('loadOn')
           httpService.post('query/assemblyRequestRetriever', { name: this.denovoAssemblyForm.name })
             .then((res: any) => { this.handleResponse(res.data.rows[0]) })
-            .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+            .catch((err: any) => { throw new Error(err) })
+            .finally(() => this.$emit('loadOff'))
         }
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   handleResponse (res: any) {
@@ -334,10 +339,13 @@ export default class CreateDeNovoAssembly extends Vue {
 
   /* load Modal data -> Get list of restriction enzymes */
   getRestrictionEnzymeList () {
-    return httpService.get('query/restrictionEnzymeList').then((res: any) => {
-      res.data.rows[0].sequence = 'None'
-      this.restrictionEnzymes = res.data.rows
-    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+    return httpService.get('query/restrictionEnzymeList')
+      .then((res: any) => {
+        res.data.rows[0].sequence = 'None'
+        this.restrictionEnzymes = res.data.rows
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* load Modal data -> Get list of vegas adapters */
@@ -385,7 +393,8 @@ export default class CreateDeNovoAssembly extends Vue {
         this.getProjectsList()
         this.getAssemblyList()
       }
-    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+    }).catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 }
 </script>

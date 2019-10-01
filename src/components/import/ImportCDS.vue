@@ -20,7 +20,7 @@
                 @change="getProjectsList"
                 placeholder="Select study"
                 class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -28,10 +28,10 @@
             <el-form-item label="Project name:" prop="project">
               <el-select
                 v-model="importCDSForm.project"
-                placeholder="Select project"
                 :disabled="!importCDSForm.study"
+                placeholder="Select project"
                 class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
+                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -40,8 +40,8 @@
             <el-form-item label="CDS description:" prop="description">
               <el-input
                 v-model="importCDSForm.description"
-                placeholder="Enter a detailed description of how and why you designed the CDS outside of MenDEL"
-                :disabled="!importCDSForm.project">
+                :disabled="!importCDSForm.project"
+                placeholder="Enter a detailed description of how and why you designed the CDS outside of MenDEL">
               </el-input>
             </el-form-item>
           </el-col>
@@ -201,7 +201,9 @@ export default class ImportCDS extends Vue {
               (this as any).$message({ message: res.data.lims_response, type: res.data.status })
               this.$refs['importCDSForm'].resetFields()
             } else (this as any).alert({ type: res.data.status, msg: res.data.lims_response })
-          }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+          })
+          .catch((err: any) => { throw new Error(err) })
+          .finally(() => this.$emit('loadOff'))
       } else {
         this.$emit('loadOff')
         return false
@@ -214,7 +216,8 @@ export default class ImportCDS extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -224,7 +227,9 @@ export default class ImportCDS extends Vue {
       .then((res: any) => {
         this.importCDSForm.project = ''
         this.projectsList = res.data.rows
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

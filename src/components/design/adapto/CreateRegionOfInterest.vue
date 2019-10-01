@@ -14,7 +14,7 @@
                 @change="getProjectsList"
                 placeholder="Select study"
                 class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -22,11 +22,10 @@
             <el-form-item label="Project name:" prop="projectName">
               <el-select
                 v-model="adaptoRegionOfInterestForm.projectName"
-                @change="getAssemblyList"
                 :disabled="!adaptoRegionOfInterestForm.studyName"
                 placeholder="Select project"
                 class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -153,7 +152,6 @@ export default class CreateRegionOfInterest extends Vue {
 
   studyList: string[] = []
   projectsList: string[] = []
-  assemblyList: string[] = []
   organismList: string[] = []
   chromosomeList: string[] = []
   posValue: number = 5000
@@ -226,10 +224,9 @@ export default class CreateRegionOfInterest extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = []
-        res.data.rows.map((item: any) => this.studyList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -237,36 +234,27 @@ export default class CreateRegionOfInterest extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.adaptoRegionOfInterestForm.studyName })
       .then((res: any) => {
-        this.projectsList = []
-        this.assemblyList = []
         this.adaptoRegionOfInterestForm.name = ''
-        res.data.rows.map((item: any) => this.projectsList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
-  }
-
-  /* Get list of assemblies */
-  getAssemblyList () {
-    this.$emit('loadOn')
-    return httpService.post('query/projectAssemblyList', { study: this.adaptoRegionOfInterestForm.studyName, project: this.adaptoRegionOfInterestForm.projectName })
-      .then((res: any) => {
-        this.assemblyList = []
-        this.adaptoRegionOfInterestForm.name = ''
-        res.data.rows.map((item: any) => this.assemblyList.push(item.assembly))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+        this.projectsList = res.data.rows
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   getOrganismList () {
     this.$emit('loadOn')
     return httpService.post('query/adaptoUtils', { request: 'organismList' })
       .then((res: any) => { this.organismList = res.data.lims_response })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   getChromosomeList () {
     this.$emit('loadOn')
     return httpService.post('query/adaptoUtils', { request: 'chromosomeList', organism: this.source.organism })
       .then((res: any) => { this.chromosomeList = res.data.lims_response })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

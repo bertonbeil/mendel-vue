@@ -7,8 +7,12 @@
           <el-row :gutter="20" class="mb-30">
             <el-col :span="8">
               <el-form-item label="Study name:" prop="studyName">
-                <el-select v-model="segment_request.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
-                  <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+                <el-select
+                  v-model="segment_request.studyName"
+                  @change="getProjectsList"
+                  placeholder="Select study"
+                  class="w-full">
+                  <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -20,7 +24,7 @@
                   placeholder="Select project"
                   :disabled="!segment_request.studyName"
                   class="w-full">
-                  <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+                  <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -31,7 +35,7 @@
                   placeholder="Select assembly"
                   :disabled="!segment_request.projectName"
                   class="w-full">
-                  <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
+                  <el-option v-for="item in assemblyList" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -58,7 +62,7 @@
                   placeholder="Select segment"
                   :disabled="!adaptoSegmentsManipulationForm.action"
                   class="w-full">
-                  <el-option v-for="item in dnaSegmentList" :key="item" :label="item" :value="item"></el-option>
+                  <el-option v-for="item in dnaSegmentList" :key="item.segment" :label="item.segment" :value="item.segment"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -69,7 +73,7 @@
                   placeholder="Select segment"
                   :disabled="!segment_request.firstSegmentIdx"
                   class="w-full">
-                  <el-option v-for="item in dnaSegmentList" :key="item" :label="item" :value="item"></el-option>
+                  <el-option v-for="item in dnaSegmentList" :key="item.segment" :label="item.segment" :value="item.segment"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -266,10 +270,9 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = []
-        res.data.rows.map((item: any) => this.studyList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -277,14 +280,15 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.segment_request.studyName })
       .then((res: any) => {
-        this.projectsList = []
         this.assemblyList = []
         this.segment_request.projectName = ''
         this.segment_request.dnaDesignName = ''
-        this.adaptoSegmentsManipulationForm.requestType = ''
         this.adaptoSegmentsManipulationForm.action = ''
-        res.data.rows.map((item: any) => this.projectsList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+        this.adaptoSegmentsManipulationForm.requestType = ''
+        this.projectsList = res.data.rows
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -294,12 +298,12 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
       study: this.segment_request.studyName,
       project: this.segment_request.projectName
     }).then((res: any) => {
-      this.assemblyList = []
       this.segment_request.dnaDesignName = ''
-      this.adaptoSegmentsManipulationForm.requestType = ''
       this.adaptoSegmentsManipulationForm.action = ''
+      this.adaptoSegmentsManipulationForm.requestType = ''
       this.assemblyList = res.data.regions
-    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+    }).catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   getDnaSegmentList ($event: any) {
@@ -309,19 +313,21 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
       project: this.segment_request.projectName,
       assembly: this.segment_request.dnaDesignName
     }).then((res: any) => {
-      res.data.rows.map((item: any) => this.dnaSegmentList.push(item.segment))
+      this.dnaSegmentList = res.data.rows
       this.adaptoSegmentsManipulationForm.requestType = `Adapto${$event}SegmentRequest`
       if (this.adaptoSegmentsManipulationForm.action !== 'Replace') {
         delete this.segment_request.newName
         delete this.segment_request.customSegments
       }
-    }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+    }).catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   getCustomSegmentTypeList () {
     return httpService.get('query/customSegmentTypeList')
-      .then((res: any) => res.data.rows.map((item: any) => this.customSegmentTypeList.push(item.name)))
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .then((res: any) => { this.customSegmentTypeList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   addRow () {
