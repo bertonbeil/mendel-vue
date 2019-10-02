@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col :span="6" class="mt-10 flex items-center">
+    <el-col :span="24" class="mt-10 flex items-center">
       <label for="uploadFileInput" class="upLoad-file-input">Click to upload</label>
       <input
         type="file"
@@ -10,7 +10,15 @@
         id="uploadFileInput"
         class="hidden"
       />
-      <button v-if="!updateImmediately" title="show sequence" type="button" @click="showSequence" class="show-sequence-btn el-icon-view ml-10"></button>
+      <el-button
+        circle
+        v-if="!updateImmediately"
+        title="show sequence"
+        type="button"
+        size="small"
+        @click="showSequence"
+        class="el-icon-view ml-10"
+      ></el-button>
     </el-col>
   </el-row>
 </template>
@@ -36,7 +44,7 @@ export default class UploadFile extends Vue {
     fileReader.readAsText(e.target.files[0])
     fileReader.onload = (e: any) => {
       this.result = e.target.result
-      if (this.updateImmediately) this.$emit('update:dnaSequence', e.target.result)
+      if (this.updateImmediately) { this.$emit('update:dnaSequence', e.target.result) }
     }
   }
 }

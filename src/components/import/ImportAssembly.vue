@@ -99,13 +99,7 @@
 
           <el-col :span="24">
             <h4 class="text-xl text-black mt-3">Upload fasta:</h4>
-            <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :file-list="fileList" class="mt-10"
-              :on-change="uploadFastaFile"
-              accept=".fa,.fasta">
-              <el-button size="mini" type="primary">Click to upload</el-button>
-            </el-upload>
+            <UploadFile :dna-sequence.sync="importAssemblyForm.pathway"  :accept='".fa,.fasta"' />
           </el-col>
         </el-row>
       </el-form>
