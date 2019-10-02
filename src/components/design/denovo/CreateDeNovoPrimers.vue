@@ -2,7 +2,7 @@
   <div>
     <el-row :gutter="20" class="mb-20">
       <el-col :span="24">
-        <h3 class="text-black">Create new Junction primers</h3>
+        <h3 class="text-black font-bold">Create new Junction primers</h3>
       </el-col>
     </el-row>
     <!-- Main modal content -->

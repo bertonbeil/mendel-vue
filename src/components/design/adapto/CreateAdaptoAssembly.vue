@@ -2,7 +2,7 @@
   <div>
     <el-row :gutter="20" class="mb-20">
       <el-col :span="24">
-        <h3 class="text-black">Assembly</h3>
+        <h3 class="text-black font-bold">Assembly</h3>
       </el-col>
     </el-row>
     <!-- Main modal content -->
