@@ -1,8 +1,11 @@
 <template>
   <div>
     <el-row :gutter="20" class="mb-20">
+      <el-col :span="24">
+        <h3 class="text-black font-bold">Create new Project</h3>
+      </el-col>
       <el-col :span="23">
-        <p v-html="modalData.dialogIntro" class="mb-8"></p>
+        <p v-html="modalData.dialogIntro" class="mb-8 break-word"></p>
       </el-col>
       <el-col :span="1">
         <el-popover
@@ -89,16 +92,15 @@ export default class CreateProject extends Vue {
   }
 
   get sendData () {
-    return { ...this.projectForm, type: this.projectType }
+    this.modalData.saveAndNext = this.projectType === 'adapto' ? 'CreateRegionOfInterest' : 'CreateDeNovoCDS'
+    return JSON.stringify({ ...this.projectForm, type: this.projectType })
   }
 
   /* submit Modal data */
   save (next?: string) {
     this.$refs['projectForm'].validate((valid: boolean) => {
-      if (valid) {
-        this.modalData.saveAndNext = this.projectType === 'adapto' ? 'CreateRegionOfInterest' : 'CreateDeNovoCDS'
-        this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
-      } else return false
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+      else return false
     })
   }
 
@@ -107,16 +109,21 @@ export default class CreateProject extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
-  created () {
+  getInitialData () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
           this.projectForm.study = this.modalData.saveAndNextData.new_study.name
         }
       })
+  }
+
+  created () {
+    this.getInitialData()
   }
 }
 </script>

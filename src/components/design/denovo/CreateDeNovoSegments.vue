@@ -1,7 +1,9 @@
 <template>
   <div>
     <el-row :gutter="20" class="mb-20">
-      <el-col :span="24"><p v-html="modalData.dialogIntro" class="mb-8"></p></el-col>
+      <el-col :span="24">
+        <h3 class="text-black font-bold">Create Segments</h3>
+      </el-col>
     </el-row>
     <!-- Main modal content -->
     <div class="mb-30">
@@ -14,7 +16,7 @@
                 @change="getProjectsList"
                 placeholder="Select study"
                 class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -26,7 +28,7 @@
                 :disabled="!denovoSegmentForm.studyName"
                 placeholder="Select project"
                 class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
+                <el-option v-for="item in projectsList" :key="item.name" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -38,7 +40,7 @@
                 :disabled="!denovoSegmentForm.projectName"
                 placeholder="Select assembly"
                 class="w-full">
-                <el-option v-for="(item, i) in assemblyList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
+                <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -200,10 +202,6 @@ export default class CreateDeNovoSegments extends Vue {
     projectSelect: HTMLFormElement
   }
 
-  get sendData () {
-    return this.denovoSegmentForm
-  }
-
   @Watch('assemblyVector', { deep: true })
   onChangeYeastMarker () {
     this.denovoSegmentForm.assemblyVectorName = `${this.assemblyVector.yeastMarker},${this.assemblyVector.bacterialCopy}`
@@ -215,10 +213,14 @@ export default class CreateDeNovoSegments extends Vue {
     else delete this.denovoSegmentForm.type
   }
 
+  get sendData () {
+    return JSON.stringify(this.denovoSegmentForm)
+  }
+
   /* submit Modal data */
   save (next?: string) {
     this.$refs['denovoSegmentForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }
@@ -227,10 +229,9 @@ export default class CreateDeNovoSegments extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = []
-        res.data.rows.map((item: any) => this.studyList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -238,10 +239,11 @@ export default class CreateDeNovoSegments extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoSegmentForm.studyName })
       .then((res: any) => {
-        this.projectsList = []
         this.assemblyList = []
-        res.data.rows.map((item: any) => this.projectsList.push(item.name))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+        this.projectsList = res.data.rows
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -251,7 +253,8 @@ export default class CreateDeNovoSegments extends Vue {
       study: this.denovoSegmentForm.studyName,
       project: this.denovoSegmentForm.projectName
     }).then((res: any) => { this.assemblyList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   latestDnaDesign () {
@@ -262,7 +265,9 @@ export default class CreateDeNovoSegments extends Vue {
           if (i.name === this.denovoSegmentForm.dnaDesignName) this.assemblyLength = i.value.length
           return this.assemblyLength
         })
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* load Modal data -> Get list of restriction enzymes */
@@ -270,7 +275,7 @@ export default class CreateDeNovoSegments extends Vue {
     return httpService.get('query/restrictionEnzymeList').then((res: any) => { this.restrictionEnzymes = res.data.rows })
   }
 
-  created () {
+  getInitialData () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
@@ -282,7 +287,13 @@ export default class CreateDeNovoSegments extends Vue {
           this.getAssemblyList()
           this.getRestrictionEnzymeList()
         }
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
+  }
+
+  created () {
+    this.getInitialData()
   }
 }
 </script>

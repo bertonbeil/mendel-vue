@@ -2,7 +2,7 @@
   <el-row :gutter="20" class="mb-30">
     <el-col :span="5">
       <el-select v-model="localReplaceRow.segment_type" @change="getCustomSegmentList" placeholder="Select type" class="w-full">
-        <el-option v-for="(item, i) in typesList" :key="i" :label="item" :value="item"></el-option>
+        <el-option v-for="item in typesList" :key="item.name" :label="item.name" :value="item.name"></el-option>
       </el-select>
     </el-col>
     <el-col :span="5">
@@ -48,7 +48,8 @@ export default class ReplaceRows extends Vue {
       project: this.projectName,
       type: value
     }).then((res: any) => { this.localCustomSegments = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   handleNameChange (name: string) {
@@ -56,13 +57,13 @@ export default class ReplaceRows extends Vue {
     this.localReplaceRow = { ...this.localReplaceRow, description, value }
   }
 
-  created () {
-    this.localReplaceRow = _cloneDeep(this.replaceRow)
-  }
-
   @Watch('localReplaceRow', { deep: true })
   handleReplaceRowChange () {
     this.$emit('update:replaceRow', this.localReplaceRow)
+  }
+
+  created () {
+    this.localReplaceRow = _cloneDeep(this.replaceRow)
   }
 }
 </script>
