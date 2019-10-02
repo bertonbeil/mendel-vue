@@ -14,10 +14,11 @@
         circle
         v-if="!updateImmediately"
         title="show sequence"
+        icon="el-icon-view"
         type="button"
         size="small"
         @click="showSequence"
-        class="el-icon-view ml-10"
+        class="ml-10"
       ></el-button>
     </el-col>
   </el-row>
