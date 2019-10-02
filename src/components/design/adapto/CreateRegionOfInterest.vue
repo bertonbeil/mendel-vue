@@ -283,7 +283,8 @@ export default class CreateRegionOfInterest extends Vue {
             this.getProjectsList()
           }
         })
-    ]).finally(() => this.$emit('loadOff'))
+    ]).catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {
