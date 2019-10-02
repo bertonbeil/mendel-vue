@@ -127,6 +127,14 @@ export default new Vuex.Store({
         submitUrl: 'dnaDesigner'
       },
       {
+        component: 'ImportSegments',
+        title: 'Import Segments',
+        dialogCaption: 'Import Segments',
+        dialogIntro: 'This page allows you to import externally designed or modified segments matched to an assembly. The imported coordinates will be used to segment the previously imported assembly sequence and design junction primers.',
+        dialogInfo: '<p>Note:</p>',
+        submitUrl: 'dnaDesigner'
+      },
+      {
         component: 'ExportAssembly',
         title: 'Assembly',
         dialogCaption: 'Export assembly',

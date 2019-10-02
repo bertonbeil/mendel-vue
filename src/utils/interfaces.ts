@@ -241,6 +241,25 @@ export interface importAssembly {
   parts?: string,
 }
 
+export interface ImportsSegments {
+  study?: string,
+  projectName?: string,
+  dnaDesignName?: string,
+  assembly?: string,
+  maxLen?: number,
+  minLen?: number,
+  overlap?: number,
+  loxPsymDistance?: number,
+  homopolymerLen?: number,
+  homopolymerDistance?: number,
+  segmentsAssemblyVector?: string,
+  segmentsAssemblyBactery?: string,
+  assemblyVectorName?: string,
+  restrictionEnzyme5?: string,
+  restrictionEnzyme3?: string,
+  sequences: string
+}
+
 export interface EchoFile {
   project?: string
   dna_amount?: number
