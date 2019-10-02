@@ -1,7 +1,12 @@
 <template>
   <div>
     <el-row :gutter="20" class="mb-30">
-      <el-col :span="24"><p v-html="modalData.dialogIntro" class="mb-8"></p></el-col>
+      <el-col :span="24">
+        <h3 class="text-black">Create new Echo file</h3>
+      </el-col>
+      <el-col :span="24">
+        <p v-html="modalData.dialogIntro" class="mb-8 break-word"></p>
+      </el-col>
     </el-row>
     <!-- Main modal content -->
     <div class="mb-30">

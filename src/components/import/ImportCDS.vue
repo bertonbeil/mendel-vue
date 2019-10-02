@@ -1,7 +1,12 @@
 <template>
   <div>
     <el-row :gutter="20" class="mb-20">
-      <el-col :span="23"><p v-html="modalData.dialogIntro" class="mb-8"></p></el-col>
+      <el-col :span="24">
+        <h3 class="text-black">Import CDS</h3>
+      </el-col>
+      <el-col :span="23">
+        <p v-html="modalData.dialogIntro" class="mb-8"></p>
+      </el-col>
       <el-col :span="1">
         <el-popover placement="top-start" width="300" trigger="hover">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>

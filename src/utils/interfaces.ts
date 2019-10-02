@@ -4,7 +4,6 @@ export interface DialogBase {
   component?: string;
   title?: string;
   debug?: string;
-  dialogCaption?: string;
   dialogIntro?: string;
   dialogInfo?: string;
   submenuTitle?: string;

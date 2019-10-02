@@ -2,8 +2,11 @@
   <div>
     <el-row :gutter="20" class="mb-20">
       <el-col :span="24">
-        <p v-if="!CDSNaming" v-html="modalData.dialogIntro" class="mb-8"></p>
-        <p v-else v-html="CDSNamingDialogIntro" class="mb-8"></p>
+        <h3 class="text-black">Create new CDSs</h3>
+      </el-col>
+      <el-col :span="24">
+        <p v-if="!CDSNaming" v-html="modalData.dialogIntro" class="mb-8 break-word"></p>
+        <p v-else v-html="CDSNamingDialogIntro" class="mb-8 break-word"></p>
       </el-col>
     </el-row>
     <template v-if="!CDSNaming">

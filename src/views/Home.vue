@@ -4,7 +4,6 @@
 
     <!-- Main modal wrapper -->
     <el-dialog
-      :title="tempModalData.dialogCaption"
       :visible="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
