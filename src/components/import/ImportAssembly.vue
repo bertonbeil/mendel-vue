@@ -85,7 +85,7 @@
 
           <el-col :span="24">
             <h4 class="text-xl text-black mt-3">Upload fasta:</h4>
-            <UploadFile @getUploadFile='file => importAssemblyForm.pathway = file' :accept='".fa,.fasta"'/>
+            <UploadFile :dna-sequence.sync="importAssemblyForm.pathway"  :accept='".fa,.fasta"' />
           </el-col>
         </el-row>
       </el-form>

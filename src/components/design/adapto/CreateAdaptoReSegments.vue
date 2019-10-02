@@ -94,7 +94,7 @@
           </el-col>
           <el-col :span="12" class="mb-30">
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Upload .bed formatted mask file:</h4>
-            <UploadFile @getUploadFile='file => segmentRequest.mask = file' :accept='".bed"'/>
+            <UploadFile :dna-sequence.sync="segmentRequest.mask" :updateImmediately='true' :accept='".bed"' />
           </el-col>
 
           <el-col :span="24" class="mb-30">
