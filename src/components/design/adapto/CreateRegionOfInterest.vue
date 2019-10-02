@@ -126,7 +126,7 @@
         </el-col>
         <el-col :span="24">
           <h4 class="text-xl text-black mt-3">Upload fasta:</h4>
-          <UploadFile @getUploadFile='file => segmentRequest.mask = file' :accept='".fa,.fasta"'/>
+          <UploadFile :dna-sequence.sync="source.sequence" :accept='".fa,.fasta"'/>
         </el-col>
       </el-row>
     </div>

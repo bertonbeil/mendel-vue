@@ -8,8 +8,7 @@
         :file-list="fileList"
         :accept="accept"
         id="uploadFileInput"
-        class="hidden"
-      />
+        class="hidden"/>
       <el-button
         circle
         v-if="!updateImmediately"
@@ -18,8 +17,8 @@
         type="button"
         size="small"
         @click="showSequence"
-        class="ml-10"
-      ></el-button>
+        class="ml-10">
+      </el-button>
     </el-col>
   </el-row>
 </template>
@@ -45,7 +44,7 @@ export default class UploadFile extends Vue {
     fileReader.readAsText(e.target.files[0])
     fileReader.onload = (e: any) => {
       this.result = e.target.result
-      if (this.updateImmediately) { this.$emit('update:dnaSequence', e.target.result) }
+      if (this.updateImmediately) this.$emit('update:dnaSequence', e.target.result)
     }
   }
 }
