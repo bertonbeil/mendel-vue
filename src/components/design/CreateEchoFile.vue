@@ -1,7 +1,12 @@
 <template>
   <div>
     <el-row :gutter="20" class="mb-30">
-      <el-col :span="24"><p v-html="modalData.dialogIntro" class="mb-8"></p></el-col>
+      <el-col :span="24">
+        <h3 class="text-black font-bold">Create new Echo file</h3>
+      </el-col>
+      <el-col :span="24">
+        <p v-html="modalData.dialogIntro" class="mb-8 break-word"></p>
+      </el-col>
     </el-row>
     <!-- Main modal content -->
     <div class="mb-30">
@@ -260,35 +265,35 @@ export default class CreateEchoFile extends Vue {
   }
 
   get sendData () {
-    return { ...this.echoFileForm, assemblies: this.assemblies, primers: this.primers }
+    return JSON.stringify({ ...this.echoFileForm, assemblies: this.assemblies, primers: this.primers })
   }
 
   save () {
     this.assemblies = this.tableData.filter((item: any) => item.name !== '')
     this.assemblies.map((item: any) => { delete item.assemblyList; delete item.project; delete item.primersLoc })
     this.assemblies.map((item: any) => this.primers.push({ location: item.primersLoc } as any))
+
     this.$refs['echoFileForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
+      if (valid) this.$emit('save', { data: this.sendData })
       else return false
     })
   }
 
   /* load Modal data -> Get list of study */
   getStudyList () {
-    // this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => {
-        this.studyList = []
-        res.data.rows.map((item: any) => this.studyList.push(item))
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .then((res: any) => { this.studyList = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
   getProjectsList (index: any) {
-    // this.$emit('loadOn')
+    this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.tableData[index].study })
       .then((res: any) => { this.projectsList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -310,7 +315,7 @@ export default class CreateEchoFile extends Vue {
 
   }
 
-  getModalData () {
+  getInitialData () {
     this.$emit('loadOn')
     Promise.all([
       this.getStudyList(),
@@ -323,7 +328,7 @@ export default class CreateEchoFile extends Vue {
   }
 
   created () {
-    this.getModalData()
+    this.getInitialData()
   }
 }
 </script>

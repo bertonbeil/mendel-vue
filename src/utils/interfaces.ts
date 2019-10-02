@@ -4,7 +4,6 @@ export interface DialogBase {
   component?: string;
   title?: string;
   debug?: string;
-  dialogCaption?: string;
   dialogIntro?: string;
   dialogInfo?: string;
   submenuTitle?: string;
@@ -233,11 +232,11 @@ export interface ImportsCDS {
 }
 
 export interface importAssembly {
-  study?: string
+  studyName?: string
   projectName?: string
   name?: string,
   description?: string,
-  pathway?: '',
+  pathway?: string,
   parts?: string,
 }
 

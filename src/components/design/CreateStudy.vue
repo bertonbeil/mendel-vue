@@ -1,8 +1,11 @@
 <template>
   <div>
     <el-row :gutter="20" class="mb-20">
+      <el-col :span="24">
+        <h3 class="text-black font-bold">Create new Study</h3>
+      </el-col>
       <el-col :span="23">
-        <p v-html="modalData.dialogIntro" class="mb-8"></p>
+        <p v-html="modalData.dialogIntro" class="mb-8 break-word"></p>
       </el-col>
       <el-col :span="1">
         <el-popover placement="top-start" width="300" trigger="hover">
@@ -50,21 +53,15 @@
         <el-row :gutter="20" class="mb-30 flex">
           <el-col :span="12">
             <draggable class="p-3 rounded shadow-lg" v-model="investigators" group="collaborators">
-              <div class="inline-block w-1/2 p-1 cursor-pointer"
-                v-for="investigator in investigators" :key="investigator">
-                <el-card shadow="hover" body-style="padding:10px">
-                  {{ investigator }}
-                </el-card>
+              <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="investigator in investigators" :key="investigator">
+                <el-card shadow="hover" body-style="padding:10px">{{ investigator }}</el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="12">
             <draggable class="min-h-full p-3 rounded shadow-lg" v-model="collaborators" group="collaborators">
-              <div class="inline-block w-1/2 p-1 cursor-pointer"
-                v-for="collaborator in collaborators" :key="collaborator">
-                <el-card shadow="hover" body-style="padding:10px">
-                  {{ collaborator }}
-                </el-card>
+              <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="collaborator in collaborators" :key="collaborator">
+                <el-card shadow="hover" body-style="padding:10px">{{ collaborator }}</el-card>
               </div>
             </draggable>
           </el-col>
@@ -108,13 +105,13 @@ export default class CreateStudy extends Vue {
   }
 
   get sendData () {
-    return { new_study: this.studyForm, collaborators: this.collaborators }
+    return JSON.stringify({ new_study: this.studyForm, collaborators: this.collaborators })
   }
 
   /* submit Modal data */
   save (next?: string) {
     this.$refs['studyForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }
@@ -124,7 +121,8 @@ export default class CreateStudy extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/collaboratorList')
       .then((res: any) => { this.investigators = res.data.rows.map((investigator: any) => investigator.id) })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {
