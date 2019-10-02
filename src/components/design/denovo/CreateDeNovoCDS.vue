@@ -2,8 +2,11 @@
   <div>
     <el-row :gutter="20" class="mb-20">
       <el-col :span="24">
-        <p v-if="!CDSNaming" v-html="modalData.dialogIntro" class="mb-8"></p>
-        <p v-else v-html="CDSNamingDialogIntro" class="mb-8"></p>
+        <h3 class="text-black font-bold">Create new CDSs</h3>
+      </el-col>
+      <el-col :span="24">
+        <p v-if="!CDSNaming" v-html="modalData.dialogIntro" class="mb-8 break-word"></p>
+        <p v-else v-html="CDSNamingDialogIntro" class="mb-8 break-word"></p>
       </el-col>
     </el-row>
     <template v-if="!CDSNaming">
@@ -156,13 +159,13 @@ export default class CreateDeNovoCDS extends Vue {
   }
 
   get sendData () {
-    return this.denovoCDSForm
+    this.denovoCDSForm.nickname = this.tableData.map((i: any) => i.nickname).join()
+    return JSON.stringify(this.denovoCDSForm)
   }
 
   /* submit Modal data */
   save (next?: string) {
-    this.denovoCDSForm.nickname = this.tableData.map((i: any) => i.nickname).join()
-    this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+    this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
   }
 
   /* load Modal data -> Get list of study */
@@ -170,7 +173,8 @@ export default class CreateDeNovoCDS extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -178,7 +182,8 @@ export default class CreateDeNovoCDS extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoCDSForm.study })
       .then((res: any) => { this.projectsList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   getCDSTable () {
@@ -192,7 +197,9 @@ export default class CreateDeNovoCDS extends Vue {
               this.CDSNaming = true
               this.$emit('update:title', 'CDS Naming')
             } else (this as any).alert({ type: status, msg: lims_response })
-          }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+          })
+          .catch((err: any) => { throw new Error(err) })
+          .finally(() => this.$emit('loadOff'))
       } else return false
     })
   }
@@ -203,7 +210,7 @@ export default class CreateDeNovoCDS extends Vue {
     this.tableData = []
   }
 
-  created () {
+  getInitialData () {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
@@ -212,6 +219,10 @@ export default class CreateDeNovoCDS extends Vue {
           this.getProjectsList()
         }
       })
+  }
+
+  created () {
+    this.getInitialData()
   }
 }
 </script>

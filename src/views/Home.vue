@@ -4,7 +4,6 @@
 
     <!-- Main modal wrapper -->
     <el-dialog
-      :title="tempModalData.dialogCaption"
       :visible="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
@@ -27,7 +26,7 @@
         <el-col :span="24" class="pt-20">
           <el-collapse accordion>
             <el-collapse-item title="Debug">
-              <pre>{{ $refs.modalRef.sendData }}</pre>
+              <pre>{{ JSON.parse($refs.modalRef.sendData) }}</pre>
             </el-collapse-item>
           </el-collapse>
         </el-col>

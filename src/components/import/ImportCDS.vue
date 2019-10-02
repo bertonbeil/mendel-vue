@@ -1,7 +1,12 @@
 <template>
   <div>
     <el-row :gutter="20" class="mb-20">
-      <el-col :span="23"><p v-html="modalData.dialogIntro" class="mb-8"></p></el-col>
+      <el-col :span="24">
+        <h3 class="text-black font-bold">Import CDS</h3>
+      </el-col>
+      <el-col :span="23">
+        <p v-html="modalData.dialogIntro" class="mb-8"></p>
+      </el-col>
       <el-col :span="1">
         <el-popover placement="top-start" width="300" trigger="hover">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
@@ -10,7 +15,7 @@
       </el-col>
     </el-row>
     <!-- Main modal content -->
-    <div class="mb-30">
+    <div>
       <el-form :model="importCDSForm" label-position="top" :rules="rules" ref="importCDSForm">
         <el-row :gutter="20" class="mb-30">
           <el-col :span="12">
@@ -20,7 +25,7 @@
                 @change="getProjectsList"
                 placeholder="Select study"
                 class="w-full">
-                <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
+                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -28,10 +33,10 @@
             <el-form-item label="Project name:" prop="project">
               <el-select
                 v-model="importCDSForm.project"
-                placeholder="Select project"
                 :disabled="!importCDSForm.study"
+                placeholder="Select project"
                 class="w-full">
-                <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
+                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -40,8 +45,8 @@
             <el-form-item label="CDS description:" prop="description">
               <el-input
                 v-model="importCDSForm.description"
-                placeholder="Enter a detailed description of how and why you designed the CDS outside of MenDEL"
-                :disabled="!importCDSForm.project">
+                :disabled="!importCDSForm.project"
+                placeholder="Enter a detailed description of how and why you designed the CDS outside of MenDEL">
               </el-input>
             </el-form-item>
           </el-col>
@@ -165,13 +170,13 @@ export default class ImportCDS extends Vue {
   }
 
   rules: object = {
-    study: [ { required: true } ],
-    project: [ { required: true } ],
-    description: [ { required: true } ],
-    organism: [ { required: true } ],
-    source: [ { required: true } ],
-    accession: [ { required: true } ],
-    nickname: [ { required: true } ]
+    study: [ { required: true, message: 'Study name is required' } ],
+    project: [ { required: true, message: 'Project name is required' } ],
+    description: [ { required: true, message: 'Description is required' } ],
+    organism: [ { required: true, message: 'Organism is required' } ],
+    source: [ { required: true, message: 'Source is required' } ],
+    accession: [ { required: true, message: 'Accession is required' } ],
+    nickname: [ { required: true, message: 'Nickname is required' } ]
   }
 
   $refs!: {
@@ -179,13 +184,13 @@ export default class ImportCDS extends Vue {
   }
 
   get sendData () {
-    return this.importCDSForm
+    return JSON.stringify(this.importCDSForm)
   }
 
   /* submit Modal data */
   save () {
     this.$refs['importCDSForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
+      if (valid) this.$emit('save', { data: this.sendData })
       else return false
     })
   }
@@ -195,13 +200,15 @@ export default class ImportCDS extends Vue {
     this.$refs['importCDSForm'].validate((valid: boolean) => {
       if (valid) {
         this.$emit('loadOn')
-        httpService.post('query/bioPartDesigner', JSON.stringify(this.sendData))
+        httpService.post('query/bioPartDesigner', this.sendData)
           .then((res: any) => {
             if (res.data.status === 'success') {
               (this as any).$message({ message: res.data.lims_response, type: res.data.status })
               this.$refs['importCDSForm'].resetFields()
             } else (this as any).alert({ type: res.data.status, msg: res.data.lims_response })
-          }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+          })
+          .catch((err: any) => { throw new Error(err) })
+          .finally(() => this.$emit('loadOff'))
       } else {
         this.$emit('loadOff')
         return false
@@ -214,7 +221,8 @@ export default class ImportCDS extends Vue {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -224,7 +232,9 @@ export default class ImportCDS extends Vue {
       .then((res: any) => {
         this.importCDSForm.project = ''
         this.projectsList = res.data.rows
-      }).catch((err: any) => { throw new Error(err) }).finally(() => this.$emit('loadOff'))
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

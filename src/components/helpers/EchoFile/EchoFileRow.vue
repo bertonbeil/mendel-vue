@@ -60,10 +60,6 @@ export default class EchoFileRow extends Vue {
   echoRowData = {} as any
   projectsList: object[] = []
 
-  created () {
-    this.echoRowData = _cloneDeep(this.rowData)
-  }
-
   /* Get list of projects */
   getProjectsList (value: string) {
     this.resetRow()
@@ -93,6 +89,10 @@ export default class EchoFileRow extends Vue {
   @Watch('echoRowData', { immediate: false, deep: true })
   handleRowChange () {
     this.$emit('update:rowData', this.echoRowData)
+  }
+
+  created () {
+    this.echoRowData = _cloneDeep(this.rowData)
   }
 }
 </script>
