@@ -38,7 +38,6 @@
             <el-form-item label="Name:" prop="name">
               <el-input
                 v-model="adaptoRegionOfInterestForm.name"
-                @change="getOrganismList"
                 :disabled="!adaptoRegionOfInterestForm.projectName"
                 placeholder="Enter name for this region"
                 class="w-full">
@@ -77,18 +76,16 @@
           </el-col>
           <el-col :span="8">
             <el-row>
-              <el-col :span="12">
-                <el-form-item label="Open position:" prop="openPosition">
-                  <el-input-number v-model="source.openPosition" class="mr-20"></el-input-number>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="Close position:" prop="closePosition">
-                  <el-input-number v-model="source.closePosition"></el-input-number>
-                </el-form-item>
-              </el-col>
               <el-col :span="24">
-                <p class="text-grey-dark -mt-5 ml-5 break-normal">A single coordinate will open a genome browser view centered on that coordinate with a window size indicated in the ‘length’ field. A range will open the browser view of that coordinate range.</p>
+                <el-form-item label="Coordinate:">
+                  <el-input
+                    v-model="coordinate"
+                    @input="setOpenCloseCoordinates"
+                    class="w-full mr-20"
+                    placeholder="Enter coordinate (e.g. 100000) or coordinate range (e.g. 100000-200000)">
+                  </el-input>
+                  <p class="text-grey-dark -mt-5 ml-5 break-normal">A single coordinate will open a genome browser view centered on that coordinate with a window size indicated in the ‘length’ field. A range will open the browser view of that coordinate range.</p>
+                </el-form-item>
               </el-col>
             </el-row>
           </el-col>
@@ -99,20 +96,22 @@
             </el-form-item>
           </el-col>
 
-          <GenomeBrowser :iframeSrc='iframeSrc' v-if="showBrowser" class="my-30" />
+          <template v-if="showBrowser">
+            <GenomeBrowser :iframeSrc='iframeSrc' class="my-30" />
 
-          <el-col :span="24" v-if="showBrowser" class="flex justify-between">
-            <div>
-              <el-button type="info" icon="el-icon-minus" circle @click="source.openPosition -= posValue" size="mini"></el-button>
-              <el-input-number controls-position="right" v-model="posValue" class="mx-10" size="mini"></el-input-number>
-              <el-button type="info" icon="el-icon-plus" circle @click="source.openPosition += posValue" size="mini"></el-button>
-            </div>
-            <div>
-              <el-button type="info" icon="el-icon-minus" circle @click="source.closePosition -= posValue" size="mini"></el-button>
-              <el-input-number controls-position="right" v-model="posValue" class="mx-10" size="mini"></el-input-number>
-              <el-button type="info" icon="el-icon-plus" circle @click="source.closePosition += posValue" size="mini"></el-button>
-            </div>
-          </el-col>
+            <el-col :span="24" class="flex justify-between">
+              <div>
+                <el-button type="info" icon="el-icon-minus" circle @click="changeCoordinates(openPosValue, 'open')" size="mini"></el-button>
+                <el-input-number controls-position="right" v-model="openPosValue" class="mx-10" size="mini"></el-input-number>
+                <el-button type="info" icon="el-icon-plus" circle @click="changeCoordinates(openPosValue, 'open', true)" size="mini"></el-button>
+              </div>
+              <div>
+                <el-button type="info" icon="el-icon-minus" circle @click="changeCoordinates(closePosValue, 'close')" size="mini"></el-button>
+                <el-input-number controls-position="right" v-model="closePosValue" class="mx-10" size="mini"></el-input-number>
+                <el-button type="info" icon="el-icon-plus" circle @click="changeCoordinates(closePosValue, 'close', true)" size="mini"></el-button>
+              </div>
+            </el-col>
+          </template>
         </el-row>
       </el-form>
 
@@ -159,7 +158,9 @@ export default class CreateRegionOfInterest extends Vue {
   projectsList: string[] = []
   organismList: string[] = []
   chromosomeList: string[] = []
-  posValue: number = 5000
+  coordinate: string = ''
+  openPosValue: number = 5000
+  closePosValue: number = 5000
   source: any = {
     organism: '',
     chromosome: '',
@@ -183,25 +184,21 @@ export default class CreateRegionOfInterest extends Vue {
     projectName: [ { required: true, message: 'Project name is required' } ],
     name: [ { required: true, message: 'Region name is required' } ],
     description: [ { required: true, message: 'Description is required' } ]
-    // organism: [ { required: true } ],
-    // chromosome: [ { required: true } ],
-    // openPosition: [ { required: true } ],
-    // closePosition: [ { required: true } ]
   }
 
   $refs!: {
     adaptoRegionOfInterestForm: HTMLFormElement
   }
+
   get showBrowser () {
-    return Object.values(this.adaptoRegionOfInterestForm).every((item: any) => { return item !== '' })
+    return this.source.chromosome !== '' && this.coordinate !== ''
   }
 
   get organism () {
-    // TODO: use switch
-    return this.source.organism === 'human' ? 'hg38'
-      : this.source.organism === 'rat' ? 'rn6'
-        : this.source.organism === 'mouse' ? 'mm10'
-          : this.source.organism === 'drosophila' ? 'dm6' : null
+    if (this.source.organism === 'human') return 'hg38'
+    else if (this.source.organism === 'rat') return 'rn6'
+    else if (this.source.organism === 'mouse') return 'mm10'
+    else if (this.source.organism === 'drosophila') return 'dm6'
   }
 
   get iframeSrc () {
@@ -226,11 +223,9 @@ export default class CreateRegionOfInterest extends Vue {
 
   /* load Modal data -> Get list of study */
   getStudyList () {
-    this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -246,11 +241,9 @@ export default class CreateRegionOfInterest extends Vue {
   }
 
   getOrganismList () {
-    this.$emit('loadOn')
     return httpService.post('query/adaptoUtils', { request: 'organismList' })
       .then((res: any) => { this.organismList = res.data.lims_response })
       .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
   }
 
   getChromosomeList () {
@@ -261,15 +254,31 @@ export default class CreateRegionOfInterest extends Vue {
       .finally(() => this.$emit('loadOff'))
   }
 
+  setOpenCloseCoordinates () {
+    this.source.openPosition = +this.coordinate.split('-')[0]
+    this.source.closePosition = +this.coordinate.split('-')[1]
+  }
+
+  changeCoordinates (value: number, pos: string, add: boolean) {
+    if (pos === 'open') add ? this.source.openPosition += value : this.source.openPosition -= value
+    else if (pos === 'close') add ? this.source.closePosition += value : this.source.closePosition -= value
+
+    this.coordinate = `${this.source.openPosition}-${this.source.closePosition}`
+  }
+
   getInitialData () {
-    this.getStudyList()
-      .then(() => {
-        if (this.modalData.hasOwnProperty('saveAndNextData')) {
-          this.adaptoRegionOfInterestForm.studyName = this.modalData.saveAndNextData.study
-          this.adaptoRegionOfInterestForm.projectName = this.modalData.saveAndNextData.name
-          this.getProjectsList()
-        }
-      })
+    this.$emit('loadOn')
+    Promise.all([
+      this.getOrganismList(),
+      this.getStudyList()
+        .then(() => {
+          if (this.modalData.hasOwnProperty('saveAndNextData')) {
+            this.adaptoRegionOfInterestForm.studyName = this.modalData.saveAndNextData.study
+            this.adaptoRegionOfInterestForm.projectName = this.modalData.saveAndNextData.name
+            this.getProjectsList()
+          }
+        })
+    ]).finally(() => this.$emit('loadOff'))
   }
 
   created () {
