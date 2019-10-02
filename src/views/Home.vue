@@ -1,7 +1,6 @@
 <template>
   <div>
     <MainHeader @select="onSelect" />
-
     <!-- Main modal wrapper -->
     <el-dialog
       :visible="dialogVisible"

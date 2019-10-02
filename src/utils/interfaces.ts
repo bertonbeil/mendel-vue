@@ -240,6 +240,12 @@ export interface importAssembly {
   parts?: string,
 }
 
+export interface ImportsCustomParts {
+  orderName?: string,
+  description?: string,
+  sequence?: string,
+}
+
 export interface EchoFile {
   project?: string
   dna_amount?: number

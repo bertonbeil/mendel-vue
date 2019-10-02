@@ -112,6 +112,12 @@ export default new Vuex.Store({
         submitUrl: 'dnaDesigner'
       },
       {
+        component: 'ImportCustomParts',
+        title: 'Import Custom Parts',
+        dialogIntro: 'This page allows you to import segments for commercial gene synthesis (e.g. Qinglan). You should only use this for segments unrelated to adapto and/or de novo assemblies and cannot otherwise be designed in MenDEL.',
+        submitUrl: 'dnaDesigner'
+      },
+      {
         component: 'ExportAssembly',
         title: 'Assembly',
         dialogIntro: 'Export a CSV file and a Genbank file with all information about your assembly.'
