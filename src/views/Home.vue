@@ -11,23 +11,29 @@
       :before-close="handleClose"
       custom-class="lims-dialog mb-0"
       top="60px"
-      width="100%">
-        <component
-          :is="tempModalData.component"
-          :modalData="tempModalData"
-          :isLoading.sync="isLoading"
-          ref="modalRef"
-          @loadOn="showLoader"
-          @loadOff="isLoading.close()"
-          @save="onSave"
-          @close="handleClose">
-        </component>
+      width="100%"
+    >
+      <component
+        :is="tempModalData.component"
+        :modalData="tempModalData"
+        :isLoading.sync="isLoading"
+        ref="modalRef"
+        @loadOn="showLoader"
+        @loadOff="isLoading.close()"
+        @save="onSave"
+        @close="handleClose"
+      ></component>
 
-      <el-row :gutter="20" v-if="this.$store.state.debugMode && this.$refs.modalRef && this.$refs.modalRef.sendData">
+      <el-row
+        :gutter="20"
+        v-if="this.$store.state.debugMode && this.$refs.modalRef && this.$refs.modalRef.sendData"
+      >
         <el-col :span="24" class="p-10 my-30 border-t-2 border-b-2 border-solid border-grey">
-          <p class="text-xl text-black">Debug</p>
-
-          <pre>{{ $refs.modalRef.sendData }}</pre>
+          <el-collapse accordion>
+            <el-collapse-item title="Debug">
+              <pre>{{ $refs.modalRef.sendData }}</pre>
+            </el-collapse-item>
+          </el-collapse>
         </el-col>
       </el-row>
     </el-dialog>
@@ -46,12 +52,11 @@ import { alertMixin } from '@/utils/mixins'
   name: 'Home',
   mixins: [alertMixin]
 })
-
 export default class Home extends Vue {
-  dialogVisible: boolean = false
-  tempModalData: DialogBase = {} as DialogBase
+  dialogVisible: boolean = false;
+  tempModalData: DialogBase = {} as DialogBase;
   /* modal loading ctrl */
-  isLoading: any = null
+  isLoading: any = null;
   /* base optins set up for MessageBox dialog */
   confirmOptions = {
     confirmButtonText: 'Ok',
@@ -59,11 +64,11 @@ export default class Home extends Vue {
     showClose: false,
     closeOnClickModal: false,
     closeOnPressEscape: false
-  }
+  };
 
   $refs!: {
-    modalRef: any
-  }
+    modalRef: any;
+  };
 
   get debugMode () {
     return this.$store.state.debugMode
@@ -78,25 +83,35 @@ export default class Home extends Vue {
   /* submit Modal data */
   onSave (modalData: any, to: string) {
     this.showLoader()
-    httpService.post(`query/${this.tempModalData.submitUrl}`, modalData.data)
+    httpService
+      .post(`query/${this.tempModalData.submitUrl}`, modalData.data)
       .then((res: any) => {
         if (res.data.status === 'error') {
           this.responseMessage(res.data)
         } else {
           if (to) {
-            this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: JSON.parse(modalData.data) }
+            this.tempModalData = {
+              ...this.setTempModalData(to),
+              saveAndNextData: JSON.parse(modalData.data)
+            }
             this.isLoading.close()
           } else {
             this.responseMessage(res.data)
             this.isLoading.close()
           }
         }
-      }).catch((err: any) => { this.isLoading = false; console.log(err) })
+      })
+      .catch((err: any) => {
+        this.isLoading = false
+        console.log(err)
+      })
   }
 
   /* find and set TempModal data by component name */
   setTempModalData (component: any): DialogBase {
-    return this.$store.state.modalDataList.slice().find((i: any) => i.component === component) as DialogBase
+    return this.$store.state.modalDataList
+      .slice()
+      .find((i: any) => i.component === component) as DialogBase
   }
 
   /* set Loadin servise */
@@ -111,21 +126,35 @@ export default class Home extends Vue {
 
   /* before close handler */
   confirmClose () {
-    this.$confirm('Sure you want to leave? All progress will be lost!', 'Warning', { type: 'warning', ...this.confirmOptions })
-      .then(() => { this.closeModal() })
+    this.$confirm(
+      'Sure you want to leave? All progress will be lost!',
+      'Warning',
+      { type: 'warning', ...this.confirmOptions }
+    )
+      .then(() => {
+        this.closeModal()
+      })
       .catch(() => false)
   }
 
   /* will close root Modal and reset temp Modal Data */
   closeModal () {
-    this.dialogVisible = false; this.tempModalData = {} as DialogBase
+    this.dialogVisible = false
+    this.tempModalData = {} as DialogBase
   }
 
   /* response viewer */
   responseMessage ({ lims_response, status }: any) {
-    (this as any).alert({ type: status, msg: lims_response })
-      .then(() => { this.isLoading.close(); this.closeModal() })
-      .catch(() => { this.isLoading.close(); this.closeModal() })
+    (this as any)
+      .alert({ type: status, msg: lims_response })
+      .then(() => {
+        this.isLoading.close()
+        this.closeModal()
+      })
+      .catch(() => {
+        this.isLoading.close()
+        this.closeModal()
+      })
   }
 }
 </script>
