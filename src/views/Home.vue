@@ -11,8 +11,7 @@
       :before-close="handleClose"
       custom-class="lims-dialog mb-0"
       top="60px"
-      width="100%"
-    >
+      width="100%">
       <component
         :is="tempModalData.component"
         :modalData="tempModalData"
@@ -21,14 +20,11 @@
         @loadOn="showLoader"
         @loadOff="isLoading.close()"
         @save="onSave"
-        @close="handleClose"
-      ></component>
+        @close="handleClose">
+      </component>
 
-      <el-row
-        :gutter="20"
-        v-if="this.$store.state.debugMode && this.$refs.modalRef && this.$refs.modalRef.sendData"
-      >
-        <el-col :span="24" class="p-10 my-30 border-t-2 border-b-2 border-solid border-grey">
+      <el-row :gutter="20" v-if="this.$store.state.debugMode && this.$refs.modalRef && this.$refs.modalRef.sendData">
+        <el-col :span="24" class="pt-20">
           <el-collapse accordion>
             <el-collapse-item title="Debug">
               <pre>{{ $refs.modalRef.sendData }}</pre>
@@ -48,15 +44,15 @@ import { Loading } from 'element-ui'
 import { capitalize } from '@/utils/helpers'
 import { alertMixin } from '@/utils/mixins'
 
-@Component({
-  name: 'Home',
-  mixins: [alertMixin]
-})
+@Component({ name: 'Home', mixins: [ alertMixin ] })
+
 export default class Home extends Vue {
-  dialogVisible: boolean = false;
-  tempModalData: DialogBase = {} as DialogBase;
+  dialogVisible: boolean = false
+  tempModalData: DialogBase = {} as DialogBase
+
   /* modal loading ctrl */
-  isLoading: any = null;
+  isLoading: any = null
+
   /* base optins set up for MessageBox dialog */
   confirmOptions = {
     confirmButtonText: 'Ok',
@@ -64,11 +60,11 @@ export default class Home extends Vue {
     showClose: false,
     closeOnClickModal: false,
     closeOnPressEscape: false
-  };
+  }
 
   $refs!: {
-    modalRef: any;
-  };
+    modalRef: any
+  }
 
   get debugMode () {
     return this.$store.state.debugMode
@@ -90,10 +86,7 @@ export default class Home extends Vue {
           this.responseMessage(res.data)
         } else {
           if (to) {
-            this.tempModalData = {
-              ...this.setTempModalData(to),
-              saveAndNextData: JSON.parse(modalData.data)
-            }
+            this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: JSON.parse(modalData.data) }
             this.isLoading.close()
           } else {
             this.responseMessage(res.data)
@@ -101,10 +94,7 @@ export default class Home extends Vue {
           }
         }
       })
-      .catch((err: any) => {
-        this.isLoading = false
-        console.log(err)
-      })
+      .catch((err: any) => { this.isLoading = false; throw new Error(err) })
   }
 
   /* find and set TempModal data by component name */
@@ -131,9 +121,7 @@ export default class Home extends Vue {
       'Warning',
       { type: 'warning', ...this.confirmOptions }
     )
-      .then(() => {
-        this.closeModal()
-      })
+      .then(() => this.closeModal())
       .catch(() => false)
   }
 
