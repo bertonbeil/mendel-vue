@@ -255,8 +255,13 @@ export default class CreateRegionOfInterest extends Vue {
   }
 
   setOpenCloseCoordinates () {
-    this.source.openPosition = +this.coordinate.split('-')[0]
-    this.source.closePosition = +this.coordinate.split('-')[1]
+    if (this.coordinate.match('-')) {
+      this.source.openPosition = +this.coordinate.split('-')[0]
+      this.source.closePosition = +this.coordinate.split('-')[1]
+    } else {
+      this.source.openPosition = +this.coordinate - 100000
+      this.source.closePosition = +this.coordinate + 100000
+    }
   }
 
   changeCoordinates (value: number, pos: string, add: boolean) {
