@@ -136,11 +136,7 @@ export default class Home extends Vue {
       .alert({ type: status, msg: lims_response })
       .then(() => {
         this.isLoading.close()
-        this.closeModal()
-      })
-      .catch(() => {
-        this.isLoading.close()
-        this.closeModal()
+        if (status === 'success') this.closeModal()
       })
   }
 }
