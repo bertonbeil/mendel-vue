@@ -7,6 +7,8 @@ import {
   CheckboxGroup,
   Container,
   Col,
+  Collapse,
+  CollapseItem,
   Dialog,
   Dropdown,
   DropdownMenu,
@@ -37,6 +39,7 @@ import {
 } from 'element-ui'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
+import { Verify } from 'crypto'
 
 locale.use(lang)
 
@@ -47,6 +50,8 @@ Vue.use(Checkbox)
 Vue.use(CheckboxGroup)
 Vue.use(Container)
 Vue.use(Col)
+Vue.use(Collapse)
+Vue.use(CollapseItem)
 Vue.use(Dialog)
 Vue.use(Dropdown)
 Vue.use(DropdownMenu)
