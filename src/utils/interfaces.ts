@@ -241,9 +241,15 @@ export interface importAssembly {
 }
 
 export interface ImportsCustomParts {
-  orderName?: string,
-  description?: string,
-  sequence?: string,
+  projectName?: string,
+  action?: string,
+  data?: string,
+}
+
+export interface DitailsForReview {
+  projectName?: string,
+    action?: string,
+    data: object
 }
 
 export interface EchoFile {
