@@ -30,89 +30,17 @@
 
           <el-col :span="20">
             <!--  -->
-            <template v-for="(echoRow, index) in tableData">
-              <EchoFileRow :row-data.sync="tableData[index]" :row-data-index="index" :study-list='studyList' :assembly-list="assemblyList" :key="echoRow.location"></EchoFileRow>
-            </template>
-
-            <!-- <el-table :data="tableData" style="width: 100%" cell-class-name="table-cell">
-              <el-table-column prop="study" label="Study">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-select v-model="scope.row.study" placeholder="Select study" @change="getProjectsList(scope.$index)">
-                      <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="project" label="Project">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-select v-model="scope.row.project" placeholder="Select project" @change="getAssemblyList(scope.$index)">
-                      <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="name" label="Assembly">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-select v-model="scope.row.name" placeholder="Select project" @change="getSegments(scope.$index)">
-                      <el-option v-for="(item, i) in scope.row.assemblyList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="location" label="Quadrant">
-                <template slot-scope="scope">
-                  <EchoQuadrant :activeCell='scope.row.location' />
-                </template>
-              </el-table-column>
-              <el-table-column prop="templates" label="Templates">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-input v-model="scope.row.templates"></el-input>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="segments" label="Segments"></el-table-column>
-              <el-table-column prop="negativeCtrl" label="Neg ctrl">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-checkbox v-model="scope.row.negativeCtrl"></el-checkbox>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="positiveCtrl" label="Pos ctrl">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-checkbox v-model="scope.row.positiveCtrl"></el-checkbox>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="waterCtrl" label="H20 ctrl">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-checkbox v-model="scope.row.waterCtrl"></el-checkbox>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="primersLoc" label="Primers Loc">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-input v-model="scope.row.primersLoc"></el-input>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="step" label="Step">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-select v-model="scope.row.step" default-first-option @change="changeStep(scope.$index)">
-                      <el-option v-for="item in [ 'None', 1, 2, 4 ]" :key="item" :label="item" :value="item"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-            </el-table> -->
+            {{tableData}}
+            <br> <br>
+              <EchoFileRow
+                v-for="(echoRow, index) in tableData"
+                @load:on="$emit('loadOn')"
+                @load:off="$emit('loadOff')"
+                :row-data.sync="tableData[index]"
+                :row-data-index="index"
+                :study-list='studyList'
+                :assembly-list="assemblyList"
+                :key="index" />
           </el-col>
           <el-col :span="4" class="mt-35">
             <div v-for="(item, i) in echoCalcRows" :key="i" class="mt-25">
@@ -124,6 +52,9 @@
         </el-row>
       </el-form>
     </div>
+
+    <el-button icon="el-icon-bottom" circle :type="true ? 'primary' : null"></el-button>
+    <el-button icon="el-icon-bottom" circle :type="false ? 'primary' : null"></el-button>
 
     <!-- Junctions visualizations -->
     <el-row class="mb-30">
@@ -137,10 +68,18 @@
               </div>
               <div class="echo-closet"></div>
             </div>
+
+            <EchoJunctionsVisualizer
+              v-for="assembly in echoAssemblies"
+              :key="assembly.location"
+              :segments="assembly.segments"
+              :step="assembly.step" />
           </div>
         </template>
       </div>
     </el-row>
+
+  {{echoAssemblies}}
 
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
@@ -152,8 +91,9 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
-import { DialogBase, EchoFile } from '@/utils/interfaces'
+import { DialogBase, EchoFile, EchoFileAssemblyRow } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
+import { _cloneDeep } from '@/utils/helpers'
 
 @Component({ name: 'CreateEchoFile' })
 
@@ -169,7 +109,7 @@ export default class CreateEchoFile extends Vue {
   totalWellsUsed: number = 0
   rowIndex: number = 0
 
-  tableData: any = [ {
+  tableData: Array<EchoFileAssemblyRow> = [ {
     study: '',
     project: '',
     name: '',
@@ -181,8 +121,7 @@ export default class CreateEchoFile extends Vue {
     positiveCtrl: true,
     waterCtrl: true,
     step: 'None',
-    primersLoc: 'A1',
-    assemblyList: []
+    primersLoc: 'A1'
   }, {
     study: '',
     project: '',
@@ -195,8 +134,7 @@ export default class CreateEchoFile extends Vue {
     positiveCtrl: true,
     waterCtrl: true,
     step: 'None',
-    primersLoc: 'A1',
-    assemblyList: []
+    primersLoc: 'A1'
   }, {
     study: '',
     project: '',
@@ -209,8 +147,7 @@ export default class CreateEchoFile extends Vue {
     positiveCtrl: true,
     waterCtrl: true,
     step: 'None',
-    primersLoc: 'A1',
-    assemblyList: []
+    primersLoc: 'A1'
   }, {
     study: '',
     project: '',
@@ -223,8 +160,7 @@ export default class CreateEchoFile extends Vue {
     positiveCtrl: true,
     waterCtrl: true,
     step: 'None',
-    primersLoc: 'A1',
-    assemblyList: []
+    primersLoc: 'A1'
   } ]
 
   echoCalcRows: any = [
@@ -235,7 +171,6 @@ export default class CreateEchoFile extends Vue {
   ]
 
   echoFileForm: EchoFile = {
-    project: '',
     dna_amount: 10.0,
     primer_amount: 10.0,
     primer_control_location: 'P24'
@@ -251,24 +186,36 @@ export default class CreateEchoFile extends Vue {
     echoFileForm: HTMLFormElement
   }
 
-  @Watch('tableData', { deep: true })
-  calcRows () {
-    this.tableData.map((item: any, i: any) => {
-      item.num_controls = (item.negativeCtrl ? 1 : 0) + (item.positiveCtrl ? 1 : 0) + (item.waterCtrl ? 1 : 0)
-      if (i === this.rowIndex) {
-        this.echoCalcRows[i].primerPairs = (this.tableData[i].segments + 1) * 2 + 1
-        this.echoCalcRows[i].wellsUsed = (this.tableData[i].templates + 3) * this.echoCalcRows[i].primerPairs
-      }
-    })
-    this.totalWellsUsed = 0
-    this.echoCalcRows.map((item: any) => { this.totalWellsUsed += item.wellsUsed })
-  }
+  // @Watch('tableData', { deep: true })
+  // calcRows () {
+  //   this.tableData.map((item: any, i: any) => {
+  //     item.num_controls = (item.negativeCtrl ? 1 : 0) + (item.positiveCtrl ? 1 : 0) + (item.waterCtrl ? 1 : 0)
+  //     if (i === this.rowIndex) {
+  //       this.echoCalcRows[i].primerPairs = (this.tableData[i].segments + 1) * 2 + 1
+  //       this.echoCalcRows[i].wellsUsed = (this.tableData[i].templates + 3) * this.echoCalcRows[i].primerPairs
+  //     }
+  //   })
+  //   this.totalWellsUsed = 0
+  //   this.echoCalcRows.map((item: any) => { this.totalWellsUsed += item.wellsUsed })
+  // }
 
   get sendData () {
-    this.assemblies = this.tableData.filter((item: any) => item.name !== '')
-    this.assemblies.map((item: any) => { delete item.assemblyList; delete item.project; delete item.primersLoc })
-    this.assemblies.map((item: any) => this.primers.push({ location: item.primersLoc } as any))
-    return { ...this.echoFileForm, assemblies: this.assemblies, primers: this.primers }
+    const echoAssembliesCopy = _cloneDeep(this.echoAssemblies)
+    // remove unnecessary key
+    echoAssembliesCopy.forEach((item: EchoFileAssemblyRow) => { delete item.primersLoc; delete item.step })
+    // this.assemblies = this.tableData.filter((item: any) => item.name !== '')
+    // this.assemblies.map((item: any) => { delete item.assemblyList; delete item.project; delete item.primersLoc })
+    // this.assemblies.map((item: any) => this.primers.push({ location: item.primersLoc } as any))
+    return {
+      ...this.echoFileForm,
+      assemblies: echoAssembliesCopy,
+      primers: this.echoAssemblies.map((item: EchoFileAssemblyRow) => ({ location: item.primersLoc }))
+    }
+  }
+
+  // filtered table data which be sent
+  get echoAssemblies () {
+    return this.tableData.filter((row: EchoFileAssemblyRow) => row.study && row.project && row.name)
   }
 
   save () {
@@ -281,18 +228,10 @@ export default class CreateEchoFile extends Vue {
   /* load Modal data -> Get list of study */
   getStudyList () {
     return httpService.get('query/studyNameList')
-      .then((res: any) => { this.studyList = res.data.rows })
+      .then((res: any) => {
+        this.studyList = res.data.rows
+      })
       .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
-  }
-
-  /* Get list of projects */
-  getProjectsList (index: any) {
-    this.$emit('loadOn')
-    return httpService.post('query/projectNameList', { study: this.tableData[index].study })
-      .then((res: any) => { this.projectsList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -301,13 +240,6 @@ export default class CreateEchoFile extends Vue {
       .then((res: any) => {
         this.assemblyList = res.data.rows
       }).catch((err: any) => { console.log(err) })
-  }
-
-  /* Get segments of rows */
-  getSegments (index: any) {
-    this.tableData[index].assemblyList.map((item: any) => {
-      if (item.assembly === this.tableData[index].name) this.tableData[index].segments = item.segments
-    })
   }
 
   changeStep (index: any) {
@@ -321,7 +253,6 @@ export default class CreateEchoFile extends Vue {
       this.getAssemblyList()
     ])
       .finally(() => {
-        console.log('fff')
         this.$emit('loadOff')
       })
   }

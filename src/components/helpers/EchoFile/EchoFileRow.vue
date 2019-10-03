@@ -12,7 +12,7 @@
     </div>
     <div>
       <el-select v-model="echoRowData.name" placeholder="Select assembly" :disabled="echoRowData.project === ''" @change="handleAssemblySelect">
-        <el-option v-for="(item, i) in assemblyList.filter(a => a.project === echoRowData.project)" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
+        <el-option v-for="(item, i) in assemblySelectList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
       </el-select>
     </div>
     <div>
@@ -46,29 +46,48 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { EchoFileAssemblyRow } from '@/utils/interfaces'
 import { _cloneDeep } from '@/utils/helpers'
 import { httpService } from '@/services/http.service'
 
 @Component({ name: 'EchoFileRow' })
 
 export default class EchoFileRow extends Vue {
-  @Prop({ required: true }) rowData: any
+  @Prop({ required: true }) rowData!: EchoFileAssemblyRow
   @Prop({ required: true }) rowDataIndex!: number
   @Prop({ required: true }) studyList: any
   @Prop({ required: true }) assemblyList: any
 
-  echoRowData = {} as any
+  echoRowData = {} as EchoFileAssemblyRow
   projectsList: object[] = []
+
+  /* filtered Assembly list depended on selected project */
+  get assemblySelectList () {
+    return this.assemblyList.filter((a: any) => a.project === this.echoRowData.project)
+  }
+
+  /* 'location'value for key depended on index */
+  get rowLocation (): string {
+    switch (this.rowDataIndex) {
+      case 0: return 'A1'
+      case 1: return 'A2'
+      case 2: return 'B1'
+      case 3: return 'B2'
+    }
+
+    return ''
+  }
 
   /* Get list of projects */
   getProjectsList (value: string) {
     this.resetRow()
-    this.$emit('loadOn')
+    this.$emit('load:on')
     return httpService.post('query/projectNameList', { study: value })
       .then((res: any) => {
         this.projectsList = res.data.rows
-        this.$emit('loadOff')
-      }).catch((err: any) => { this.$emit('loadOff'); console.log(err) })
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => { this.$emit('load:off') })
   }
 
   resetRow () {
@@ -76,7 +95,7 @@ export default class EchoFileRow extends Vue {
     this.echoRowData.name = ''
     this.echoRowData.templates = 1
     this.echoRowData.segments = 0
-    this.echoRowData.location = 'A1'
+    this.echoRowData.location = this.rowLocation
     this.echoRowData.step = 'None'
   }
 
@@ -88,7 +107,7 @@ export default class EchoFileRow extends Vue {
 
   @Watch('echoRowData', { immediate: false, deep: true })
   handleRowChange () {
-    this.$emit('update:rowData', this.echoRowData)
+    this.$emit('update:rowData', { ...this.echoRowData, num_controls: (this.echoRowData.negativeCtrl ? 1 : 0) + (this.echoRowData.positiveCtrl ? 1 : 0) + (this.echoRowData.waterCtrl ? 1 : 0) })
   }
 
   created () {
