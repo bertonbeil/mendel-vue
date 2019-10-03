@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import router from '../router'
 import { httpService } from '@/services/http.service'
 
 Vue.use(Vuex)
@@ -7,6 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     debugMode: true,
+    isAuth: false,
     user: {
       id: '',
       role: ''
@@ -138,10 +140,12 @@ export default new Vuex.Store({
       commit('set_debugMode', !state.debugMode)
     },
 
-    getUserInfo ({ commit }) {
+    manageAuth ({ commit }) {
       httpService.get('query/whoAmI')
         .then((res: any) => {
           commit('set_user', res.data.user)
+          if (this.state.user.role === 'None') router.push('/login')
+          else this.state.isAuth = true
         })
         .catch((err: any) => { throw new Error(err) })
     }
