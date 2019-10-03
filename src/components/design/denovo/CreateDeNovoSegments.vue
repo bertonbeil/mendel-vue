@@ -214,7 +214,7 @@ export default class CreateDeNovoSegments extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.denovoSegmentForm)
+    return this.denovoSegmentForm
   }
 
   /* submit Modal data */

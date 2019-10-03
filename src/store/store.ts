@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import router from '../router'
 import { httpService } from '@/services/http.service'
 
 Vue.use(Vuex)
@@ -7,6 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     debugMode: true,
+    isAuth: false,
     user: {
       id: '',
       role: ''
@@ -118,6 +120,12 @@ export default new Vuex.Store({
         submitUrl: 'dnaDesigner'
       },
       {
+        component: 'ImportSegments',
+        title: 'Import Segments',
+        dialogIntro: 'This page allows you to import externally designed or modified segments matched to an assembly. The imported coordinates will be used to segment the previously imported assembly sequence and design junction primers.',
+        submitUrl: 'segmentDesigner'
+      },
+      {
         component: 'ExportAssembly',
         title: 'Assembly',
         dialogIntro: 'Export a CSV file and a Genbank file with all information about your assembly.'
@@ -144,10 +152,12 @@ export default new Vuex.Store({
       commit('set_debugMode', !state.debugMode)
     },
 
-    getUserInfo ({ commit }) {
+    manageAuth ({ commit }) {
       httpService.get('query/whoAmI')
         .then((res: any) => {
           commit('set_user', res.data.user)
+          if (this.state.user.role === 'None') router.push('/login')
+          else this.state.isAuth = true
         })
         .catch((err: any) => { throw new Error(err) })
     }

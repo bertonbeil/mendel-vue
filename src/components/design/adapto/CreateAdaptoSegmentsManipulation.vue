@@ -1,10 +1,5 @@
 <template>
   <div>
-    <el-row :gutter="20" class="mb-20">
-      <el-col :span="24">
-        <h3 class="text-black font-bold">Segment manipulation</h3>
-      </el-col>
-    </el-row>
     <!-- Main modal content -->
     <div class="mb-30">
       <el-row :gutter="20">
@@ -12,11 +7,7 @@
           <el-row :gutter="20" class="mb-30">
             <el-col :span="8">
               <el-form-item label="Study name:" prop="studyName">
-                <el-select
-                  v-model="segment_request.studyName"
-                  @change="getProjectsList"
-                  placeholder="Select study"
-                  class="w-full">
+                <el-select v-model="segment_request.studyName" @change="getProjectsList" placeholder="Select study" class="w-full">
                   <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
                 </el-select>
               </el-form-item>
@@ -29,7 +20,7 @@
                   placeholder="Select project"
                   :disabled="!segment_request.studyName"
                   class="w-full">
-                  <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
+                  <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -40,7 +31,7 @@
                   placeholder="Select assembly"
                   :disabled="!segment_request.projectName"
                   class="w-full">
-                  <el-option v-for="item in assemblyList" :key="item" :label="item" :value="item"></el-option>
+                  <el-option v-for="item in assemblyList" :key="item.name" :label="item" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -105,28 +96,9 @@
                   :projectName='segment_request.projectName'
                   :typesList='customSegmentTypeList' />
               </el-col>
-              <el-col :span="8">
-                <el-form-item label="Project name:" prop="projectName">
-                  <el-select v-model="adaptoSegmentsManipulationForm.projectName" @change="getRegionList" placeholder="Select project" class="w-full">
-                    <el-option v-for="(item, i) in projectsList" :key="i" :label="item" :value="item"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="Assembly name:" prop="assemblyName">
-                  <el-select v-model="adaptoSegmentsManipulationForm.assemblyName" placeholder="Select assembly" class="w-full">
-                    <el-option v-for="(item, i) in assemblyList" :key="i" :label="item" :value="item"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="20" class="mb-30">
-              <el-col :span="8">
-                <el-form-item label="Action:" prop="action">
-                  <el-select v-model="adaptoSegmentsManipulationForm.action" placeholder="Select region" class="w-full">
-                    <el-option v-for="item in actionList" :key="item" :label="item" :value="item"></el-option>
-                  </el-select>
-                </el-form-item>
+              <el-col :span="2" class="flex justify-around items-center">
+                <el-button type="danger" icon="el-icon-delete" circle @click="deleteRow(index)"></el-button>
+                <i class="el-icon-more cursor-pointer"></i>
               </el-col>
             </el-row>
           </div>
@@ -229,11 +201,11 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   }
 
   rules: object = {
-    studyName: [ { required: true, message: 'Study name is required' } ],
-    projectName: [ { required: true, message: 'Project name is required' } ],
-    dnaDesignName: [ { required: true, message: 'Assembly name is required' } ],
-    firstSegmentIdx: [ { required: true, message: 'First segment index is required' } ],
-    lastSegmentIdx: [ { required: true, message: 'Last segment index is required' } ]
+    studyName: [ { required: true } ],
+    projectName: [ { required: true } ],
+    dnaDesignName: [ { required: true } ],
+    firstSegmentIdx: [ { required: true } ],
+    lastSegmentIdx: [ { required: true } ]
   }
 
   $refs!: {
@@ -260,13 +232,13 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.adaptoSegmentsManipulationForm)
+    return this.adaptoSegmentsManipulationForm
   }
 
   /* submit Modal data */
   save () {
     this.$refs['segment_request'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.sendData })
+      if (valid) this.$emit('save', { data: this.adaptoSegmentsManipulationForm })
       else return false
     })
   }
@@ -277,7 +249,6 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -288,8 +259,8 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
         this.assemblyList = []
         this.segment_request.projectName = ''
         this.segment_request.dnaDesignName = ''
-        this.adaptoSegmentsManipulationForm.action = ''
         this.adaptoSegmentsManipulationForm.requestType = ''
+        this.adaptoSegmentsManipulationForm.action = ''
         this.projectsList = res.data.rows
       })
       .catch((err: any) => { throw new Error(err) })
@@ -299,15 +270,15 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   /* Get list of assemblies */
   getRegionList () {
     this.$emit('loadOn')
-    return httpService.post('query/locusRegionRetriever', {
-      study: this.segment_request.studyName,
-      project: this.segment_request.projectName
-    }).then((res: any) => {
-      this.segment_request.dnaDesignName = ''
-      this.adaptoSegmentsManipulationForm.action = ''
-      this.adaptoSegmentsManipulationForm.requestType = ''
-      this.assemblyList = res.data.regions
-    }).catch((err: any) => { throw new Error(err) })
+    return httpService.post('query/locusRegionRetriever', { study: this.segment_request.studyName, project: this.segment_request.projectName })
+      .then((res: any) => {
+        this.assemblyList = []
+        this.segment_request.dnaDesignName = ''
+        this.adaptoSegmentsManipulationForm.requestType = ''
+        this.adaptoSegmentsManipulationForm.action = ''
+        this.assemblyList = res.data.regions
+      })
+      .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
 
@@ -332,7 +303,6 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     return httpService.get('query/customSegmentTypeList')
       .then((res: any) => { this.customSegmentTypeList = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
   }
 
   addRow () {
@@ -344,8 +314,9 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   }
 
   getInitialData () {
-    this.getStudyList()
-    this.getCustomSegmentTypeList()
+    Promise.all([ this.getStudyList(), this.getCustomSegmentTypeList() ])
+      .finally(() => this.$emit('loadOff'))
+
     if (this.adaptoSegmentsManipulationForm.action !== 'Replace') {
       delete this.segment_request.newName
       delete this.segment_request.customSegments

@@ -160,7 +160,7 @@ export default class CreateDeNovoCDS extends Vue {
 
   get sendData () {
     this.denovoCDSForm.nickname = this.tableData.map((i: any) => i.nickname).join()
-    return JSON.stringify(this.denovoCDSForm)
+    return this.denovoCDSForm
   }
 
   /* submit Modal data */

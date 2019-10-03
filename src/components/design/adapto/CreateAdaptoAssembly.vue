@@ -110,7 +110,7 @@ export default class CreateAdaptoAssembly extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.adaptoAssemblyForm)
+    return this.adaptoAssemblyForm
   }
 
   /* submit Modal data */

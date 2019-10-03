@@ -146,7 +146,7 @@ export default class CreateDeNovoPrimers extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.denovoPrimersForm)
+    return this.denovoPrimersForm
   }
 
   /* submit Modal data */

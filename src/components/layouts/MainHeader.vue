@@ -34,7 +34,7 @@
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item v-if="user.role = 'admin'">Debug mode <el-switch class="ml-15" @click.native="$store.dispatch('toggleDebugMode')" :value="debugMode"></el-switch> </el-dropdown-item>
       <el-dropdown-item disabled>User Info</el-dropdown-item>
-      <el-dropdown-item divided>Log Out</el-dropdown-item>
+      <el-dropdown-item divided @click.native="logOut">Log Out</el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
 
@@ -144,8 +144,13 @@ export default class MainHeader extends Vue {
     this.$store.commit('set_debugMode', value)
   }
 
+  logOut () {
+    this.$store.state.isAuth = false
+    this.$router.push('/login')
+  }
+
   created () {
-    this.$store.dispatch('getUserInfo')
+    this.$store.dispatch('manageAuth')
   }
 }
 </script>

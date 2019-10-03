@@ -251,7 +251,7 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.denovoAssemblyForm)
+    return this.denovoAssemblyForm
   }
 
   /* submit Modal data */
@@ -260,9 +260,9 @@ export default class CreateDeNovoAssembly extends Vue {
       if (valid) {
         httpService.post('query/assemblyNameChecker', { name: this.denovoAssemblyForm.name })
           .then((res: any) => {
-            res.data.valid === 'true'
-              ? this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
-              : this.responseMessage()
+            if (res.data.valid === 'true') {
+              this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+            } else this.responseMessage()
           })
           .catch((err: any) => { throw new Error(err) })
           .finally(() => this.$emit('loadOff'))
@@ -272,11 +272,9 @@ export default class CreateDeNovoAssembly extends Vue {
 
   /* load Modal data -> Get list of study */
   getStudyList () {
-    this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of projects */
@@ -297,7 +295,10 @@ export default class CreateDeNovoAssembly extends Vue {
     return httpService.post('query/projectAssemblyList', {
       study: this.denovoAssemblyForm.studyName,
       project: this.denovoAssemblyForm.projectName
-    }).then((res: any) => { this.assemblyList = res.data.rows })
+    }).then((res: any) => {
+      this.assemblyList = res.data.rows
+      this.getCDS()
+    })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
@@ -345,35 +346,37 @@ export default class CreateDeNovoAssembly extends Vue {
   getRestrictionEnzymeList () {
     return httpService.get('query/restrictionEnzymeList')
       .then((res: any) => {
-        res.data.rows[0].sequence = 'None'
         this.restrictionEnzymes = res.data.rows
       })
       .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
   }
 
   /* load Modal data -> Get list of vegas adapters */
   getVegasAdapterNameList () {
     return httpService.get('query/vegasAdapterNameList')
       .then((res: any) => { this.vegasAdapters = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
   }
 
   /* load Modal data -> Get list of promoters */
   getPromoters () {
     return httpService.get('query/promoterNameList')
       .then((res: any) => { this.promoters = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
   }
 
   /* Get list of CDS */
   getCDS () {
     return httpService.get(`query/bioPartsNameList?project=${this.denovoAssemblyForm.projectName}`)
       .then((res: any) => { this.cds = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
   }
 
   /* load Modal data -> Get list of terminators */
   getTerminators () {
     return httpService.get('query/terminatorNameList')
       .then((res: any) => { this.terminators = res.data.rows })
+      .catch((err: any) => { throw new Error(err) })
   }
 
   /* response viewer */
@@ -398,7 +401,6 @@ export default class CreateDeNovoAssembly extends Vue {
         this.getAssemblyList()
       }
     }).catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

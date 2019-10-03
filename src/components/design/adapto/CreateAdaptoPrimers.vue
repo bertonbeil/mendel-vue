@@ -164,7 +164,7 @@ export default class CreateAdaptoPrimers extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.adaptoPrimersForm)
+    return this.adaptoPrimersForm
   }
 
   /* submit Modal data */

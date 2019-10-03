@@ -18,7 +18,7 @@
     </el-col>
     <el-col :span="5">
       <el-select v-model="localReplaceRow.direction" placeholder="Select direction" class="w-full">
-        <el-option v-for="(item, i) in directionList" :key="i" :label="item.label" :value="item.value"></el-option>
+        <el-option v-for="item in directionList" :key="item.value" :label="item.label" :value="item.value"></el-option>
       </el-select>
     </el-col>
   </el-row>

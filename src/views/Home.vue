@@ -13,19 +13,19 @@
       <component
         :is="tempModalData.component"
         :modalData="tempModalData"
-        :isLoading.sync="isLoading"
         ref="modalRef"
+        :isLoading.sync="isLoading"
         @loadOn="showLoader"
         @loadOff="isLoading.close()"
         @save="onSave"
         @close="handleClose">
       </component>
 
-      <el-row :gutter="20" v-if="this.$store.state.debugMode && this.$refs.modalRef && this.$refs.modalRef.sendData">
+      <el-row :gutter="20" v-if="$store.state.debugMode && $refs.modalRef && $refs.modalRef.sendData">
         <el-col :span="24" class="pt-20">
           <el-collapse accordion>
             <el-collapse-item title="Debug">
-              <pre>{{ JSON.parse($refs.modalRef.sendData) }}</pre>
+              <pre>{{ $refs.modalRef.sendData }}</pre>
             </el-collapse-item>
           </el-collapse>
         </el-col>
@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { DialogBase } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 import { Loading } from 'element-ui'
@@ -50,6 +50,8 @@ export default class Home extends Vue {
 
   /* modal loading ctrl */
   isLoading: any = null
+
+  testLoading = true
 
   /* base optins set up for MessageBox dialog */
   confirmOptions = {
@@ -77,19 +79,14 @@ export default class Home extends Vue {
   /* submit Modal data */
   onSave (modalData: any, to: string) {
     this.showLoader()
-    httpService
-      .post(`query/${this.tempModalData.submitUrl}`, modalData.data)
+    httpService.post(`query/${this.tempModalData.submitUrl}`, JSON.stringify(modalData.data))
       .then((res: any) => {
         if (res.data.status === 'error') {
           this.responseMessage(res.data)
         } else {
-          if (to) {
-            this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: JSON.parse(modalData.data) }
-            this.isLoading.close()
-          } else {
-            this.responseMessage(res.data)
-            this.isLoading.close()
-          }
+          if (to) this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: JSON.parse(modalData.data) }
+          else this.responseMessage(res.data)
+          this.isLoading.close()
         }
       })
       .catch((err: any) => { this.isLoading = false; throw new Error(err) })
@@ -97,9 +94,7 @@ export default class Home extends Vue {
 
   /* find and set TempModal data by component name */
   setTempModalData (component: any): DialogBase {
-    return this.$store.state.modalDataList
-      .slice()
-      .find((i: any) => i.component === component) as DialogBase
+    return this.$store.state.modalDataList.slice().find((i: any) => i.component === component) as DialogBase
   }
 
   /* set Loadin servise */
@@ -114,11 +109,7 @@ export default class Home extends Vue {
 
   /* before close handler */
   confirmClose () {
-    this.$confirm(
-      'Sure you want to leave? All progress will be lost!',
-      'Warning',
-      { type: 'warning', ...this.confirmOptions }
-    )
+    this.$confirm('Sure you want to leave? All progress will be lost!', 'Warning', { type: 'warning', ...this.confirmOptions })
       .then(() => this.closeModal())
       .catch(() => false)
   }
@@ -131,8 +122,7 @@ export default class Home extends Vue {
 
   /* response viewer */
   responseMessage ({ lims_response, status }: any) {
-    (this as any)
-      .alert({ type: status, msg: lims_response })
+    (this as any).alert({ type: status, msg: lims_response })
       .then(() => {
         this.isLoading.close()
         if (status === 'success') this.closeModal()

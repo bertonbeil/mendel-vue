@@ -184,7 +184,7 @@ export default class ImportCDS extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.importCDSForm)
+    return this.importCDSForm
   }
 
   /* submit Modal data */
