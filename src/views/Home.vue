@@ -85,11 +85,8 @@ export default class Home extends Vue {
         if (res.data.status === 'error') {
           this.responseMessage(res.data)
         } else {
-          if (to) {
-            this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: JSON.parse(modalData.data) }
-          } else {
-            this.responseMessage(res.data)
-          }
+          if (to) this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: JSON.parse(modalData.data) }
+          else this.responseMessage(res.data)
           this.isLoading.close()
         }
       })
@@ -98,9 +95,7 @@ export default class Home extends Vue {
 
   /* find and set TempModal data by component name */
   setTempModalData (component: any): DialogBase {
-    return this.$store.state.modalDataList
-      .slice()
-      .find((i: any) => i.component === component) as DialogBase
+    return this.$store.state.modalDataList.slice().find((i: any) => i.component === component) as DialogBase
   }
 
   /* set Loadin servise */
@@ -115,11 +110,7 @@ export default class Home extends Vue {
 
   /* before close handler */
   confirmClose () {
-    this.$confirm(
-      'Sure you want to leave? All progress will be lost!',
-      'Warning',
-      { type: 'warning', ...this.confirmOptions }
-    )
+    this.$confirm('Sure you want to leave? All progress will be lost!', 'Warning', { type: 'warning', ...this.confirmOptions })
       .then(() => this.closeModal())
       .catch(() => false)
   }
@@ -132,8 +123,7 @@ export default class Home extends Vue {
 
   /* response viewer */
   responseMessage ({ lims_response, status }: any) {
-    (this as any)
-      .alert({ type: status, msg: lims_response })
+    (this as any).alert({ type: status, msg: lims_response })
       .then(() => {
         this.isLoading.close()
         if (status === 'success') this.closeModal()
