@@ -210,7 +210,7 @@ export default class CreateRegionOfInterest extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.adaptoRegionOfInterestForm)
+    return this.adaptoRegionOfInterestForm
   }
 
   /* submit Modal data */

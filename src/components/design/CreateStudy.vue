@@ -105,7 +105,7 @@ export default class CreateStudy extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify({ new_study: this.studyForm, collaborators: this.collaborators })
+    return { new_study: this.studyForm, collaborators: this.collaborators }
   }
 
   /* submit Modal data */
