@@ -133,7 +133,7 @@ export default class ImportAssembly extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.importAssemblyForm)
+    return this.importAssemblyForm
   }
 
   /* submit Modal data */

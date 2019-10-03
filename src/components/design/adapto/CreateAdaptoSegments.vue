@@ -232,7 +232,7 @@ export default class CreateAdaptoSegments extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.adaptoSegmentForm)
+    return this.adaptoSegmentForm
   }
 
   /* submit Modal data */

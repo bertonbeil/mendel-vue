@@ -260,7 +260,7 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.adaptoSegmentsManipulationForm)
+    return this.adaptoSegmentsManipulationForm
   }
 
   /* submit Modal data */
