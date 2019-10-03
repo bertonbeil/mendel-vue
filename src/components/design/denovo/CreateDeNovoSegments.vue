@@ -214,13 +214,13 @@ export default class CreateDeNovoSegments extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.denovoSegmentForm)
+    return this.denovoSegmentForm
   }
 
   /* submit Modal data */
   save (next?: string) {
     this.$refs['denovoSegmentForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }

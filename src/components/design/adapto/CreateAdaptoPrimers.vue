@@ -164,13 +164,13 @@ export default class CreateAdaptoPrimers extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.adaptoPrimersForm)
+    return this.adaptoPrimersForm
   }
 
   /* submit Modal data */
   save (next?: string) {
     this.$refs['adaptoPrimersForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }

@@ -133,7 +133,7 @@ export default class ImportAssembly extends Vue {
   }
 
   get sendData () {
-    return JSON.stringify(this.importAssemblyForm)
+    return this.importAssemblyForm
   }
 
   /* submit Modal data */
@@ -146,7 +146,7 @@ export default class ImportAssembly extends Vue {
       if (res.data.valid === 'false') this.responseMessage()
       else {
         this.$refs['importAssemblyForm'].validate((valid: boolean) => {
-          if (valid) this.$emit('save', { data: this.sendData })
+          if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
           else return false
         })
       }

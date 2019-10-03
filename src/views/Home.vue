@@ -14,19 +14,19 @@
       <component
         :is="tempModalData.component"
         :modalData="tempModalData"
-        :isLoading.sync="isLoading"
         ref="modalRef"
+        :isLoading.sync="isLoading"
         @loadOn="showLoader"
         @loadOff="isLoading.close()"
         @save="onSave"
         @close="handleClose">
       </component>
 
-      <el-row :gutter="20" v-if="this.$store.state.debugMode && this.$refs.modalRef && this.$refs.modalRef.sendData">
+      <el-row :gutter="20" v-if="$store.state.debugMode && $refs.modalRef && $refs.modalRef.sendData">
         <el-col :span="24" class="pt-20">
           <el-collapse accordion>
             <el-collapse-item title="Debug">
-              <pre>{{ JSON.parse($refs.modalRef.sendData) }}</pre>
+              <pre>{{ $refs.modalRef.sendData }}</pre>
             </el-collapse-item>
           </el-collapse>
         </el-col>
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { DialogBase } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 import { Loading } from 'element-ui'
@@ -51,6 +51,8 @@ export default class Home extends Vue {
 
   /* modal loading ctrl */
   isLoading: any = null
+
+  testLoading = true
 
   /* base optins set up for MessageBox dialog */
   confirmOptions = {
@@ -86,11 +88,10 @@ export default class Home extends Vue {
         } else {
           if (to) {
             this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: JSON.parse(modalData.data) }
-            this.isLoading.close()
           } else {
             this.responseMessage(res.data)
-            this.isLoading.close()
           }
+          this.isLoading.close()
         }
       })
       .catch((err: any) => { this.isLoading = false; throw new Error(err) })

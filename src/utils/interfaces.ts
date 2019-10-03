@@ -251,12 +251,10 @@ export interface ImportsSegments {
   loxPsymDistance?: number,
   homopolymerLen?: number,
   homopolymerDistance?: number,
-  segmentsAssemblyVector?: string,
-  segmentsAssemblyBactery?: string,
   assemblyVectorName?: string,
   restrictionEnzyme5?: string,
   restrictionEnzyme3?: string,
-  sequences: string
+  sequences?: string
 }
 
 export interface EchoFile {
