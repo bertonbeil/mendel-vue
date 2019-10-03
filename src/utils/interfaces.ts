@@ -246,12 +246,6 @@ export interface ImportsCustomParts {
   data?: string,
 }
 
-export interface DitailsForReview {
-  projectName?: string,
-    action?: string,
-    data: object
-}
-
 export interface ImportsSegments {
   study?: string,
   projectName?: string,

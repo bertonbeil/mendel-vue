@@ -92,9 +92,10 @@
             </el-col>
           </el-row>
           <SegmentDetailsRow
-            v-for="(segmentDetail, i) in segmentDetails"
-            :key="i"
-            :segmentData="segmentDetail"
+            v-for="(segmentDetail, index) in segmentDetails"
+            :key="index"
+            :segmentData.sync="segmentDetails[index]"
+            :grants="grants"
             :orderName="importCustomPartsForm.projectName"
           ></SegmentDetailsRow>
         </el-col>
@@ -103,7 +104,7 @@
       <!-- Segmental action buttons -->
       <div slot="footer" class="text-center">
         <el-button type="danger" @click="backToCustomParts">Cancel and back</el-button>
-        <el-button type="primary">Submit for rewiew</el-button>
+        <el-button type="primary" @click="sendDataForReview">Submit for rewiew</el-button>
       </div>
     </div>
   </div>
@@ -113,8 +114,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import {
   DialogBase,
-  ImportsCustomParts,
-  DitailsForReview
+  ImportsCustomParts
 } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
@@ -125,17 +125,12 @@ export default class ImportCustomParts extends Vue {
 
   showSegmentDetails: boolean = false;
   segmentDetails: object[] = [];
+  grants: any[] = [];
 
   importCustomPartsForm: ImportsCustomParts = {
     projectName: '',
     action: 'load',
     data: ''
-  };
-
-  DitailsForReview: DitailsForReview = {
-    projectName: this.importCustomPartsForm.projectName,
-    action: 'order',
-    data: []
   };
 
   rules: object = {
@@ -147,8 +142,20 @@ export default class ImportCustomParts extends Vue {
     importCustomPartsForm: HTMLFormElement;
   };
 
-  addSegmentDetailsData (data: object) {
-    this.DitailsForReview.data.push(data)
+  segmentDetail: object = [{}];
+
+  sendDataForReview () {
+    this.$emit('loadOn')
+    return httpService
+      .post('query/qinglanAssemblyDesigner', {
+        projectName: this.importCustomPartsForm.projectName,
+        action: 'order',
+        data: this.segmentDetails
+      })
+      .catch((err: any) => {
+        throw new Error(err)
+      })
+      .finally(() => this.$emit('loadOff'))
   }
 
   get sendData () {
@@ -183,11 +190,9 @@ export default class ImportCustomParts extends Vue {
   getGrunts () {
     return httpService
       .post('query/grantsForUser', { user: this.$store.state.user.id })
-      .then((res: any) =>
-        this.segmentDetails.forEach((segment: any) => {
-          segment.grants = res.data.grant
-        })
-      )
+      .then((res: any) => {
+        this.grants = res.data.grants
+      })
       .catch((err: any) => {
         throw new Error(err)
       })
