@@ -266,7 +266,7 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   /* submit Modal data */
   save () {
     this.$refs['segment_request'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
+      if (valid) this.$emit('save', { data: this.sendData })
       else return false
     })
   }

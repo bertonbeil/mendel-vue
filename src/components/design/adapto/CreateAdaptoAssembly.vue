@@ -116,7 +116,7 @@ export default class CreateAdaptoAssembly extends Vue {
   /* submit Modal data */
   save () {
     this.$refs['adaptoAssemblyForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
+      if (valid) this.$emit('save', { data: this.sendData })
       else return false
     })
   }

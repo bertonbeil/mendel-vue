@@ -273,7 +273,7 @@ export default class CreateEchoFile extends Vue {
 
   save () {
     this.$refs['echoFileForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
+      if (valid) this.$emit('save', { data: this.sendData })
       else return false
     })
   }

@@ -165,7 +165,7 @@ export default class CreateDeNovoCDS extends Vue {
 
   /* submit Modal data */
   save (next?: string) {
-    this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+    this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
   }
 
   /* load Modal data -> Get list of study */

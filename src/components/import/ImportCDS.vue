@@ -190,7 +190,7 @@ export default class ImportCDS extends Vue {
   /* submit Modal data */
   save () {
     this.$refs['importCDSForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) })
+      if (valid) this.$emit('save', { data: this.sendData })
       else return false
     })
   }

@@ -39,7 +39,7 @@
             <el-form-item label="Assembly:" prop="dnaDesignName">
               <el-select
                 v-model="dnaDesignName"
-                @change="getLatestDnaDesign"
+                @change="getAssemblyValueLength"
                 :disabled="!importSegmentsForm.projectName"
                 placeholder="Select Assembly"
                 class="w-full">
@@ -155,6 +155,7 @@ export default class ImportSegments extends Vue {
   studyList: string[] = []
   projectsList: string[] = []
   assemblyList: string[] = []
+  allAssemblyList: any = []
   restrictionEnzymeList: string[] = []
   assemblyVector: any = { segmentsAssemblyVector: 'URA3', segmentsAssemblyBactery: 'pUC' }
   dnaDesignName: string = ''
@@ -205,7 +206,7 @@ export default class ImportSegments extends Vue {
   /* submit Modal data */
   save (next?: string) {
     this.$refs['importSegmentsForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: JSON.stringify(this.sendData) }, next === 'next' ? this.modalData.saveAndNext : null)
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
       else return false
     })
   }
@@ -245,14 +246,12 @@ export default class ImportSegments extends Vue {
 
   /* Get list of latest dna design */
   getLatestDnaDesign () {
-    this.$emit('loadOn')
     return httpService.get('query/latestDnaDesign')
-      .then((res: any) => {
-        const assembly = res.data.rows.filter((item: any) => { return item.name === this.dnaDesignName })
-        this.assemblyLength = assembly[0].value.length
-      })
-      .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
+      .then((res: any) => { this.allAssemblyList = res.data.rows })
+  }
+
+  getAssemblyValueLength () {
+    this.assemblyLength = this.allAssemblyList.filter((item: any) => { return item.name === this.dnaDesignName })[0].value.length
   }
 
   /* Get initial component data */
@@ -260,7 +259,8 @@ export default class ImportSegments extends Vue {
     this.$emit('loadOn')
     Promise.all([
       this.getStudyList(),
-      this.getRestrictionEnzymeList()
+      this.getRestrictionEnzymeList(),
+      this.getLatestDnaDesign()
     ]).catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
