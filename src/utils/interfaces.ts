@@ -240,6 +240,12 @@ export interface importAssembly {
   parts?: string,
 }
 
+export interface ImportsCustomParts {
+  projectName?: string,
+  action?: string,
+  data?: string,
+}
+
 export interface ImportsSegments {
   study?: string,
   projectName?: string,
