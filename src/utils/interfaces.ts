@@ -264,6 +264,7 @@ export interface EchoFile {
 }
 
 export interface EchoFileAssemblyRow {
+  id: string,
   study: string,
   project: string,
   name: string,
@@ -275,7 +276,9 @@ export interface EchoFileAssemblyRow {
   positiveCtrl: boolean,
   waterCtrl: boolean,
   step?: string | number,
-  primersLoc?: string
+  primersLoc?: string,
+  junctions?: number[],
+  wellsUsed?: number
 }
 
 export interface ExportAssembly {

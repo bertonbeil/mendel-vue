@@ -27,59 +27,35 @@
               <el-input v-model="echoFileForm.primer_control_location" class="w-full"></el-input>
             </el-form-item>
           </el-col>
-
-          <el-col :span="20">
-            <!--  -->
-            {{tableData}}
-            <br> <br>
-              <EchoFileRow
-                v-for="(echoRow, index) in tableData"
-                @load:on="$emit('loadOn')"
-                @load:off="$emit('loadOff')"
-                :row-data.sync="tableData[index]"
-                :row-data-index="index"
-                :study-list='studyList'
-                :assembly-list="assemblyList"
-                :key="index" />
-          </el-col>
-          <el-col :span="4" class="mt-35">
-            <div v-for="(item, i) in echoCalcRows" :key="i" class="mt-25">
-              <p>#primer pairs {{ item.primerPairs }}</p>
-              <p>#wells used {{ item.wellsUsed }}</p>
-            </div>
-            <p class="mt-30">Total wells used: {{ totalWellsUsed }}</p>
-          </el-col>
         </el-row>
       </el-form>
     </div>
 
-    <el-button icon="el-icon-bottom" circle :type="true ? 'primary' : null"></el-button>
-    <el-button icon="el-icon-bottom" circle :type="false ? 'primary' : null"></el-button>
+    <div class="echo-filte-table w-full mb-30">
+      <div class="echo-filte-table__body">
+        <EchoFileRow
+          v-for="(echoRow, index) in tableData"
+          @load:on="$emit('loadOn')"
+          @load:off="$emit('loadOff')"
+          class="echo-file-row p-15"
+          :row-data.sync="tableData[index]"
+          :row-data-index="index"
+          :study-list='studyList'
+          :assembly-list="assemblyList"
+          :key="index" />
+      </div>
+    </div>
+
+    <div class="flex justify-end w-full px-20 mb-30"> Total wells used: {{ totalWellsUsed }} </div>
 
     <!-- Junctions visualizations -->
     <el-row class="mb-30">
-      <div class="visualizer-echo-file-row" v-for="row in 4" :key="row">
-        <template v-if="tableData[row - 1].name !== ''">
-          <div class="visualizer-echo-file-wrap">
-            <div class="visualizer-echo-file" ref="visualizerEchoFile">
-              <div class='visualizer-echo-file__item' v-for="junction in tableData[row - 1].segments + 1" :key="junction">
-                <span class='echo-segment-index'>{{ junction }}</span>
-                <img class='echo-segment-arrow echo-segment-arrow-disabled' src='~@/assets/img/down-arrow.svg'/>
-              </div>
-              <div class="echo-closet"></div>
-            </div>
-
-            <EchoJunctionsVisualizer
-              v-for="assembly in echoAssemblies"
-              :key="assembly.location"
-              :segments="assembly.segments"
-              :step="assembly.step" />
-          </div>
-        </template>
-      </div>
+      <EchoJunctionsVisualizer
+        v-for="assembly in echoAssemblies"
+        :key="assembly.location"
+        :assembly="assembly"
+        @change="handleJunctionChange" />
     </el-row>
-
-  {{echoAssemblies}}
 
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
@@ -106,10 +82,11 @@ export default class CreateEchoFile extends Vue {
   assemblyList: any = []
   primers: string[] = []
   assemblies: any = []
-  totalWellsUsed: number = 0
+  // totalWellsUsed: number = 0
   rowIndex: number = 0
 
   tableData: Array<EchoFileAssemblyRow> = [ {
+    id: '1',
     study: '',
     project: '',
     name: '',
@@ -121,8 +98,10 @@ export default class CreateEchoFile extends Vue {
     positiveCtrl: true,
     waterCtrl: true,
     step: 'None',
-    primersLoc: 'A1'
+    primersLoc: 'A1',
+    junctions: []
   }, {
+    id: '2',
     study: '',
     project: '',
     name: '',
@@ -134,8 +113,10 @@ export default class CreateEchoFile extends Vue {
     positiveCtrl: true,
     waterCtrl: true,
     step: 'None',
-    primersLoc: 'A1'
+    primersLoc: 'A1',
+    junctions: []
   }, {
+    id: '3',
     study: '',
     project: '',
     name: '',
@@ -147,8 +128,10 @@ export default class CreateEchoFile extends Vue {
     positiveCtrl: true,
     waterCtrl: true,
     step: 'None',
-    primersLoc: 'A1'
+    primersLoc: 'A1',
+    junctions: []
   }, {
+    id: '4',
     study: '',
     project: '',
     name: '',
@@ -160,8 +143,9 @@ export default class CreateEchoFile extends Vue {
     positiveCtrl: true,
     waterCtrl: true,
     step: 'None',
-    primersLoc: 'A1'
-  } ]
+    primersLoc: 'A1',
+    junctions: []
+  }]
 
   echoCalcRows: any = [
     { primerPairs: null, wellsUsed: null },
@@ -186,26 +170,10 @@ export default class CreateEchoFile extends Vue {
     echoFileForm: HTMLFormElement
   }
 
-  // @Watch('tableData', { deep: true })
-  // calcRows () {
-  //   this.tableData.map((item: any, i: any) => {
-  //     item.num_controls = (item.negativeCtrl ? 1 : 0) + (item.positiveCtrl ? 1 : 0) + (item.waterCtrl ? 1 : 0)
-  //     if (i === this.rowIndex) {
-  //       this.echoCalcRows[i].primerPairs = (this.tableData[i].segments + 1) * 2 + 1
-  //       this.echoCalcRows[i].wellsUsed = (this.tableData[i].templates + 3) * this.echoCalcRows[i].primerPairs
-  //     }
-  //   })
-  //   this.totalWellsUsed = 0
-  //   this.echoCalcRows.map((item: any) => { this.totalWellsUsed += item.wellsUsed })
-  // }
-
   get sendData () {
     const echoAssembliesCopy = _cloneDeep(this.echoAssemblies)
     // remove unnecessary key
-    echoAssembliesCopy.forEach((item: EchoFileAssemblyRow) => { delete item.primersLoc; delete item.step })
-    // this.assemblies = this.tableData.filter((item: any) => item.name !== '')
-    // this.assemblies.map((item: any) => { delete item.assemblyList; delete item.project; delete item.primersLoc })
-    // this.assemblies.map((item: any) => this.primers.push({ location: item.primersLoc } as any))
+    echoAssembliesCopy.forEach((item: EchoFileAssemblyRow) => { delete item.primersLoc; delete item.step; delete item.id; delete item.wellsUsed })
     return {
       ...this.echoFileForm,
       assemblies: echoAssembliesCopy,
@@ -213,9 +181,22 @@ export default class CreateEchoFile extends Vue {
     }
   }
 
-  // filtered table data which be sent
+  /* filtered table data which be sent */
   get echoAssemblies () {
     return this.tableData.filter((row: EchoFileAssemblyRow) => row.study && row.project && row.name)
+  }
+
+  get totalWellsUsed () {
+    return this.tableData.map(i => i.wellsUsed).reduce((accumulator: any, currentValue: any) => accumulator + currentValue)
+  }
+
+  /* [EchoJunctionsVisualizer] data for each table row */
+  handleJunctionChange ({ junctions, id }: any) {
+    let tableDataRow = this.tableData.find((echoRow: EchoFileAssemblyRow) => echoRow.id === id)
+    /* build junctions array */
+    tableDataRow!.junctions = junctions
+      .filter((j: any) => j.isActive === true)
+      .map((j: any) => j.junction)
   }
 
   save () {

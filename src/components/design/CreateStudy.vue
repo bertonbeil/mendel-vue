@@ -52,14 +52,14 @@
         <!-- Draggable zones -->
         <el-row :gutter="20" class="mb-30 flex">
           <el-col :span="12">
-            <draggable class="p-3 rounded shadow-lg" v-model="investigators" group="collaborators">
+            <draggable class="el-card is-never-shadow p-10" v-model="investigators" group="collaborators">
               <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="investigator in investigators" :key="investigator">
                 <el-card shadow="hover" body-style="padding:10px">{{ investigator }}</el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="12">
-            <draggable class="min-h-full p-3 rounded shadow-lg" v-model="collaborators" group="collaborators">
+            <draggable class="min-h-full el-card is-never-shadow p-10" v-model="collaborators" group="collaborators">
               <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="collaborator in collaborators" :key="collaborator">
                 <el-card shadow="hover" body-style="padding:10px">{{ collaborator }}</el-card>
               </div>

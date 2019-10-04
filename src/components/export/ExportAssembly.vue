@@ -50,7 +50,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="primary" @click="exportAssembly">Export</el-button>
+      <el-button type="primary" @click="submit">Export</el-button>
     </div>
   </div>
 </template>
@@ -89,6 +89,13 @@ export default class ExportAssemblies extends Vue {
 
   get dateTime () {
     return `${(new Date().getMonth() + 1)}/${new Date().getDate()}/${new Date().getFullYear()}@${(new Date().getHours() < 10 ? 0 + new Date().getHours() : new Date().getHours())}:${(new Date().getMinutes() < 10 ? 0 + new Date().getMinutes() : new Date().getMinutes())}:${(new Date().getSeconds() < 10 ? 0 + new Date().getSeconds() : new Date().getSeconds())}`
+  }
+
+  submit () {
+    this.$refs['exportAssemblyForm'].validate((valid: boolean) => {
+      if (valid) this.exportAssembly()
+      else return false
+    })
   }
 
   /* submit Modal data */

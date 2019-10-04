@@ -1,5 +1,5 @@
 <template>
-  <div class='flex flex-wrap w-40 h-40'>
+  <div class='flex flex-wrap flex-shrink-0 w-40 h-40'>
     <div class="w-20 h-20 border border-solid border-black rounded-full"
       v-for="item in quadrant"
       :key="item"
