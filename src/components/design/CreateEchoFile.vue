@@ -27,119 +27,34 @@
               <el-input v-model="echoFileForm.primer_control_location" class="w-full"></el-input>
             </el-form-item>
           </el-col>
-
-          <el-col :span="20">
-            <!--  -->
-            <template v-for="(echoRow, index) in tableData">
-              <EchoFileRow :row-data.sync="tableData[index]" :row-data-index="index" :study-list='studyList' :assembly-list="assemblyList" :key="echoRow.location"></EchoFileRow>
-            </template>
-
-            <!-- <el-table :data="tableData" style="width: 100%" cell-class-name="table-cell">
-              <el-table-column prop="study" label="Study">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-select v-model="scope.row.study" placeholder="Select study" @change="getProjectsList(scope.$index)">
-                      <el-option v-for="(item, i) in studyList" :key="i" :label="item.name" :value="item.name"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="project" label="Project">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-select v-model="scope.row.project" placeholder="Select project" @change="getAssemblyList(scope.$index)">
-                      <el-option v-for="(item, i) in projectsList" :key="i" :label="item.name" :value="item.name"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="name" label="Assembly">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-select v-model="scope.row.name" placeholder="Select project" @change="getSegments(scope.$index)">
-                      <el-option v-for="(item, i) in scope.row.assemblyList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="location" label="Quadrant">
-                <template slot-scope="scope">
-                  <EchoQuadrant :activeCell='scope.row.location' />
-                </template>
-              </el-table-column>
-              <el-table-column prop="templates" label="Templates">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-input v-model="scope.row.templates"></el-input>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="segments" label="Segments"></el-table-column>
-              <el-table-column prop="negativeCtrl" label="Neg ctrl">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-checkbox v-model="scope.row.negativeCtrl"></el-checkbox>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="positiveCtrl" label="Pos ctrl">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-checkbox v-model="scope.row.positiveCtrl"></el-checkbox>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="waterCtrl" label="H20 ctrl">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-checkbox v-model="scope.row.waterCtrl"></el-checkbox>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="primersLoc" label="Primers Loc">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-input v-model="scope.row.primersLoc"></el-input>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column prop="step" label="Step">
-                <template slot-scope="scope">
-                  <el-form-item size="mini">
-                    <el-select v-model="scope.row.step" default-first-option @change="changeStep(scope.$index)">
-                      <el-option v-for="item in [ 'None', 1, 2, 4 ]" :key="item" :label="item" :value="item"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-            </el-table> -->
-          </el-col>
-          <el-col :span="4" class="mt-35">
-            <div v-for="(item, i) in echoCalcRows" :key="i" class="mt-25">
-              <p>#primer pairs {{ item.primerPairs }}</p>
-              <p>#wells used {{ item.wellsUsed }}</p>
-            </div>
-            <p class="mt-30">Total wells used: {{ totalWellsUsed }}</p>
-          </el-col>
         </el-row>
       </el-form>
     </div>
 
+    <div class="echo-filte-table w-full mb-30">
+      <div class="echo-filte-table__body">
+        <EchoFileRow
+          v-for="(echoRow, index) in tableData"
+          @load:on="$emit('loadOn')"
+          @load:off="$emit('loadOff')"
+          class="echo-file-row p-15"
+          :row-data.sync="tableData[index]"
+          :row-data-index="index"
+          :study-list='studyList'
+          :assembly-list="assemblyList"
+          :key="index" />
+      </div>
+    </div>
+
+    <div class="flex justify-end w-full px-20 mb-30"> Total wells used: {{ totalWellsUsed }} </div>
+
     <!-- Junctions visualizations -->
     <el-row class="mb-30">
-      <div class="visualizer-echo-file-row" v-for="row in 4" :key="row">
-        <template v-if="tableData[row - 1].name !== ''">
-          <div class="visualizer-echo-file-wrap">
-            <div class="visualizer-echo-file" ref="visualizerEchoFile">
-              <div class='visualizer-echo-file__item' v-for="junction in tableData[row - 1].segments + 1" :key="junction">
-                <span class='echo-segment-index'>{{ junction }}</span>
-                <img class='echo-segment-arrow echo-segment-arrow-disabled' src='~@/assets/img/down-arrow.svg'/>
-              </div>
-              <div class="echo-closet"></div>
-            </div>
-          </div>
-        </template>
-      </div>
+      <EchoJunctionsVisualizer
+        v-for="assembly in echoAssemblies"
+        :key="assembly.location"
+        :assembly="assembly"
+        @change="handleJunctionChange" />
     </el-row>
 
     <!-- Modal action buttons -->
@@ -152,8 +67,9 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
-import { DialogBase, EchoFile } from '@/utils/interfaces'
+import { DialogBase, EchoFile, EchoFileAssemblyRow } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
+import { _cloneDeep } from '@/utils/helpers'
 
 @Component({ name: 'CreateEchoFile' })
 
@@ -166,10 +82,11 @@ export default class CreateEchoFile extends Vue {
   assemblyList: any = []
   primers: string[] = []
   assemblies: any = []
-  totalWellsUsed: number = 0
+  // totalWellsUsed: number = 0
   rowIndex: number = 0
 
-  tableData: any = [ {
+  tableData: Array<EchoFileAssemblyRow> = [ {
+    id: '1',
     study: '',
     project: '',
     name: '',
@@ -182,8 +99,9 @@ export default class CreateEchoFile extends Vue {
     waterCtrl: true,
     step: 'None',
     primersLoc: 'A1',
-    assemblyList: []
+    junctions: []
   }, {
+    id: '2',
     study: '',
     project: '',
     name: '',
@@ -196,8 +114,9 @@ export default class CreateEchoFile extends Vue {
     waterCtrl: true,
     step: 'None',
     primersLoc: 'A1',
-    assemblyList: []
+    junctions: []
   }, {
+    id: '3',
     study: '',
     project: '',
     name: '',
@@ -210,8 +129,9 @@ export default class CreateEchoFile extends Vue {
     waterCtrl: true,
     step: 'None',
     primersLoc: 'A1',
-    assemblyList: []
+    junctions: []
   }, {
+    id: '4',
     study: '',
     project: '',
     name: '',
@@ -224,8 +144,8 @@ export default class CreateEchoFile extends Vue {
     waterCtrl: true,
     step: 'None',
     primersLoc: 'A1',
-    assemblyList: []
-  } ]
+    junctions: []
+  }]
 
   echoCalcRows: any = [
     { primerPairs: null, wellsUsed: null },
@@ -235,7 +155,6 @@ export default class CreateEchoFile extends Vue {
   ]
 
   echoFileForm: EchoFile = {
-    project: '',
     dna_amount: 10.0,
     primer_amount: 10.0,
     primer_control_location: 'P24'
@@ -251,24 +170,33 @@ export default class CreateEchoFile extends Vue {
     echoFileForm: HTMLFormElement
   }
 
-  @Watch('tableData', { deep: true })
-  calcRows () {
-    this.tableData.map((item: any, i: any) => {
-      item.num_controls = (item.negativeCtrl ? 1 : 0) + (item.positiveCtrl ? 1 : 0) + (item.waterCtrl ? 1 : 0)
-      if (i === this.rowIndex) {
-        this.echoCalcRows[i].primerPairs = (this.tableData[i].segments + 1) * 2 + 1
-        this.echoCalcRows[i].wellsUsed = (this.tableData[i].templates + 3) * this.echoCalcRows[i].primerPairs
-      }
-    })
-    this.totalWellsUsed = 0
-    this.echoCalcRows.map((item: any) => { this.totalWellsUsed += item.wellsUsed })
+  get sendData () {
+    const echoAssembliesCopy = _cloneDeep(this.echoAssemblies)
+    // remove unnecessary key
+    echoAssembliesCopy.forEach((item: EchoFileAssemblyRow) => { delete item.primersLoc; delete item.step; delete item.id; delete item.wellsUsed })
+    return {
+      ...this.echoFileForm,
+      assemblies: echoAssembliesCopy,
+      primers: this.echoAssemblies.map((item: EchoFileAssemblyRow) => ({ location: item.primersLoc }))
+    }
   }
 
-  get sendData () {
-    this.assemblies = this.tableData.filter((item: any) => item.name !== '')
-    this.assemblies.map((item: any) => { delete item.assemblyList; delete item.project; delete item.primersLoc })
-    this.assemblies.map((item: any) => this.primers.push({ location: item.primersLoc } as any))
-    return { ...this.echoFileForm, assemblies: this.assemblies, primers: this.primers }
+  /* filtered table data which be sent */
+  get echoAssemblies () {
+    return this.tableData.filter((row: EchoFileAssemblyRow) => row.study && row.project && row.name)
+  }
+
+  get totalWellsUsed () {
+    return this.tableData.map(i => i.wellsUsed).reduce((accumulator: any, currentValue: any) => accumulator + currentValue)
+  }
+
+  /* [EchoJunctionsVisualizer] data for each table row */
+  handleJunctionChange ({ junctions, id }: any) {
+    let tableDataRow = this.tableData.find((echoRow: EchoFileAssemblyRow) => echoRow.id === id)
+    /* build junctions array */
+    tableDataRow!.junctions = junctions
+      .filter((j: any) => j.isActive === true)
+      .map((j: any) => j.junction)
   }
 
   save () {
@@ -281,18 +209,10 @@ export default class CreateEchoFile extends Vue {
   /* load Modal data -> Get list of study */
   getStudyList () {
     return httpService.get('query/studyNameList')
-      .then((res: any) => { this.studyList = res.data.rows })
+      .then((res: any) => {
+        this.studyList = res.data.rows
+      })
       .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
-  }
-
-  /* Get list of projects */
-  getProjectsList (index: any) {
-    this.$emit('loadOn')
-    return httpService.post('query/projectNameList', { study: this.tableData[index].study })
-      .then((res: any) => { this.projectsList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
   }
 
   /* Get list of assemblies */
@@ -301,13 +221,6 @@ export default class CreateEchoFile extends Vue {
       .then((res: any) => {
         this.assemblyList = res.data.rows
       }).catch((err: any) => { console.log(err) })
-  }
-
-  /* Get segments of rows */
-  getSegments (index: any) {
-    this.tableData[index].assemblyList.map((item: any) => {
-      if (item.assembly === this.tableData[index].name) this.tableData[index].segments = item.segments
-    })
   }
 
   changeStep (index: any) {
@@ -321,7 +234,6 @@ export default class CreateEchoFile extends Vue {
       this.getAssemblyList()
     ])
       .finally(() => {
-        console.log('fff')
         this.$emit('loadOff')
       })
   }

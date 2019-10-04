@@ -1,63 +1,105 @@
 /* Echo File  */
+.echo-filte-table {
+  padding-top: 50px;
+
+  .table-heading {
+    position: absolute;
+    top: -45px;
+  }
+
+  &__body {
+    
+    .echo-file-row {
+      border-bottom: 1px solid #DCDFE6;
+      &:first-child {
+        border-top: 1px solid #DCDFE6;
+      }
+    }
+  }
+}
+
 
 .visualizer-echo-file-row {
   overflow-x: auto;
   overflow-y: hidden;
 }
 
-.visualizer-echo-file-wrap {
-  display: inline-block;
-  min-width: 100%;
-}
+
 
 .visualizer-echo-file {
   position: relative;
   display: flex;
   justify-content: center;
   padding: 50px 20px;
-}
 
-.visualizer-echo-file::before,
-.visualizer-echo-file::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 55px;
-  width: 3px;
-  background: #ccc;
-}
+  &-wrap {
+    display: inline-block;
+    min-width: 100%;
+  }
 
-.visualizer-echo-file::after {
-  left: unset;
-  right: 0;
-}
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 55px;
+    width: 3px;
+    background: #ccc;
+  }
 
-.visualizer-echo-file__item-last {
-  min-width: 0 !important;
-  max-width: 0;
-}
+  &::after {
+    left: unset;
+    right: 0;
+  }
 
-.visualizer-echo-file__item-last span {
-  visibility: hidden;
-}
+  &__item-last {
+    min-width: 0 !important;
+    max-width: 0;
+  }
+  
+  &__item-last span {
+    visibility: hidden;
+  }
+  
+  &__item {
+    flex: 1;
+    position: relative;
+    min-width: 50px;
+    height: 2px;
 
-.visualizer-echo-file__item {
-  flex: 1;
-  position: relative;
-  min-width: 50px;
-  height: 2px;
-  background: #000;
-}
+    &.is-last {
+      width: 0;
+      flex: 0;
+      min-width: 0;
 
-.visualizer-echo-file__item:nth-child(even) {
-  margin-top: 10px;
+      .echo-segment-arrow {
+        left: -20px;
+      }
+      .echo-segment-index,
+      .visualizer-echo-file__item-segment {
+        display: none;
+      }
+    }
+  }
+
+  &__item-segment {
+    flex: 1;
+    position: relative;
+    min-width: 50px;
+    height: 2px;
+    background: #000;
+  }
+  
+  &__item:nth-child(even) {
+    margin-top: 10px;
+  }
 }
 
 .echo-segment-arrow {
   position: absolute;
   bottom: 10px;
-  left: -13px;
+  left: -15px;
   cursor: pointer;
   padding: 3px;
 }

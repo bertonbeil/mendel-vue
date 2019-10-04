@@ -264,10 +264,27 @@ export interface ImportsSegments {
 }
 
 export interface EchoFile {
-  project?: string
   dna_amount?: number
   primer_amount?: number
   primer_control_location?: string
+}
+
+export interface EchoFileAssemblyRow {
+  id: string,
+  study: string,
+  project: string,
+  name: string,
+  templates: number,
+  segments: number,
+  num_controls: number,
+  location: string,
+  negativeCtrl: boolean,
+  positiveCtrl: boolean,
+  waterCtrl: boolean,
+  step?: string | number,
+  primersLoc?: string,
+  junctions?: number[],
+  wellsUsed?: number
 }
 
 export interface ExportAssembly {
