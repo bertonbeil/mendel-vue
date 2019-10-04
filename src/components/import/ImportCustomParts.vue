@@ -8,31 +8,21 @@
         </el-col>
         <el-col :span="24">
           <p v-html="modalData.dialogIntro" class="mb-8 break-word" v-if="!showSegmentDetails"></p>
-          <p
-            class="mb-8 break-word"
-            v-else
-          >This page allows you to specify a grant that is related to each segment. This page also allows you to specify the resistance marker for the vector the segment is delivered in.</p>
+          <p class="mb-8 break-word" v-else>This page allows you to specify a grant that is related to each segment. This page also allows you to specify the resistance marker for the vector the segment is delivered in.</p>
         </el-col>
       </el-row>
       <!-- Main modal content -->
       <el-row :gutter="20" v-if="!showSegmentDetails">
         <el-col :span="24">
-          <el-form
-            :model="importCustomPartsForm"
-            label-position="top"
-            :rules="rules"
-            ref="importCustomPartsForm"
-          >
+          <el-form :model="importCustomPartsForm" label-position="top" :rules="rules" ref="importCustomPartsForm">
             <el-form-item label="Order name:" prop="projectName">
-              <p
-                class="text-sm text-gray-200 mb-20"
-              >Specify a unique order name for the set of segments you are ordering. For example, you could use the date and your name.</p>
+              <p class="text-sm text-gray-200 mb-20">Specify a unique order name for the set of segments you are ordering. For example, you could use the date and your name.</p>
               <el-input
                 type="text"
                 v-model="importCustomPartsForm.projectName"
                 @change="$emit('loadOf')"
-                placeholder="Type order name.."
-              ></el-input>
+                placeholder="Type order name..">
+              </el-input>
             </el-form-item>
             <el-form-item label="Order description:">
               <el-input type="textarea" placeholder="Type optional order description" :rows="4"></el-input>
@@ -43,8 +33,8 @@
                 v-model="importCustomPartsForm.data"
                 placeholder="Alternatively you can paste the locus sequence in fasta format"
                 resize="none"
-                :rows="4"
-              ></el-input>
+                :rows="4">
+              </el-input>
             </el-form-item>
             <el-col :span="24">
               <h4 class="text-xl text-black mt-3">Upload fasta:</h4>
@@ -56,29 +46,19 @@
       <el-row :gutter="20" v-else class="mb-20 border-solid border-gray-600">
         <el-col :span="24">
           <el-row>
-            <el-col :span="4">
-              <h4 class="text-black">Order</h4>
-            </el-col>
-            <el-col :span="2">
-              <h4 class="text-black">Name</h4>
-            </el-col>
-            <el-col :span="6">
-              <h4 class="text-black">Sequance</h4>
-            </el-col>
-            <el-col :span="5">
-              <h4 class="text-black">Grant</h4>
-            </el-col>
-            <el-col :span="5">
-              <h4 class="text-black">Marker</h4>
-            </el-col>
+            <el-col :span="4"><h4 class="text-black">Order</h4></el-col>
+            <el-col :span="2"><h4 class="text-black">Name</h4></el-col>
+            <el-col :span="6"><h4 class="text-black">Sequance</h4></el-col>
+            <el-col :span="5"><h4 class="text-black">Grant</h4></el-col>
+            <el-col :span="5"><h4 class="text-black">Marker</h4></el-col>
           </el-row>
           <SegmentDetailsRow
             v-for="(segmentDetail, index) in importCustomPartsForm.data"
             :key="index"
             :segmentData.sync="importCustomPartsForm.data[index]"
             :grants="grants"
-            :orderName="importCustomPartsForm.projectName"
-          ></SegmentDetailsRow>
+            :orderName="importCustomPartsForm.projectName">
+          </SegmentDetailsRow>
         </el-col>
       </el-row>
 
@@ -168,6 +148,8 @@ export default class ImportCustomParts extends Vue {
     this.importCustomPartsForm.projectName = ''
     this.importCustomPartsForm.data = ''
     this.showSegmentDetails = false
+    console.log('load')
+    this.importCustomPartsForm.action = 'load'
   }
 
   created () {
