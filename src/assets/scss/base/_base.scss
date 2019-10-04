@@ -133,6 +133,10 @@ p {
 }
 
 .lims-dialog.el-dialog {
+  .el-dialog__headerbtn {
+    z-index: 999;
+  }
+
   .el-dialog__body {
     height: calc(100vh - 90px); // 114 = 60(header) 54(modal head)
     overflow-y: auto;
