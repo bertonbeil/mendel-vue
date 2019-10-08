@@ -26,9 +26,9 @@
 
       <el-row :gutter="20" v-if="$store.state.debugMode && $refs.modalRef && $refs.modalRef.sendData" class="w-full fixed bottom-0 left-0 px-15">
         <el-col :span="24" class="pt-20">
-          <el-collapse accordion class="max-h-400" v-model="isDebugerActive" :class="{'overflow-y-auto' :isDebugerActive }">
+          <el-collapse accordion class="max-h-475" v-model="isDebugerActive">
             <el-collapse-item title="Debug" name="isActive">
-              <pre>{{ $refs.modalRef.sendData }}</pre>
+              <pre :class="{'overflow-y-auto max-h-400': isDebugerActive}" >{{ $refs.modalRef.sendData }}</pre>
             </el-collapse-item>
           </el-collapse>
         </el-col>
