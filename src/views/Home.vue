@@ -9,22 +9,25 @@
       :before-close="handleClose"
       custom-class="lims-dialog mb-0"
       top="60px"
-      width="100%">
+      width="100%"
+      >
       <component
         :is="tempModalData.component"
         :modalData="tempModalData"
+        class="pb-45"
         ref="modalRef"
         :isLoading.sync="isLoading"
         @loadOn="showLoader"
         @loadOff="isLoading.close()"
         @save="onSave"
-        @close="handleClose">
+        @close="handleClose"
+        >
       </component>
 
-      <el-row :gutter="20" v-if="$store.state.debugMode && $refs.modalRef && $refs.modalRef.sendData">
+      <el-row :gutter="20" v-if="$store.state.debugMode && $refs.modalRef && $refs.modalRef.sendData" class="w-full fixed bottom-0 left-0 px-15">
         <el-col :span="24" class="pt-20">
-          <el-collapse accordion>
-            <el-collapse-item title="Debug">
+          <el-collapse accordion class="max-h-400" v-model="isDebugerActive" :class="{'overflow-y-auto' :isDebugerActive }">
+            <el-collapse-item title="Debug" name="isActive">
               <pre>{{ $refs.modalRef.sendData }}</pre>
             </el-collapse-item>
           </el-collapse>
@@ -52,6 +55,7 @@ export default class Home extends Vue {
   isLoading: any = null
 
   testLoading = true
+  isDebugerActive = ''
 
   /* base optins set up for MessageBox dialog */
   confirmOptions = {
