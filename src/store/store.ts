@@ -137,6 +137,33 @@ export default new Vuex.Store({
       {
         component: 'ReportStudies'
       },
+      {
+        component: 'ReportCDS'
+      },
+      {
+        component: 'ReportAssemblies'
+      },
+      {
+        component: 'ReportDNASegments'
+      },
+      {
+        component: 'ReportPrimers'
+      },
+      {
+        component: 'ReportOrders'
+      },
+      {
+        component: 'ReportPromoters'
+      },
+      {
+        component: 'ReportTerminators'
+      },
+      {
+        component: 'ReportVegasAdapters'
+      },
+      {
+        component: 'ReportRestrictionEnzymes'
+      }
     ]
   },
 
