@@ -14,18 +14,13 @@
       <!-- Main modal content -->
       <el-row :gutter="20" v-if="!showSegmentDetails">
         <el-col :span="24">
-          <el-form :model="importCustomPartsForm" label-position="top" :rules="rules" ref="importCustomPartsForm">
+          <el-form onSubmit="return false" :model="importCustomPartsForm" label-position="top" :rules="rules" ref="importCustomPartsForm">
             <el-form-item label="Order name:" prop="projectName">
               <p class="text-sm text-gray-200 mb-20">Specify a unique order name for the set of segments you are ordering. For example, you could use the date and your name.</p>
-              <el-input
-                type="text"
-                v-model="importCustomPartsForm.projectName"
-                @change="$emit('loadOf')"
-                placeholder="Type order name..">
-              </el-input>
+              <el-input v-model="importCustomPartsForm.projectName" placeholder="Type order name"></el-input>
             </el-form-item>
             <el-form-item label="Order description:">
-              <el-input type="textarea" placeholder="Type optional order description" :rows="4"></el-input>
+              <el-input v-model="description" type="textarea" placeholder="Type optional order description" :rows="4"></el-input>
             </el-form-item>
             <el-form-item label="Sequence(s):" prop="data">
               <el-input
@@ -43,6 +38,7 @@
           </el-form>
         </el-col>
       </el-row>
+
       <el-row :gutter="20" v-else class="mb-20 border-solid border-gray-600">
         <el-col :span="24">
           <el-row>
@@ -89,6 +85,7 @@ export default class ImportCustomParts extends Vue {
 
   showSegmentDetails: boolean = false
   grants: any[] = []
+  description: string = ''
 
   importCustomPartsForm: ImportsCustomParts = {
     projectName: '',
@@ -127,7 +124,7 @@ export default class ImportCustomParts extends Vue {
               this.importCustomPartsForm.data = res.data.lims_response.map((item: any) => {
                 return { ...item, grant: '', marker: '' }
               })
-            } else throw new Error()
+            } else this.responseMessage()
           })
           .catch((err: any) => { throw new Error(err) })
           .finally(() => this.$emit('loadOff'))
@@ -148,8 +145,12 @@ export default class ImportCustomParts extends Vue {
     this.importCustomPartsForm.projectName = ''
     this.importCustomPartsForm.data = ''
     this.showSegmentDetails = false
-    console.log('load')
     this.importCustomPartsForm.action = 'load'
+  }
+
+  /* response viewer */
+  responseMessage () {
+    this.$confirm(`Assembly name ${this.importCustomPartsForm.projectName} has been used before. Please specify new name`, 'Error', { type: 'error', center: true })
   }
 
   created () {
