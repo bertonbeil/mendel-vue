@@ -292,3 +292,41 @@ export interface ExportAssembly {
   project?: string
   assemblyName?: string
 }
+
+export interface ToolPrimerCoverages {
+  primers?: string,
+  dnaDesignName?: string,
+  minTemperature?: string,
+  maxTemperature?: string,
+  saltConcentration?: string,
+  dnaConcentration?: string,
+  minPercentGC?: string,
+  maxPercentGC?: string,
+  maxHomopolymerLen?: string,
+  minBaseRepresentation?: string,
+  maxHairpinLen?: string,
+  minLength?: string,
+  maxLength?: string,
+  minDistance?: string,
+  maxDistance?: string,
+  dimerLength?: string,
+  hairpinLength?: string,
+  tailMinDistance?: string,
+  type?: string,
+  well?: string,
+  source: object
+}
+
+export interface PrimerCoverageSource {
+  organism?: string,
+  chromosome?: string,
+  openPosition?: string,
+  closePosition?: string,
+  leftPadding?: string,
+  rightPadding?: string,
+  sequence?: string
+}
+
+export interface ToolStudysCollaborators {
+  studyName?: string,
+}
