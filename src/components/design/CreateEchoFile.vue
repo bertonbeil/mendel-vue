@@ -54,6 +54,7 @@
         v-for="assembly in echoAssemblies"
         :key="assembly.location"
         :assembly="assembly"
+        class="mt-20"
         @change="handleJunctionChange" />
     </el-row>
 

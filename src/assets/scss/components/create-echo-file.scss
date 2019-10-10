@@ -18,13 +18,10 @@
   }
 }
 
-
 .visualizer-echo-file-row {
   overflow-x: auto;
   overflow-y: hidden;
 }
-
-
 
 .visualizer-echo-file {
   position: relative;
@@ -65,7 +62,7 @@
   &__item {
     flex: 1;
     position: relative;
-    min-width: 50px;
+    width: 80px;
     height: 2px;
 
     &.is-last {
@@ -84,9 +81,7 @@
   }
 
   &__item-segment {
-    flex: 1;
-    position: relative;
-    min-width: 50px;
+    width: 100%;
     height: 2px;
     background: #000;
   }
@@ -94,6 +89,10 @@
   &__item:nth-child(even) {
     margin-top: 10px;
   }
+}
+
+.visualizer-echo-file-row:first-child {
+  margin-top: 0;
 }
 
 .echo-segment-arrow {
