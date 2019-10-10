@@ -93,6 +93,7 @@ export default class MainHeader extends Vue {
     { menuTitle: 'Tools',
       items: [
         { component: 'ToolPrimerCoverage', title: 'Primer Coverage Tool' },
+        { component: 'RegionPrimersTool', title: 'Region Primers Tool' },
         { component: 'ToolStudyCollaborators', title: 'Study Collaborators Tool' },
         { component: 'ToolVisualizer', title: 'Visualizer Tool' },
         { component: 'ToolAssemblyAlignment', title: 'Assembly Alignment Tool' }
