@@ -320,8 +320,9 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   handleResponse (res: any) {
-    const parts = res.parts.replace(/=/g, '":').replace(/', /g, '","').replace(/{/g, '{"').replace(/'/g, '"')
-    this.denovoAssemblyForm.parts = JSON.parse(parts)
+    const parts = JSON.parse(res.parts.replace(/=/g, '":').replace(/', /g, '","').replace(/{/g, '{"').replace(/'/g, '"'))
+    parts.forEach((item: any) => { if (!item.restrictionEnzyme) item.restrictionEnzyme = 'None' })
+    this.denovoAssemblyForm.parts = parts
     this.denovoAssemblyForm.description = res.description
     this.denovoAssemblyForm.openReValue = res.restriction_enzyme_5
     this.denovoAssemblyForm.closeReValue = res.restriction_enzyme_3
@@ -368,7 +369,10 @@ export default class CreateDeNovoAssembly extends Vue {
   /* Get list of CDS */
   getCDS () {
     return httpService.get(`query/bioPartsNameList?project=${this.denovoAssemblyForm.projectName}`)
-      .then((res: any) => { this.cds = res.data.rows })
+      .then((res: any) => {
+        this.cds = res.data.rows
+        this.cds.unshift({ name: 'None', project: this.denovoAssemblyForm.projectName })
+      })
       .catch((err: any) => { throw new Error(err) })
   }
 
