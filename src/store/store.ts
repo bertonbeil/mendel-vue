@@ -159,7 +159,7 @@ export default new Vuex.Store({
           if (this.state.user.role === 'None') router.push('/login')
           else this.state.isAuth = true
         })
-        .catch((err: any) => { throw new Error(err) })
+        .catch((err: any) => { router.push('/login'); throw new Error(err) })
     }
   }
 })
