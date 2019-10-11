@@ -53,7 +53,7 @@ export default class UploadFile extends Vue {
       this.result = e.target.result
       if (this.updateImmediately) this.showSequence()
     }
-    this.fileLoading = false
+    fileReader.onloadend = () => { this.fileLoading = false }
   }
 }
 </script>
