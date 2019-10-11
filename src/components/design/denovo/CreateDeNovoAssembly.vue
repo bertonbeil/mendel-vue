@@ -46,7 +46,7 @@
                 class="w-full"
                 :disabled="!denovoAssemblyForm.projectName"
                 @change="assemblyNameChecker">
-                <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
+                <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -304,10 +304,12 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   assemblyNameChecker () {
+    this.$emit('loadOn')
     httpService.post('query/assemblyNameChecker', { name: this.denovoAssemblyForm.name })
       .then((res: any) => {
         this.$refs.visualizer.isVisible = false
         if (res.data.valid === 'false') {
+          this.$emit('loadOff') // two loadOn may leads to endless loading !!! DON'T USE TWO loadOn
           this.$emit('loadOn')
           httpService.post('query/assemblyRequestRetriever', { name: this.denovoAssemblyForm.name })
             .then((res: any) => { this.handleResponse(res.data.rows[0]) })
@@ -389,8 +391,9 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   getInitialData () {
+    this.$emit('loadOn')
     /* load Modal data -> Get all lists */
-    return Promise.all([
+    Promise.all([
       this.getStudyList(),
       this.getRestrictionEnzymeList(),
       this.getVegasAdapterNameList(),
@@ -405,6 +408,7 @@ export default class CreateDeNovoAssembly extends Vue {
         this.getAssemblyList()
       }
     }).catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {
