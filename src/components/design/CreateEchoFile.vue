@@ -71,8 +71,9 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { DialogBase, EchoFile, EchoFileAssemblyRow } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 import { _cloneDeep } from '@/utils/helpers'
+import { alertMixin } from '@/utils/mixins'
 
-@Component({ name: 'CreateEchoFile' })
+@Component({ name: 'CreateEchoFile', mixins: [alertMixin] })
 
 export default class CreateEchoFile extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
@@ -188,7 +189,12 @@ export default class CreateEchoFile extends Vue {
   }
 
   get totalWellsUsed () {
-    return this.tableData.map(i => i.wellsUsed).reduce((accumulator: any, currentValue: any) => accumulator + currentValue)
+    return this.tableData.map(i => i.wellsUsed).reduce((accumulator: any, currentValue: any) => accumulator + currentValue) || 0
+  }
+
+  @Watch('totalWellsUsed')
+  handleTotalWellsUsed (newVal: number) {
+    if (newVal >= 1356) (this as any).alert({ type: 'warning', msg: 'Total wells used are bigger than 1356' })
   }
 
   /* [EchoJunctionsVisualizer] data for each table row */
