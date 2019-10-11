@@ -191,24 +191,6 @@ export default class ToolAssemblyAlignment extends Vue {
       .finally(() => this.$emit('loadOff'))
   }
 
-  get sendData () {
-    return this.AssemblyAlignmentToolForm
-  }
-
-  /* submit Modal data */
-
-  save (next?: string) {
-    this.$refs['AssemblyAlignmentToolForm'].validate((valid: boolean) => {
-      if (valid) {
-        this.$emit(
-          'save',
-          { data: this.sendData },
-          next === 'next' ? this.modalData.saveAndNext : null
-        )
-      } else return false
-    })
-  }
-
   created () {
     this.getStudyList()
   }
