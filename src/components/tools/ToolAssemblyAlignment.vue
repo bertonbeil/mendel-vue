@@ -74,10 +74,8 @@
             <el-col :span="24" class="mb-30 mt-20 justify-center flex">
                 <el-input size="medium" v-model="alignerResponsData" class="w-300" ref="alignerDataInput">
               </el-input>
-              <el-tooltip placement="top" effect="light">
-                  <div v-if="!isCopied" slot="content">Copy</div>
-                  <div v-if="isCopied" slot="content">Copied</div>
-                  <el-button @click="copyAlignerData" class="ml-10" icon="el-icon-copy-document" circle></el-button>
+              <el-tooltip placement="top" :content="tootlipContent" effect="light">
+                  <el-button @click="copyAlignerData" @mouseleave.native="changeTooltipContent" class="ml-10" icon="el-icon-copy-document" circle></el-button>
               </el-tooltip>
             </el-col>
 
@@ -105,11 +103,11 @@ export default class ToolAssemblyAlignment extends Vue {
   @Prop({ required: true }) modalData!: DialogBase;
   @Prop({ required: true }) isLoading!: boolean;
 
-  studyList: string[] = [];
-  projectList: string[] = [];
-  assemblyList: string[] = [];
-  alignerResponsData: string = '';
-  isCopied: boolean = false;
+  studyList: string[] = []
+  projectList: string[] = []
+  assemblyList: string[] = []
+  alignerResponsData: string = ''
+  tootlipContent: string = 'Copy'
 
   AssemblyAlignmentToolForm: ToolAssemblyAlignments = {
     studyName: '',
@@ -128,10 +126,13 @@ export default class ToolAssemblyAlignment extends Vue {
     alignerDataInput: HTMLInputElement;
   };
 
+  changeTooltipContent () {
+    this.tootlipContent = 'Copy'
+  }
   copyAlignerData () {
     this.$refs['alignerDataInput'].select()
     document.execCommand('copy')
-    this.isCopied = true
+    this.tootlipContent = 'Copied'
   }
 
   getAligner () {
