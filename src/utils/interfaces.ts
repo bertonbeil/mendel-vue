@@ -13,8 +13,9 @@ export interface DialogBase {
   saveAndNextData?: string | any;
 }
 
-export interface MainMenu {
+export interface MainMenu{
   menuTitle: string;
+  disabled: boolean;
   items: DialogBase[]
 }
 

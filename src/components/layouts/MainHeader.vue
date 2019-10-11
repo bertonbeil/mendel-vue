@@ -3,7 +3,7 @@
   <el-menu-item class="pl-0">Mendel@ISG</el-menu-item>
 
   <!-- Main nav -->
-  <el-submenu v-for="(topMenu, menuIndex) in defineMenu" :key="menuIndex" :index="topMenu.menuTitle">
+  <el-submenu v-for="(topMenu, menuIndex) in defineMenu" :key="menuIndex" :index="topMenu.menuTitle" :disabled="topMenu.disabled">
     <template v-if="topMenu.menuTitle" slot="title">{{ topMenu.menuTitle }}</template>
     <!--  -->
     <template v-for="menu in topMenu.items">
@@ -53,6 +53,7 @@ export default class MainHeader extends Vue {
 
   defineMenu: MainMenu[] = [
     { menuTitle: 'New',
+      disabled: false,
       items: [
         { component: 'CreateStudy', title: 'Study' },
         { component: 'CreateProject', title: 'Project' },
@@ -78,6 +79,7 @@ export default class MainHeader extends Vue {
       ]
     },
     { menuTitle: 'Import',
+      disabled: false,
       items: [
         { component: 'ImportCDS', title: 'CDS' },
         { component: 'ImportAssembly', title: 'Assembly' },
@@ -86,11 +88,13 @@ export default class MainHeader extends Vue {
       ]
     },
     { menuTitle: 'Export',
+      disabled: false,
       items: [
         { component: 'ExportAssembly', title: 'Assembly' }
       ]
     },
     { menuTitle: 'Tools',
+      disabled: true,
       items: [
         { component: 'ToolPrimerCoverage', title: 'Primer Coverage Tool' },
         { component: 'ToolStudyCollaborators', title: 'Study Collaborators Tool' },
@@ -99,6 +103,7 @@ export default class MainHeader extends Vue {
       ]
     },
     { menuTitle: 'Reports',
+      disabled: true,
       items: [
         { component: 'ReportStudies', title: 'Studies' },
         { component: 'ReportCDS', title: 'CDS' },
@@ -113,6 +118,7 @@ export default class MainHeader extends Vue {
       ]
     },
     { menuTitle: 'Orders',
+      disabled: true,
       items: [
         { component: 'OrderSelectAssemblies', title: 'Select Assemblies' },
         { component: 'OrderReviewOrders', title: 'Review Orders' },
