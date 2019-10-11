@@ -133,6 +133,10 @@ export default new Vuex.Store({
       {
         component: 'AccountInfo',
         dialogIntro: 'User Details'
+      },
+      {
+        component: 'ToolVisualizer', 
+        title: 'Visualizer Tool' 
       }
     ]
   },
