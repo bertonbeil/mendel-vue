@@ -102,6 +102,12 @@ export default class MainHeader extends Vue {
         { component: 'ToolAssemblyAlignment', title: 'Assembly Alignment Tool' }
       ]
     },
+    { menuTitle: 'Analysis',
+      disabled: true,
+      items: [
+        { component: 'WinnersQPCR', title: 'QPCR Winner Analysis' }
+      ]
+    },
     { menuTitle: 'Reports',
       disabled: true,
       items: [
