@@ -9,8 +9,7 @@
       :before-close="handleClose"
       custom-class="lims-dialog mb-0"
       top="60px"
-      width="100%"
-      >
+      width="100%">
       <component
         :is="tempModalData.component"
         :modalData="tempModalData"
@@ -20,19 +19,16 @@
         @loadOn="showLoader"
         @loadOff="isLoading.close()"
         @save="onSave"
-        @close="handleClose"
-        >
+        @close="handleClose">
       </component>
 
-      <el-row :gutter="20" v-if="$store.state.debugMode && $refs.modalRef && $refs.modalRef.sendData" class="w-full fixed bottom-0 left-0 px-15">
-        <el-col :span="24" class="pt-20">
-          <el-collapse accordion class="max-h-475" v-model="isDebugerActive">
-            <el-collapse-item title="Debug" name="isActive">
-              <pre :class="{'overflow-y-auto max-h-400': isDebugerActive}" >{{ $refs.modalRef.sendData }}</pre>
-            </el-collapse-item>
-          </el-collapse>
-        </el-col>
-      </el-row>
+      <div v-if="$store.state.debugMode && $refs.modalRef && $refs.modalRef.sendData" class="w-full fixed bottom-0 left-0 bg-white z-10">
+        <el-collapse accordion class="max-h-450" v-model="isDebugerActive">
+          <el-collapse-item title="Debug" name="isActive" class="pl-10">
+            <pre class="pr-10" :class="{'overflow-y-auto max-h-400': isDebugerActive}" >{{ $refs.modalRef.sendData }}</pre>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
     </el-dialog>
   </div>
 </template>
