@@ -292,3 +292,9 @@ export interface ExportAssembly {
   project?: string
   assemblyName?: string
 }
+
+export interface ToolAssemblyAlignments {
+  studyName?: string,
+  projectName?: string,
+  assembly_name?: string
+}
