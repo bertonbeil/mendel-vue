@@ -284,7 +284,7 @@ export interface EchoFileAssemblyRow {
   waterCtrl: boolean,
   step?: string | number,
   primersLoc?: string,
-  junctions?: number[],
+  junctions: number[],
   wellsUsed?: number
 }
 

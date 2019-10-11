@@ -61,7 +61,7 @@
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-      <el-button type="primary" @click="save">OK</el-button>
+      <el-button type="primary" :disabled="!isSubmitDisabled" @click="save">OK</el-button>
     </div>
   </div>
 </template>
@@ -183,6 +183,11 @@ export default class CreateEchoFile extends Vue {
     }
   }
 
+  get isSubmitDisabled () {
+    if (this.echoAssemblies.length === 0) return false
+    return this.echoAssemblies.every((row: EchoFileAssemblyRow) => row.junctions.length)
+  }
+
   /* filtered table data which be sent */
   get echoAssemblies () {
     return this.tableData.filter((row: EchoFileAssemblyRow) => row.study && row.project && row.name)
@@ -228,10 +233,6 @@ export default class CreateEchoFile extends Vue {
       .then((res: any) => {
         this.assemblyList = res.data.rows
       }).catch((err: any) => { console.log(err) })
-  }
-
-  changeStep (index: any) {
-
   }
 
   getInitialData () {

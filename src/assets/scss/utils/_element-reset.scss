@@ -176,3 +176,10 @@
 .el-icon-more {
   transform: rotate(90deg)
 }
+
+.el-message-box {
+
+  &__message > p {
+    overflow-wrap: break-word;
+  }
+}
