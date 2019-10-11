@@ -28,7 +28,7 @@
                 :disabled="!denovoSegmentForm.studyName"
                 placeholder="Select project"
                 class="w-full">
-                <el-option v-for="item in projectsList" :key="item.name" :label="item" :value="item"></el-option>
+                <el-option v-for="(item, index) in projectsList" :key="index" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
           </el-col>

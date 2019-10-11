@@ -181,12 +181,16 @@ export default class CreateDeNovoCDS extends Vue {
   getProjectsList () {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoCDSForm.study })
-      .then((res: any) => { this.projectsList = res.data.rows })
+      .then((res: any) => {
+        this.denovoCDSForm.project = ''
+        this.projectsList = res.data.rows
+      })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
 
   getCDSTable () {
+    this.$emit('loadOn')
     this.$refs['denovoCDSForm'].validate((valid: boolean) => {
       if (valid) {
         return httpService.post('query/bioPartDesigner', JSON.stringify(this.denovoCDSForm))

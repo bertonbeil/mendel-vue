@@ -84,7 +84,7 @@ export default class Home extends Vue {
         if (res.data.status === 'error') {
           this.responseMessage(res.data)
         } else {
-          if (to) this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: JSON.parse(modalData.data) }
+          if (to) this.tempModalData = { ...this.setTempModalData(to), saveAndNextData: modalData.data }
           else this.responseMessage(res.data)
           this.isLoading.close()
         }

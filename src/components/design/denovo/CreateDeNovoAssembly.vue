@@ -247,7 +247,7 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   get showAssemblyTable () {
-    return this.denovoAssemblyForm.studyName && this.denovoAssemblyForm.projectName && this.denovoAssemblyForm.name && this.denovoAssemblyForm.organism && this.denovoAssemblyForm.openReValue && this.denovoAssemblyForm.closeReValue
+    return this.denovoAssemblyForm.studyName && this.denovoAssemblyForm.projectName && this.denovoAssemblyForm.name && this.denovoAssemblyForm.organism && this.denovoAssemblyForm.openReValue && this.denovoAssemblyForm.closeReValue && this.denovoAssemblyForm.parts.length !== 0
   }
 
   get sendData () {
@@ -284,6 +284,8 @@ export default class CreateDeNovoAssembly extends Vue {
       .then((res: any) => {
         this.assemblyList = []
         this.denovoAssemblyForm.name = ''
+        this.denovoAssemblyForm.projectName = ''
+        this.denovoAssemblyForm.parts = []
         this.projectsList = res.data.rows
       })
       .catch((err: any) => { throw new Error(err) })
@@ -296,6 +298,8 @@ export default class CreateDeNovoAssembly extends Vue {
       study: this.denovoAssemblyForm.studyName,
       project: this.denovoAssemblyForm.projectName
     }).then((res: any) => {
+      this.denovoAssemblyForm.name = ''
+      this.denovoAssemblyForm.parts = []
       this.assemblyList = res.data.rows
       this.getCDS()
     })
@@ -401,6 +405,7 @@ export default class CreateDeNovoAssembly extends Vue {
       this.getTerminators()
     ]).then(() => {
       if (this.modalData.hasOwnProperty('saveAndNextData')) {
+        console.log('here')
         this.isSaveAndNext = true
         this.denovoAssemblyForm.studyName = this.modalData.saveAndNextData.study
         this.denovoAssemblyForm.projectName = this.modalData.saveAndNextData.project
