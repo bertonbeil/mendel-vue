@@ -12,22 +12,21 @@
           <el-select
             v-model="grantForUserForm.user"
             @change="getGrantsForUser"
-            placeholder="Select study"
+            placeholder="Select name"
             class="w-full"
           >
             <el-option
-              v-for="item in collaboratorList"
-              :key="item.id"
-              :label="item.id"
-              :value="item.id"
-              @change="getGrantsForUser"
+              v-for="colaborator in collaboratorList"
+              :key="colaborator"
+              :label="colaborator"
+              :value="colaborator"
             ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
 
       <!-- Draggable zones -->
-      <el-row :gutter="20" class="mb-30 flex" v-if="isShowGrants">
+      <el-row :gutter="20" class="mb-30 flex px-10" v-if="isShowGrants">
         <el-col :span="12">
           <h5 class="mb-20 text-black">Grants:</h5>
           <draggable
@@ -73,9 +72,8 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { DialogBase, grantsForUserForm } from '@/utils/interfaces'
+import { grantsForUserForm } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
-import { alertMixin } from '@/utils/mixins'
 
 @Component({ name: 'GrantsForUser' })
 export default class GrantsForUser extends Vue {
@@ -132,7 +130,7 @@ export default class GrantsForUser extends Vue {
 
   getCollaboratorList () {
     return httpService.get('query/collaboratorList').then((res: any) => {
-      this.collaboratorList = res.data.rows
+      this.collaboratorList = res.data.rows.map((colaborator: any) => colaborator.id)
     })
   }
 
