@@ -293,3 +293,7 @@ export interface ExportAssembly {
   project?: string
   assemblyName?: string
 }
+
+export interface GrantsUsersForGrantForm {
+  grant?: string
+}
