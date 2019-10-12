@@ -89,7 +89,7 @@ export default class GrantsUsersForGrant extends Vue {
   };
 
   rules: object = {
-    grant: [{ required: true, message: 'User name is required' }]
+    grant: [{ required: true, message: 'Grant is required' }]
   };
 
   $refs!: {
