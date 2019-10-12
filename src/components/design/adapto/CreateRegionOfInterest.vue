@@ -28,6 +28,7 @@
               <el-select
                 v-model="adaptoRegionOfInterestForm.projectName"
                 :disabled="!adaptoRegionOfInterestForm.studyName"
+                @change="clearFields"
                 placeholder="Select project"
                 class="w-full">
                 <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
@@ -158,6 +159,7 @@ export default class CreateRegionOfInterest extends Vue {
   projectsList: string[] = []
   organismList: string[] = []
   chromosomeList: string[] = []
+  isSaveAndNext: boolean = false
   coordinate: string = ''
   openPosValue: number = 5000
   closePosValue: number = 5000
@@ -229,15 +231,24 @@ export default class CreateRegionOfInterest extends Vue {
   }
 
   /* Get list of projects */
-  getProjectsList () {
-    this.$emit('loadOn')
+  getProjectsList (notFirstInit: boolean) {
+    if (this.isSaveAndNext === false) this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.adaptoRegionOfInterestForm.studyName })
       .then((res: any) => {
-        this.adaptoRegionOfInterestForm.name = ''
+        if (!this.modalData.hasOwnProperty('saveAndNextData') || notFirstInit) {
+          this.adaptoRegionOfInterestForm.projectName = ''
+          this.adaptoRegionOfInterestForm.name = ''
+          this.adaptoRegionOfInterestForm.description = ''
+        }
         this.projectsList = res.data.rows
       })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
+  }
+
+  clearFields () {
+    this.adaptoRegionOfInterestForm.name = ''
+    this.adaptoRegionOfInterestForm.description = ''
   }
 
   getOrganismList () {
@@ -278,9 +289,10 @@ export default class CreateRegionOfInterest extends Vue {
       this.getStudyList()
         .then(() => {
           if (this.modalData.hasOwnProperty('saveAndNextData')) {
+            this.isSaveAndNext = true
             this.adaptoRegionOfInterestForm.studyName = this.modalData.saveAndNextData.study
             this.adaptoRegionOfInterestForm.projectName = this.modalData.saveAndNextData.name
-            this.getProjectsList()
+            this.getProjectsList(false)
           }
         })
     ]).catch((err: any) => { throw new Error(err) })

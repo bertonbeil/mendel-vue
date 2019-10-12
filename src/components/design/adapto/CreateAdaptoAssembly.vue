@@ -88,6 +88,7 @@ export default class CreateAdaptoAssembly extends Vue {
   studyList: string[] = []
   projectsList: string[] = []
   locusNameList: string[] = []
+  isSaveAndNext: boolean = false
 
   adaptoAssemblyForm: AdaptoAssembly = {
     studyName: '',
@@ -131,10 +132,14 @@ export default class CreateAdaptoAssembly extends Vue {
   }
 
   /* Get list of projects */
-  getProjectsList () {
-    this.$emit('loadOn')
+  getProjectsList (notFirstInit: boolean) {
+    if (this.isSaveAndNext === false) this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.adaptoAssemblyForm.studyName })
       .then((res: any) => {
+        if (!this.modalData.hasOwnProperty('saveAndNextData') || notFirstInit) {
+          this.adaptoAssemblyForm.projectName = ''
+          this.adaptoAssemblyForm.locusName = ''
+        }
         this.locusNameList = []
         this.projectsList = res.data.rows
       })
@@ -143,13 +148,15 @@ export default class CreateAdaptoAssembly extends Vue {
   }
 
   /* Get list of assemblies */
-  getRegionList () {
-    this.$emit('loadOn')
+  getRegionList (notFirstInit: boolean) {
+    if (this.isSaveAndNext === false) this.$emit('loadOn')
     return httpService.post('query/locusRegionRetriever', {
       study: this.adaptoAssemblyForm.studyName,
       project: this.adaptoAssemblyForm.projectName
     }).then((res: any) => {
-      this.adaptoAssemblyForm.locusName = ''
+      if (!this.modalData.hasOwnProperty('saveAndNextData') || notFirstInit) {
+        this.adaptoAssemblyForm.locusName = ''
+      }
       this.locusNameList = res.data.regions
     }).catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
@@ -159,12 +166,16 @@ export default class CreateAdaptoAssembly extends Vue {
     this.getStudyList()
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
+          this.isSaveAndNext = true
           this.adaptoAssemblyForm.studyName = this.modalData.saveAndNextData.studyName
           this.adaptoAssemblyForm.projectName = this.modalData.saveAndNextData.projectName
           this.adaptoAssemblyForm.locusName = this.modalData.saveAndNextData.name
-          this.getProjectsList()
+          this.getProjectsList(false)
+          this.getRegionList(false)
         }
       })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

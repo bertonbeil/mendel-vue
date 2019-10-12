@@ -178,11 +178,13 @@ export default class CreateDeNovoCDS extends Vue {
   }
 
   /* Get list of projects */
-  getProjectsList () {
+  getProjectsList (notFirstInit: boolean) {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoCDSForm.study })
       .then((res: any) => {
-        this.denovoCDSForm.project = ''
+        if (!this.modalData.hasOwnProperty('saveAndNextData') || notFirstInit) {
+          this.denovoCDSForm.project = ''
+        }
         this.projectsList = res.data.rows
       })
       .catch((err: any) => { throw new Error(err) })
@@ -220,7 +222,7 @@ export default class CreateDeNovoCDS extends Vue {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
           this.denovoCDSForm.study = this.modalData.saveAndNextData.study
           this.denovoCDSForm.project = this.modalData.saveAndNextData.name
-          this.getProjectsList()
+          this.getProjectsList(false)
         }
       })
   }

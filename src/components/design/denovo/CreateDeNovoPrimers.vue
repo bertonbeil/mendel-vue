@@ -39,7 +39,7 @@
                 :disabled="!denovoPrimersForm.projectName"
                 placeholder="Select assembly"
                 class="w-full">
-                <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
+                <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>

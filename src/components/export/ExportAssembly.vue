@@ -40,7 +40,7 @@
                 v-model="exportAssemblyForm.assemblyName"
                 placeholder="Select assembly"
                 class="w-full">
-                <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
+                <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -136,11 +136,15 @@ export default class ExportAssemblies extends Vue {
   }
 
   /* Get list of projects */
-  getProjectsList () {
+  getProjectsList (notFirstInit: boolean) {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.exportAssemblyForm.study })
       .then((res: any) => {
-        this.assemblyList = []
+        if (!this.modalData.hasOwnProperty('saveAndNextData') || notFirstInit) {
+          this.assemblyList = []
+          this.exportAssemblyForm.project = ''
+          this.exportAssemblyForm.assemblyName = ''
+        }
         this.projectsList = res.data.rows
       })
       .catch((err: any) => { throw new Error(err) })
@@ -148,13 +152,17 @@ export default class ExportAssemblies extends Vue {
   }
 
   /* Get list of assemblies */
-  getAssemblyList () {
+  getAssemblyList (notFirstInit: boolean) {
     if (this.isSaveAndNext === false) this.$emit('loadOn')
     return httpService.post('query/projectAssemblyList', {
       study: this.exportAssemblyForm.study,
       project: this.exportAssemblyForm.project
-    }).then((res: any) => { this.assemblyList = res.data.rows })
-      .catch((err: any) => { throw new Error(err) })
+    }).then((res: any) => {
+      if (!this.modalData.hasOwnProperty('saveAndNextData') || notFirstInit) {
+        this.exportAssemblyForm.assemblyName = ''
+      }
+      this.assemblyList = res.data.rows
+    }).catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
 
@@ -166,8 +174,8 @@ export default class ExportAssemblies extends Vue {
           this.exportAssemblyForm.study = this.modalData.saveAndNextData.studyName
           this.exportAssemblyForm.project = this.modalData.saveAndNextData.projectName
           this.exportAssemblyForm.assemblyName = this.modalData.saveAndNextData.dnaDesignName
-          this.getProjectsList()
-          this.getAssemblyList()
+          this.getProjectsList(false)
+          this.getAssemblyList(false)
         }
       })
   }

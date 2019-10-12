@@ -278,28 +278,32 @@ export default class CreateDeNovoAssembly extends Vue {
   }
 
   /* Get list of projects */
-  getProjectsList () {
-    this.$emit('loadOn')
+  getProjectsList (notFirstInit: boolean) {
+    if (this.isSaveAndNext === false) this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.denovoAssemblyForm.studyName })
       .then((res: any) => {
-        this.assemblyList = []
-        this.denovoAssemblyForm.name = ''
-        this.denovoAssemblyForm.projectName = ''
-        this.denovoAssemblyForm.parts = []
+        if (!this.modalData.hasOwnProperty('saveAndNextData') || notFirstInit) {
+          this.assemblyList = []
+          this.denovoAssemblyForm.name = ''
+          this.denovoAssemblyForm.projectName = ''
+          this.denovoAssemblyForm.parts = []
+        }
         this.projectsList = res.data.rows
       })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
 
-  getAssemblyList () {
+  getAssemblyList (notFirstInit: boolean) {
     if (this.isSaveAndNext === false) this.$emit('loadOn')
     return httpService.post('query/projectAssemblyList', {
       study: this.denovoAssemblyForm.studyName,
       project: this.denovoAssemblyForm.projectName
     }).then((res: any) => {
-      this.denovoAssemblyForm.name = ''
-      this.denovoAssemblyForm.parts = []
+      if (!this.modalData.hasOwnProperty('saveAndNextData') || notFirstInit) {
+        this.denovoAssemblyForm.name = ''
+        this.denovoAssemblyForm.parts = []
+      }
       this.assemblyList = res.data.rows
       this.getCDS()
     })
@@ -405,12 +409,11 @@ export default class CreateDeNovoAssembly extends Vue {
       this.getTerminators()
     ]).then(() => {
       if (this.modalData.hasOwnProperty('saveAndNextData')) {
-        console.log('here')
         this.isSaveAndNext = true
         this.denovoAssemblyForm.studyName = this.modalData.saveAndNextData.study
         this.denovoAssemblyForm.projectName = this.modalData.saveAndNextData.project
-        this.getProjectsList()
-        this.getAssemblyList()
+        this.getProjectsList(false)
+        this.getAssemblyList(false)
       }
     }).catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))

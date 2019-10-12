@@ -42,7 +42,7 @@
                 :disabled="!segmentRequest.projectName"
                 placeholder="Select assembly"
                 class="w-full">
-                <el-option v-for="item in assemblyList" :key="item.assembly" :label="item.assembly" :value="item.assembly"></el-option>
+                <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -257,9 +257,9 @@ export default class CreateAdaptoSegments extends Vue {
     this.$emit('loadOn')
     return httpService.post('query/projectNameList', { study: this.segmentRequest.studyName })
       .then((res: any) => {
-        this.segmentRequest.projectName = ''
-        this.dnaDesignName = ''
         this.assemblyList = []
+        this.dnaDesignName = ''
+        this.segmentRequest.projectName = ''
         this.projectsList = res.data.rows
       })
       .catch((err: any) => { throw new Error(err) })
