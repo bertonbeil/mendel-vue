@@ -133,6 +133,21 @@ export default new Vuex.Store({
       {
         component: 'AccountInfo',
         dialogIntro: 'User Details'
+      },
+      { 
+        component: 'GrantCreateModify', 
+        title: 'Create/Modify Grant' 
+      },
+      { 
+        component: 'GrantsForUser', 
+        dialogIntro: 'Assign Grants for User',
+        title: 'Grants for User' ,
+        submitUrl: 'grantsForUser',
+      },
+      { 
+        component: 'GrantsUsersForGrant', 
+        dialogIntro: 'Assign Users for Grant',
+        title: 'Users for Grant' 
       }
     ]
   },
