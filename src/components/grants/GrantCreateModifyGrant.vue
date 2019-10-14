@@ -109,8 +109,8 @@ export default class GrantCreateModifyGrant extends Vue {
     isUpdateData: boolean = true;
     isAlreadyExist: string | undefined = ''
     localCopyForm: object = {};
-    isUpdate: boolean = false;
-    isCreate: boolean = false;
+    isUpdate: boolean = true;
+    isCreate: boolean = true;
 
   CreateModifyGrantForm : CreateModifyGrant = {
     name: '',
@@ -175,8 +175,7 @@ export default class GrantCreateModifyGrant extends Vue {
 
   save (isUpdateData : boolean) {
     this.$refs['CreateModifyGrantForm'].validate((valid: boolean) => {
-      if (valid) console.log({ action: isUpdateData ? 'edit' : 'create', ...this.sendData })
-      // this.$emit('save', { action: isUpdateData ? 'edit' : 'create', ...this.sendData })
+      if (valid) this.$emit('save', { data: { action: isUpdateData ? 'edit' : 'create', ...this.sendData } })
       else return false
     })
   }
