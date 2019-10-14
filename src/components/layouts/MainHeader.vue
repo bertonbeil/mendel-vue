@@ -124,7 +124,7 @@ export default class MainHeader extends Vue {
       ]
     },
     { menuTitle: 'Orders',
-      disabled: true,
+      disabled: false,
       items: [
         { component: 'OrderSelectAssemblies', title: 'Select Assemblies' },
         { component: 'OrderReviewOrders', title: 'Review Orders' },

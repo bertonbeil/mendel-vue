@@ -293,3 +293,10 @@ export interface ExportAssembly {
   project?: string
   assemblyName?: string
 }
+
+export interface OrderAssembly {
+  study?: string,
+  project?: string,
+  assemblies?: string,
+  grant_name?: string
+}

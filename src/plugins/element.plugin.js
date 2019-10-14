@@ -33,6 +33,7 @@ import {
   Select,
   Switch,
   Table,
+  Tag,
   TableColumn,
   Tooltip,
   Upload
@@ -76,6 +77,7 @@ Vue.use(Switch)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Tooltip)
+Vue.use(Tag)
 Vue.use(Upload)
 
 Vue.prototype.$confirm = MessageBox.confirm
