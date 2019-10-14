@@ -79,6 +79,7 @@ export default class Home extends Vue {
   /* submit Modal data */
   onSave (modalData: any, to: string) {
     this.showLoader()
+    console.log(modalData)
     httpService.post(`query/${this.tempModalData.submitUrl}`, JSON.stringify(modalData.data))
       .then((res: any) => {
         if (res.data.status === 'error') {

@@ -293,3 +293,15 @@ export interface ExportAssembly {
   project?: string
   assemblyName?: string
 }
+
+export interface CreateModifyGrant {
+  name?: string
+  description?: string
+  purchaseOrder?: string
+  startDate?: string
+  endDate?: string
+  idtAmount?: number
+  idtSpentAmount?: number
+  qlAmount?: number
+  qlSpentAmount?: number
+}
