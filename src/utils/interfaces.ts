@@ -293,3 +293,16 @@ export interface ExportAssembly {
   project?: string
   assemblyName?: string
 }
+
+export interface OrdersRowAssemblyData {
+  assembly?: string
+  assembly_status?: string
+  assembly_type?: string
+  grant_name?: string
+  investigator?: string
+  junction_primer_status?: string
+  project?: string
+  segment_primer_status?: string
+  segment_status?: string
+  study?: string
+}
