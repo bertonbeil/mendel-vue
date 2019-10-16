@@ -135,35 +135,49 @@ export default new Vuex.Store({
         dialogIntro: 'User Details'
       },
       {
-        component: 'ReportStudies'
+        component: 'ReportStudies',
+        title: 'Studies'
       },
       {
-        component: 'ReportCDS'
+        component: 'ReportCDS',
+        title: 'CDS'
       },
       {
-        component: 'ReportAssemblies'
+        component: 'ReportAssemblies',
+        title: 'Assemblies'
       },
       {
-        component: 'ReportDNASegments'
+        component: 'ReportDNASegments',
+        title: 'DNA Segments'
       },
       {
-        component: 'ReportPrimers'
+        component: 'ReportPrimers',
+        title: 'Primers'
       },
       {
-        component: 'ReportOrders'
+        component: 'ReportOrders',
+        title: 'Orders'
       },
       {
-        component: 'ReportPromoters'
+        component: 'ReportPromoters',
+        title: 'Promoters'
       },
       {
-        component: 'ReportTerminators'
+        component: 'ReportTerminators',
+        title: 'Terminators'
       },
       {
-        component: 'ReportVegasAdapters'
+        component: 'ReportVegasAdapters',
+        title: 'Vegas Adapters'
       },
       {
-        component: 'ReportRestrictionEnzymes'
-      }
+        component: 'ReportRestrictionEnzymes',
+        title: 'Restriction Enzymes'
+      },
+      { 
+        component: 'OrderAssemblyStatus', 
+        title: 'Assembly Status' 
+      },
     ]
   },
 
