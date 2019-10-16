@@ -6,22 +6,22 @@
       </el-col>
        <el-col :span="12">
         <el-form :model="barcodeScannerForm" label-position="top" :rules="rules" ref="barcodeScannerForm">
-					<el-form-item label="Product type:" prop="type">
+          <el-form-item label="Product type:" prop="type">
             <el-select v-model="barcodeScannerForm.type" placeholder="Select type..." class="w-full">
               <el-option label="Primer" value="Primer"></el-option>
               <el-option label="Segment" value="Segment"></el-option>
-  			    </el-select>
-  			  </el-form-item>
-					<el-form-item label="Value:" prop="barcode">
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Value:" prop="barcode">
             <el-input v-model="barcodeScannerForm.barcode"></el-input>
           </el-form-item>
-				</el-form>
-			</el-col>
-			<el-col :span="12" class="overflow-hidden h-170">
-				<v-quagga :onDetected="logIt"  :readerTypes="['code_128_reader', 'code_39_reader']"></v-quagga>
-			</el-col>
+        </el-form>
+      </el-col>
+      <el-col :span="12" class="overflow-hidden h-170">
+        <v-quagga :onDetected="logIt"  :readerTypes="['code_128_reader', 'code_39_reader']"></v-quagga>
+      </el-col>
     </el-row>
-		<div slot="footer" class="text-center">
+    <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
       <el-button type="success" @click="sumbitBarCode">Submit</el-button>
     </div>
@@ -65,10 +65,10 @@ export default class OrderBarcodeScanner extends Vue {
             this.barcodeScannerForm.barcode = ''
           })
           .catch((err: any) => { throw new Error(err) })
-  				.finally(() => this.$emit('loadOff'))
+          .finally(() => this.$emit('loadOff'))
       } else {
         this.$emit('loadOff')
-  			return false
+        return false
       }
     })
   }
