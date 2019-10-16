@@ -293,3 +293,8 @@ export interface ExportAssembly {
   project?: string
   assemblyName?: string
 }
+
+export interface BarcodeScannerForm {
+  type?: string
+  barcode: string
+}
