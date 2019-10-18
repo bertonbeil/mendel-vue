@@ -94,7 +94,7 @@ export default class MainHeader extends Vue {
       ]
     },
     { menuTitle: 'Tools',
-      disabled: true,
+      disabled: false,
       items: [
         { component: 'ToolPrimerCoverage', title: 'Primer Coverage Tool' },
         { component: 'ToolStudyCollaborators', title: 'Study Collaborators Tool' },

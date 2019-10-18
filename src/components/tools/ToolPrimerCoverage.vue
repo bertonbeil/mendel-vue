@@ -23,8 +23,8 @@
                 <el-form-item label="Organism:" prop="organism">
                   <el-select
                     v-model="primerCoverageSourceForm.organism"
-                    placeholder="Choose the genome your locus resides in"
                     @change="getChromosoms"
+                    placeholder="Choose the genome your locus resides in"
                     class="w-full">
                     <el-option v-for="(organism, index) in organismsList" :value="organism" :label="organism" :key="index"></el-option>
                   </el-select>
@@ -35,6 +35,7 @@
                 <el-form-item label="Chromosome:" prop="chromosome">
                   <el-select
                     v-model="primerCoverageSourceForm.chromosome"
+                    @change="changeChromosome"
                     placeholder="Choose the chromosome your locus resides in"
                     :disabled="!primerCoverageSourceForm.organism"
                     class="w-full">
@@ -206,14 +207,9 @@ export default class ToolPrimerCoverage extends Vue {
     source: this.primerCoverageSourceForm
   }
 
-  validateOrganismAndChromosomeField = (rule: any, value: any, callback: any) => {
-    if (value === '' || value === 'none') callback(new Error('Its field cant be ampty or none'))
-    else callback()
-  };
-
   rules: object = {
-    organism: [{ required: true, message: 'Organism is required', validator: this.validateOrganismAndChromosomeField }],
-    chromosome: [{ required: true, message: 'Chromosome is required', validator: this.validateOrganismAndChromosomeField }],
+    organism: [{ required: true, message: 'Organism is required' }],
+    chromosome: [{ required: true, message: 'Chromosome is required' }],
     openPosition: [{ required: true, message: 'Open position is required' }],
     closePosition: [{ required: true, message: 'Close position is required' }]
   }
@@ -236,10 +232,14 @@ export default class ToolPrimerCoverage extends Vue {
   }
 
   getChromosoms () {
-    this.primerCoverageSourceForm.chromosome = ''
     this.$emit('loadOn')
     return httpService.post('query/adaptoUtils', { request: 'chromosomeList', organism: this.primerCoverageSourceForm.organism })
-      .then((res: any) => { this.chromosomsList = res.data.lims_response })
+      .then((res: any) => {
+        this.primerCoverageSourceForm.chromosome = ''
+        this.primerCoverageSourceForm.openPosition = ''
+        this.primerCoverageSourceForm.closePosition = ''
+        this.chromosomsList = res.data.lims_response
+      })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
@@ -250,6 +250,11 @@ export default class ToolPrimerCoverage extends Vue {
       .then((res: any) => { this.organismsList = res.data.lims_response })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
+  }
+
+  changeChromosome () {
+    this.primerCoverageSourceForm.openPosition = ''
+    this.primerCoverageSourceForm.closePosition = ''
   }
 
   created () {
