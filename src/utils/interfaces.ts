@@ -331,3 +331,29 @@ export interface PrimerCoverageSource {
 export interface ToolStudysCollaborators {
   studyName?: string,
 }
+export interface RegionPrimersTools {
+  user?: string,
+  requestType?: string,
+  studyName?: string,
+  projectName?: string,
+  primers?: string,
+  dnaDesignName?: string,
+  minTemperature?: string,
+  maxTemperature?: string,
+  saltConcentration?: string,
+  dnaConcentration?: string,
+  minPercentGC?: string,
+  maxPercentGC?: string,
+  maxHomopolymerLen?: string,
+  minBaseRepresentation?: string,
+  maxHairpinLen?: string,
+  minLength?: string,
+  maxLength?: string,
+  minDistance?: string,
+  maxDistance?: string,
+  dimerLength?: string,
+  hairpinLength?: string,
+  tailMinDistance?: string,
+  type?: string,
+  well?: string
+}
