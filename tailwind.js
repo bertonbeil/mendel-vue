@@ -601,7 +601,8 @@ module.exports = {
     minHeight: {
       '0': '0',
       'full': '100%',
-      'screen': '100vh'
+      'screen': '100vh',
+      '450': '450px'
     },
 
     /*
@@ -747,6 +748,25 @@ module.exports = {
       '200': '200px'
     },
 
+    /*
+  |-----------------------------------------------------------------------------
+  | Inset
+  |-----------------------------------------------------------------------------
+  |
+  | Here is where you define your positioned top/right/bottom/left. These can
+  | pixels. By default we
+  | provide matching values to the padding scale since these utilities
+  | generally get used together. You can, of course, modify these
+  | values as needed.
+  |
+  | Class name: . {property}-{size}
+  | CSS property: top/right/bottom/left
+  |
+  */
+    inset: {
+      '-35': '-35px',
+      '0': '0'
+    },
     /*
   |-----------------------------------------------------------------------------
   | Negative margin                https://tailwindcss.com/docs/negative-margin
