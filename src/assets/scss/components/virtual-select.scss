@@ -1,0 +1,66 @@
+.vitrual-select {
+    width: 100%;
+    font-weight: 400;
+
+    &__input {
+        position: relative;
+        background-color: #FFF;
+        background-image: none;
+        border-radius: 4px;
+        border: 1px solid #DCDFE6;
+        box-sizing: border-box;
+        color: #606266;
+        display: inline-block;
+        font-size: 14px;
+        height: 40px;
+        width: 100%;
+        line-height: 40px;
+        outline: 0;
+        padding: 0 30px 0 15px;
+        cursor: pointer;
+        transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+
+        &-icon {
+            position: absolute;
+            right: 10px;
+            top: 13px;
+            color: #C0C4CC;
+            -moz-transition: all .3s linear;
+            -webkit-transition: all .3s linear;
+            transition: all .3s linear;
+        }
+
+        .up {
+            -moz-transform:rotate(180deg);
+            -webkit-transform:rotate(180deg);
+            transform:rotate(180deg);
+        }
+    }
+
+    &__dropdown {
+        width: 100%;
+        margin-top: 10px;
+        position: relative;
+        overflow: hidden;
+        font-size: 14px;
+        padding: 0px;
+        border-radius: 10px;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+        height: 160px;
+
+        &-item:hover {
+            background-color: #f8fafc;
+        }
+    }
+
+    &__virtual-list {
+        width: 110%;
+        position: absolute;
+        top: 8px;
+        cursor: pointer;
+        color: #606266;
+        bottom: 0;
+        overflow-y: scroll;
+        left: 0;
+    }
+}
