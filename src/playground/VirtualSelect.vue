@@ -24,13 +24,12 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import virtualList from 'vue-virtual-scroll-list'
 import ItemFoo from './Item'
-import { httpService } from '@/services/http.service'
 import vClickOutside from 'v-click-outside'
 
 Vue.use(vClickOutside)
 @Component({
   name: 'VirtualSelect',
-  components: { virtualList: virtualList, ItemFoo }
+  components: { virtualList, ItemFoo }
 })
 export default class VirtualSelect extends Vue {
   @Prop({ required: true }) promoters: any

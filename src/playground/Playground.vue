@@ -6,21 +6,18 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import virtualList from 'vue-virtual-scroll-list'
 import VirtualSelect from './VirtualSelect.vue'
-import ItemFoo from './Item'
 import { httpService } from '@/services/http.service'
 
 @Component({
   name: 'Playground',
-  components: { virtualList: virtualList, ItemFoo, VirtualSelect }
+  components: { VirtualSelect }
 })
 
 export default class Playground extends Vue {
-  noFiltredPromoters = []
-  filtredPromoters = []
-
-  selectedItem = ''
+  noFiltredPromoters: object[] = []
+  filtredPromoters: string[] = []
+  selectedItem: string = ''
 
   getPromoters () {
     return httpService.get('query/promoterNameList')
