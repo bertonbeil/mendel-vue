@@ -39,6 +39,7 @@ import { httpService } from '@/services/http.service'
 })
 
 export default class Playground extends Vue {
+  promotersNotFiltered = []
   promoters = []
   selected = ''
 
@@ -48,18 +49,19 @@ export default class Playground extends Vue {
 
   getPromoters () {
     return httpService.get('query/promoterNameList')
-      .then((res: any) => { this.promoters = res.data.rows })
+      .then((res: any) => { this.promotersNotFiltered = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
   }
 
   filterUniqItems () {
     let uniqItems = new Map()
 
-    this.promoters.forEach((p: any) => {
+    this.promotersNotFiltered.forEach((p: any) => {
       uniqItems.set(p.name, p.name)
     })
 
     for (var value of uniqItems.values()) {
+      // console.log('value: ', value)
       this.promoters.push(value)
     }
 
