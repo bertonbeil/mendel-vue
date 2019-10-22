@@ -133,6 +133,24 @@ export default new Vuex.Store({
       {
         component: 'AccountInfo',
         dialogIntro: 'User Details'
+      },
+      {
+        component: 'ToolPrimerCoverage',
+        title: 'Primer Coverage Tool',
+        dialogIntro: 'Here you can define a chromosomal sequence or paste/upload an arbitrary sequence to search for all good primers.',
+        submitUrl: 'primerDesigner'
+      },
+      {
+        component: 'ToolStudyCollaborators',
+        title: 'Study Collaborators Tool',
+        dialogIntro: 'Add or remove study collaborators here.',
+        submitUrl: 'studyDesigner',
+      },
+      {
+        component: 'RegionPrimersTool',
+        title: 'Region Primers Tool',
+        dialogIntro: 'Here you can define a chromosomal sequence or paste/upload an arbitrary sequence to search for all good primers',
+        submitUrl: 'primerDesigner'
       }
     ]
   },

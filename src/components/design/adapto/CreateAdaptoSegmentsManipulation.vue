@@ -36,7 +36,7 @@
                   placeholder="Select assembly"
                   :disabled="!segment_request.projectName"
                   class="w-full">
-                  <el-option v-for="item in assemblyList" :key="item.name" :label="item" :value="item"></el-option>
+                  <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -82,7 +82,7 @@
 
           <el-row :gutter="20" class="mb-30" v-show="isActionReplace">
             <el-col :span="8">
-              <el-form-item label="New name:">
+              <el-form-item label="New name:" prop="newName">
                 <el-input v-model="segment_request.newName" placeholder="New name"></el-input>
               </el-form-item>
             </el-col>
@@ -205,12 +205,13 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     primers_request: this.primers_request
   }
 
-  rules: object = {
+  rules: any = {
     studyName: [ { required: true } ],
     projectName: [ { required: true } ],
     dnaDesignName: [ { required: true } ],
     firstSegmentIdx: [ { required: true } ],
-    lastSegmentIdx: [ { required: true } ]
+    lastSegmentIdx: [ { required: true } ],
+    newName: [ { required: true } ]
   }
 
   $refs!: {
@@ -275,13 +276,13 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   /* Get list of assemblies */
   getRegionList () {
     this.$emit('loadOn')
-    return httpService.post('query/locusRegionRetriever', { study: this.segment_request.studyName, project: this.segment_request.projectName })
+    return httpService.post('query/projectAssemblyList', { study: this.segment_request.studyName, project: this.segment_request.projectName })
       .then((res: any) => {
         this.assemblyList = []
         this.segment_request.dnaDesignName = ''
         this.adaptoSegmentsManipulationForm.requestType = ''
         this.adaptoSegmentsManipulationForm.action = ''
-        this.assemblyList = res.data.regions
+        this.assemblyList = res.data.rows
       })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
@@ -299,7 +300,8 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
       if (this.adaptoSegmentsManipulationForm.action !== 'Replace') {
         delete this.segment_request.newName
         delete this.segment_request.customSegments
-      }
+        delete this.rules.newName
+      } else this.rules.newName = [ { required: true } ]
     }).catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }

@@ -5,7 +5,7 @@
         <h3 class="text-black font-bold">Import CDS</h3>
       </el-col>
       <el-col :span="23">
-        <p v-html="modalData.dialogIntro" class="mb-8"></p>
+        <p v-html="modalData.dialogIntro" class="mb-8 break-word"></p>
       </el-col>
       <el-col :span="1">
         <el-popover placement="top-start" width="300" trigger="hover">
@@ -143,8 +143,9 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase, ImportsCDS } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 import { alertMixin } from '@/utils/mixins'
+import { mixins } from 'vue-class-component'
 
-@Component({ name: 'ImportCDS' })
+@Component({ name: 'ImportCDS', mixins: [ alertMixin ] })
 
 export default class ImportCDS extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
@@ -203,7 +204,8 @@ export default class ImportCDS extends Vue {
         httpService.post('query/bioPartDesigner', this.sendData)
           .then((res: any) => {
             if (res.data.status === 'success') {
-              (this as any).$message({ message: res.data.lims_response, type: res.data.status })
+              if (res.data.lims_response) (this as any).$message({ message: res.data.lims_response, type: res.data.status })
+              else (this as any).$message({ message: res.data.status, type: res.data.status })
               this.$refs['importCDSForm'].resetFields()
             } else (this as any).alert({ type: res.data.status, msg: res.data.lims_response })
           })
