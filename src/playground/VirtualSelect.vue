@@ -23,9 +23,8 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
 import VirtualListItem from './VirtualListItem.vue'
-import TestItem from './TestItem.vue'
 
-@Component({ name: 'VirtualSelect', components: { VirtualListItem, TestItem } })
+@Component({ name: 'VirtualSelect', components: { VirtualListItem } })
 export default class VirtualSelect extends Vue {
   @Prop({ required: true }) items!: string[]
   @Prop({ required: true }) value!: string
@@ -34,10 +33,9 @@ export default class VirtualSelect extends Vue {
   startPosition: number = 0
   isShowDropdown: boolean = false
 
-  selectItem (value: any, index: number) {
+  selectItem (value: string, index: number) {
     this.$emit('input', value)
     this.startPosition = index
-    console.log(this.startPosition)
     this.closeDropdown()
   }
 

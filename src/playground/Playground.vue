@@ -21,10 +21,6 @@ export default class Playground extends Vue {
   test = []
 
   getPromoters () {
-    for (let index = 0; index < 100; index++) {
-      this.test.push('item ' + index)
-    }
-
     return httpService.get('query/promoterNameList')
       .then((res: any) => { this.noFiltredPromoters = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
