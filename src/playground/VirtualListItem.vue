@@ -1,8 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="w-200 h-30">
       {{ name }}
-    </div>
   </div>
 </template>
 
@@ -10,11 +8,10 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component({
-  name: 'ItemFoo'
+  name: 'VirtualListItem'
 })
 
-export default class ItemFoo extends Vue {
+export default class VirtualListItem extends Vue {
   @Prop() name!: string
-
 }
 </script>

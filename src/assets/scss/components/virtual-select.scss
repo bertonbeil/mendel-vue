@@ -11,8 +11,7 @@
         box-sizing: border-box;
         color: #606266;
         display: inline-block;
-        font-size: 14px;
-        height: 40px;
+        font-size: inherit;
         width: 100%;
         line-height: 40px;
         outline: 0;
@@ -23,7 +22,7 @@
         &-icon {
             position: absolute;
             right: 10px;
-            top: 13px;
+            top: 30%;
             color: #C0C4CC;
             -moz-transition: all .3s linear;
             -webkit-transition: all .3s linear;
@@ -38,15 +37,15 @@
     }
 
     &__dropdown {
-        width: 100%;
-        margin-top: 10px;
+        background-color: white;
         position: relative;
+        margin-top: 5px;
         overflow: hidden;
         font-size: 14px;
         padding: 0px;
         border-radius: 10px;
         box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-        height: 160px;
+        height: auto;
 
         &-item:hover {
             background-color: #f8fafc;
@@ -55,12 +54,32 @@
 
     &__virtual-list {
         width: 110%;
-        position: absolute;
-        top: 8px;
         cursor: pointer;
         color: #606266;
-        bottom: 0;
         overflow-y: scroll;
-        left: 0;
     }
+}
+
+.large {
+    height: 40px;
+    line-height: 40px;
+    font-size: 14px;
+}
+
+.medium {
+    height: 36px;
+    line-height: 36px;
+    font-size: 13px;
+}
+
+.small {
+    height: 32px;
+    line-height: 32px;
+    font-size: 12px;
+}
+
+.mini {
+    height: 28px;
+    line-height: 28px;
+    font-size: 11px;
 }
