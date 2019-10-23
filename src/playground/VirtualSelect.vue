@@ -6,15 +6,13 @@
     </div>
     <transition name="el-zoom-in-top">
         <div class="vitrual-select__dropdown" v-if="isShowDropdown">
-          <virtual-list :size="sizeList" :remain="8" :start="startPosition" class="vitrual-select__virtual-list bg-white">
-            <virtual-list-item
-            @click.native="selectItem(item, index)"
-            class="pl-20 pt-5 vitrual-select__dropdown-item"
-            :class="{'text-blue-light font-bold bg-grey-lightest': item === value}"
-            v-for="(item, index) of promoters"
-            :key="item"
-            style="height: 30px"
-            :name="item"></virtual-list-item>
+          <virtual-list :size="20" :remain="10" :start="startPosition" class="vitrual-select__virtual-list bg-white">
+            <virtual-list-item v-for="(item, index) of items"
+              :key="item"
+              :name="item"
+              @click.native="selectItem(item, index)"
+              class="pl-20 pt-5 vitrual-select__dropdown-item"
+              :class="{'text-blue-light font-bold bg-grey-lightest': item === value}" />
           </virtual-list>
       </div>
     </transition>
@@ -25,13 +23,13 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
 import VirtualListItem from './VirtualListItem.vue'
+import TestItem from './TestItem.vue'
 
-@Component({ name: 'VirtualSelect' })
+@Component({ name: 'VirtualSelect', components: { VirtualListItem, TestItem } })
 export default class VirtualSelect extends Vue {
-  @Prop({ required: true }) promoters: any
-  @Prop({ required: true }) value: any
-  @Prop({ default: 'large' }) size: any
-  @Prop({ default: 20 }) sizeList: any
+  @Prop({ required: true }) items!: string[]
+  @Prop({ required: true }) value!: string
+  @Prop({ default: 'large' }) size!: 'mini' | 'small' | 'medium' | 'large'
 
   startPosition: number = 0
   isShowDropdown: boolean = false

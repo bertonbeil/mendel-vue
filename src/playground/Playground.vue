@@ -1,6 +1,6 @@
 <template>
   <div class="w-1/2">
-      <VirtualSelect :promoters="test" v-model="selectedItem" :size="'large'" :sizeList="20"></VirtualSelect>
+      <VirtualSelect :items="test" v-model="selectedItem" size="mini"></VirtualSelect>
   </div>
 </template>
 
@@ -18,9 +18,13 @@ export default class Playground extends Vue {
   noFiltredPromoters: object[] = []
   filtredPromoters: string[] = []
   selectedItem: string = ''
-  test = ['adsfw', 'wqgasdg', 'gq43gq', 'vqrvq', 'qwgbas', 'xzcb', 'qwfv', 'thr', 'vyne', 'hybsv', 'xzscb', 'qwefv', 'thtr', 'vyyne', 'hywbsv']
+  test = []
 
   getPromoters () {
+    for (let index = 0; index < 100; index++) {
+      this.test.push('item ' + index)
+    }
+
     return httpService.get('query/promoterNameList')
       .then((res: any) => { this.noFiltredPromoters = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
