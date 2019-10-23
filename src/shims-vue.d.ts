@@ -4,3 +4,5 @@ declare module '*.vue' {
 }
 
 declare module 'vuedraggable'
+declare module 'v-click-outside'
+declare module 'vue-virtual-scroll-list'

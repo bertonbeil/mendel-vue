@@ -1,71 +1,41 @@
 <template>
-  <div class="w-full">
-
-    <div class="w-1/2">
-      <el-select v-model="selected" placeholder="">
-        <el-option v-for="item in promoters"
-          :key="item"
-          :label="item"
-          :value="item">
-        </el-option>
-      </el-select>
-    </div>
-
-    <div class="w-1/2">
-      Virtual select
-
-      <div class="p-30 bg-grey h-200">
-        <virtual-list :size="20" :remain="8" :start="0">
-          <ItemFoo @click.native="testIvent(item)" class="h-20" style="box-sizing: border-box" v-for="item of promoters" :key="item" :name="item"> </ItemFoo>
-        </virtual-list>
-      </div>
-    </div>
-
-    <div class="w-1/2">
-      <!-- vistual-select @change(return selected item) v-model/sync prop-->
-    </div>
+  <div class="w-1/2">
+      <VirtualSelect :promoters="test" v-model="selectedItem" :size="'large'" :sizeList="20"></VirtualSelect>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import virtualList from 'vue-virtual-scroll-list'
-import ItemFoo from './Item'
+import VirtualSelect from './VirtualSelect.vue'
 import { httpService } from '@/services/http.service'
 
 @Component({
   name: 'Playground',
-  components: { virtualList: virtualList, ItemFoo }
+  components: { VirtualSelect }
 })
 
 export default class Playground extends Vue {
-  promotersNotFiltered = []
-  promoters = []
-  selected = ''
-
-  testIvent (item) {
-    console.log('selected item: ', item)
-  }
+  noFiltredPromoters: object[] = []
+  filtredPromoters: string[] = []
+  selectedItem: string = ''
+  test = ['adsfw', 'wqgasdg', 'gq43gq', 'vqrvq', 'qwgbas', 'xzcb', 'qwfv', 'thr', 'vyne', 'hybsv', 'xzscb', 'qwefv', 'thtr', 'vyyne', 'hywbsv']
 
   getPromoters () {
     return httpService.get('query/promoterNameList')
-      .then((res: any) => { this.promotersNotFiltered = res.data.rows })
+      .then((res: any) => { this.noFiltredPromoters = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
   }
 
   filterUniqItems () {
     let uniqItems = new Map()
 
-    this.promotersNotFiltered.forEach((p: any) => {
+    this.noFiltredPromoters.forEach((p: any) => {
       uniqItems.set(p.name, p.name)
     })
 
     for (var value of uniqItems.values()) {
-      // console.log('value: ', value)
-      this.promoters.push(value)
+      this.filtredPromoters.push(value)
     }
-
-    console.log('this.promoters: ', this.promoters)
   }
 
   created () {
@@ -74,6 +44,5 @@ export default class Playground extends Vue {
         this.filterUniqItems()
       })
   }
-
 }
 </script>
