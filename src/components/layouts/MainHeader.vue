@@ -110,7 +110,7 @@ export default class MainHeader extends Vue {
       ]
     },
     { menuTitle: 'Reports',
-      disabled: true,
+      disabled: false,
       items: [
         { component: 'ReportStudies', title: 'Studies' },
         { component: 'ReportCDS', title: 'CDS' },

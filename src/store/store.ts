@@ -159,7 +159,6 @@ export default new Vuex.Store({
       {
         component: 'ToolVisualizer',
         title: 'Visualizer Tool'
-      }
       },
       {
         component: 'ReportStudies',
