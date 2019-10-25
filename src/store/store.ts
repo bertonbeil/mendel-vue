@@ -134,6 +134,11 @@ export default new Vuex.Store({
         component: 'AccountInfo',
         dialogIntro: 'User Details'
       },
+      { component: 'ToolAssemblyAlignment', 
+        title: 'Assembly Alignment Tool' 
+      },
+
+      },
       {
         component: 'ToolPrimerCoverage',
         title: 'Primer Coverage Tool',
