@@ -13,6 +13,7 @@
     "core-js": "2.6.9",
     "element-ui": "^2.10.1",
     "html2canvas": "^1.0.0-rc.5",
+    "jqwidgets-scripts": "^8.2.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-property-decorator": "^8.2.1",

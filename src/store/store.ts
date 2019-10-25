@@ -160,6 +160,51 @@ export default new Vuex.Store({
         component: 'ToolVisualizer',
         title: 'Visualizer Tool'
       }
+      },
+      {
+        component: 'ReportStudies',
+        title: 'Studies'
+      },
+      {
+        component: 'ReportCDS',
+        title: 'CDS'
+      },
+      {
+        component: 'ReportAssemblies',
+        title: 'Assemblies'
+      },
+      {
+        component: 'ReportDNASegments',
+        title: 'DNA Segments'
+      },
+      {
+        component: 'ReportPrimers',
+        title: 'Primers'
+      },
+      {
+        component: 'ReportOrders',
+        title: 'Orders'
+      },
+      {
+        component: 'ReportPromoters',
+        title: 'Promoters'
+      },
+      {
+        component: 'ReportTerminators',
+        title: 'Terminators'
+      },
+      {
+        component: 'ReportVegasAdapters',
+        title: 'Vegas Adapters'
+      },
+      {
+        component: 'ReportRestrictionEnzymes',
+        title: 'Restriction Enzymes'
+      },
+      { 
+        component: 'OrderAssemblyStatus', 
+        title: 'Assembly Status' 
+      },
     ]
   },
 

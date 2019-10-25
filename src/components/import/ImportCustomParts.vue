@@ -14,10 +14,16 @@
       <!-- Main modal content -->
       <el-row :gutter="20" v-if="!showSegmentDetails">
         <el-col :span="24">
-          <el-form onSubmit="return false" :model="importCustomPartsForm" label-position="top" :rules="rules" ref="importCustomPartsForm">
+          <el-form @submit.prevent :model="importCustomPartsForm" label-position="top" :rules="rules" ref="importCustomPartsForm">
             <el-form-item label="Order name:" prop="projectName">
               <p class="text-sm text-gray-200 mb-20">Specify a unique order name for the set of segments you are ordering. For example, you could use the date and your name.</p>
-              <el-input v-model="importCustomPartsForm.projectName" placeholder="Type order name"></el-input>
+              <el-input
+                @submit.prevent
+                type="text"
+                v-model="importCustomPartsForm.projectName"
+                @change="$emit('loadOf')"
+                placeholder="Type order name..">
+              </el-input>
             </el-form-item>
             <el-form-item label="Order description:">
               <el-input v-model="description" type="textarea" placeholder="Type optional order description" :rows="4"></el-input>
