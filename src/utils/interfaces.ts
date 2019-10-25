@@ -294,6 +294,11 @@ export interface ExportAssembly {
   assemblyName?: string
 }
 
+export interface ToolVisualizers {
+  studyName?: string,
+  projectName?: string,
+  assembly_name?: string
+};
 export interface ToolPrimerCoverages {
   primers?: string,
   dnaDesignName?: string,

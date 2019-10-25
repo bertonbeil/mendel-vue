@@ -151,6 +151,10 @@ export default new Vuex.Store({
         title: 'Region Primers Tool',
         dialogIntro: 'Here you can define a chromosomal sequence or paste/upload an arbitrary sequence to search for all good primers',
         submitUrl: 'primerDesigner'
+      },
+      {
+        component: 'ToolVisualizer', 
+        title: 'Visualizer Tool' 
       }
     ]
   },
