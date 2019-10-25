@@ -18,7 +18,7 @@ export default class Playground extends Vue {
   noFiltredPromoters: object[] = []
   filtredPromoters: string[] = []
   selectedItem: string = ''
-  test = []
+  test: string [] = []
 
   getPromoters () {
     return httpService.get('query/promoterNameList')

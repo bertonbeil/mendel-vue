@@ -30,13 +30,15 @@ export default class VirtualSelect extends Vue {
   @Prop({ required: true }) value!: string
   @Prop({ default: 'large' }) size!: 'mini' | 'small' | 'medium' | 'large'
 
-  startPosition: number = 0
   isShowDropdown: boolean = false
 
   selectItem (value: string, index: number) {
     this.$emit('input', value)
-    this.startPosition = index
     this.closeDropdown()
+  }
+
+  get startPosition () {
+    return this.items.indexOf(this.value)
   }
 
   closeDropdown () {
