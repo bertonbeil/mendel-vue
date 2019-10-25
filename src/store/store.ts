@@ -134,10 +134,9 @@ export default new Vuex.Store({
         component: 'AccountInfo',
         dialogIntro: 'User Details'
       },
-      { component: 'ToolAssemblyAlignment', 
-        title: 'Assembly Alignment Tool' 
-      },
-
+      {
+        component: 'ToolAssemblyAlignment',
+        title: 'Assembly Alignment Tool'
       },
       {
         component: 'ToolPrimerCoverage',
@@ -149,7 +148,7 @@ export default new Vuex.Store({
         component: 'ToolStudyCollaborators',
         title: 'Study Collaborators Tool',
         dialogIntro: 'Add or remove study collaborators here.',
-        submitUrl: 'studyDesigner',
+        submitUrl: 'studyDesigner'
       },
       {
         component: 'RegionPrimersTool',
@@ -158,8 +157,8 @@ export default new Vuex.Store({
         submitUrl: 'primerDesigner'
       },
       {
-        component: 'ToolVisualizer', 
-        title: 'Visualizer Tool' 
+        component: 'ToolVisualizer',
+        title: 'Visualizer Tool'
       }
     ]
   },
