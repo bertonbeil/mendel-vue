@@ -26,22 +26,22 @@ export default class Playground extends Vue {
       .catch((err: any) => { throw new Error(err) })
   }
 
-  filterUniqItems () {
+  filterUniqItems (noUniqItems: object[], items: string[]) {
     let uniqItems = new Map()
 
-    this.noFiltredPromoters.forEach((p: any) => {
+    noUniqItems.forEach((p: any) => {
       uniqItems.set(p.name, p.name)
     })
 
-    for (var value of uniqItems.values()) {
-      this.filtredPromoters.push(value)
+    for (let value of uniqItems.values()) {
+      items.push(value)
     }
   }
 
   created () {
     this.getPromoters()
       .then(() => {
-        this.filterUniqItems()
+        this.filterUniqItems(this.noFiltredPromoters, this.filtredPromoters)
       })
   }
 }

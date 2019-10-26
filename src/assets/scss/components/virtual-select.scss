@@ -38,13 +38,16 @@
 
     &__dropdown {
         background-color: white;
-        position: relative;
-        margin-top: 5px;
+        position: absolute;
+        width: 15%;
+        z-index: 1000;
         overflow: hidden;
+        margin-top: 12px;
         font-size: 14px;
         padding: 0px;
-        border-radius: 10px;
+        border-radius: 5px;
         box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+        border: 1px solid #E4E7ED;
         height: auto;
 
         &-item:hover {
@@ -63,23 +66,23 @@
 .large {
     height: 40px;
     line-height: 40px;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .medium {
     height: 36px;
     line-height: 36px;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .small {
     height: 32px;
     line-height: 32px;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .mini {
     height: 28px;
-    line-height: 28px;
-    font-size: 11px;
+    line-height: 25px;
+    font-size: 12px;
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="vitrual-select">
     <div class='vitrual-select__input' :class="size"  @click="isShowDropdown = !isShowDropdown" v-click-outside="closeDropdown">
-      {{value}}
+      {{value ? value : 'None'}}
       <i class="el-icon-arrow-down vitrual-select__input-icon " :class="{ 'up' :isShowDropdown}"></i>
     </div>
     <transition name="el-zoom-in-top">
@@ -11,7 +11,7 @@
               :key="item"
               :name="item"
               @click.native="selectItem(item, index)"
-              class="pl-20 pt-5 vitrual-select__dropdown-item"
+              class="pl-20 py-5 vitrual-select__dropdown-item"
               :class="{'text-blue-light font-bold bg-grey-lightest': item === value}" />
           </virtual-list>
       </div>
