@@ -4,6 +4,7 @@
       <el-col :span="24">
         <h3 class="text-black font-bold">Barcode Scanner</h3>
       </el-col>
+
        <el-col :span="12">
         <el-form :model="barcodeScannerForm" label-position="top" :rules="rules" ref="barcodeScannerForm">
           <el-form-item label="Product type:" prop="type">
@@ -17,10 +18,13 @@
           </el-form-item>
         </el-form>
       </el-col>
+
       <el-col :span="12" class="overflow-hidden h-170">
         <v-quagga :onDetected="logIt"  :readerTypes="['code_128_reader', 'code_39_reader']"></v-quagga>
       </el-col>
     </el-row>
+
+    <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
       <el-button type="success" @click="sumbitBarCode">Submit</el-button>
@@ -39,6 +43,7 @@ import { httpService } from '../../services/http.service'
 Vue.use(VueQuagga)
 
 @Component({ name: 'OrderBarcodeScanner', mixins: [ alertMixin ] })
+
 export default class OrderBarcodeScanner extends Vue {
   barcodeScannerForm : BarcodeScannerForm = {
     type: '',
@@ -58,8 +63,7 @@ export default class OrderBarcodeScanner extends Vue {
     this.$refs['barcodeScannerForm'].validate((valid: boolean) => {
       if (valid) {
         this.$emit('loadOn')
-        return httpService
-          .post('/query/barcodeReader', this.barcodeScannerForm)
+        return httpService.post('/query/barcodeReader', this.barcodeScannerForm)
           .then((res: any) => {
             (this as any).alert({ type: res.data.status, msg: res.data.lims_response })
             this.barcodeScannerForm.barcode = ''

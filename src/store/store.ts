@@ -134,10 +134,10 @@ export default new Vuex.Store({
         component: 'AccountInfo',
         dialogIntro: 'User Details'
       },
-      { 
-        component: 'OrderBarcodeScanner', 
-        title: 'Barcode Scanner' 
-      },
+      {
+        component: 'OrderBarcodeScanner',
+        title: 'Barcode Scanner'
+      }
     ]
   },
 
