@@ -1,20 +1,31 @@
 <template>
   <div>
     <h2 class="text-black font-bold mb-40">Order Details</h2>
-        <JqxGrid class="mt-10" v-if="dataAdapter" :theme="'energyblue'" :width="getWidth" :source="dataAdapter" :columns="columns"
-                 :pageable="true" :autoheight="true" :sortable="true" :filterable="true" :altrows="true"
-                 :editable="true" :selectionmode="'multiplecellsadvanced'">
-        </JqxGrid>
+      <JqxGrid
+        class="mt-10"
+        v-if="dataAdapter"
+        :theme="'energyblue'"
+        :width="getWidth"
+        :source="dataAdapter"
+        :columns="columns"
+        :pageable="true"
+        :autoheight="true"
+        :sortable="true"
+        :filterable="true"
+        :altrows="true"
+        :editable="true"
+        :selectionmode="'multiplecellsadvanced'">
+    </JqxGrid>
   </div>
-    </template>
+</template>
+
 <script>
 import JqxGrid from 'jqwidgets-scripts/jqwidgets-vue/vue_jqxgrid.vue'
 import { httpService } from '@/services/http.service'
 
 export default {
-  components: {
-    JqxGrid
-  },
+  components: { JqxGrid },
+
   data: function () {
     return {
       getWidth: '99%',
@@ -31,6 +42,7 @@ export default {
       ]
     }
   },
+
   beforeCreate: function () {
     this.$emit('loadOn')
     return httpService.get('query/orderDetailsReport')
@@ -49,6 +61,7 @@ export default {
             { name: 'date', type: 'Date' }
           ]
         }
+        // eslint-disable-next-line new-cap
         this.dataAdapter = new jqx.dataAdapter(this.source)
       })
       .catch(err => { throw new Error(err) })
