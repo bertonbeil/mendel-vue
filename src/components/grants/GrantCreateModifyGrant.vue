@@ -1,98 +1,101 @@
 <template>
-    <div class="create-mpdify-grant-wrapper">
-        <el-row :gutter="20" class="mb-20">
-        <el-col :span="24">
-          <h3 class="text-black font-bold">Create/Modify Grant</h3>
+  <div class="create-mpdify-grant-wrapper">
+    <el-row :gutter="20" class="mb-20">
+      <el-col :span="24">
+        <h3 class="text-black font-bold">Create/Modify Grant</h3>
+      </el-col>
+    </el-row>
+
+    <el-form :model="CreateModifyGrantForm" label-position="top" :rules="rules" ref="CreateModifyGrantForm">
+      <el-row :gutter="20" class="mb-20">
+        <el-col :span="12">
+          <el-form-item label="Grant name:" prop="name">
+             <el-autocomplete
+              class="inline-input w-full"
+              v-model="CreateModifyGrantForm.name"
+              :fetch-suggestions="querySearch"
+              placeholder="Enter or choose grant name"
+              @select="getGrantData"
+           ></el-autocomplete>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span='24'>
+          <el-form-item label="Grant description:" prop="description">
+            <el-input
+              type="textarea"
+              :rows="2"
+              placeholder="Enter description of your grant"
+              v-model="CreateModifyGrantForm.description">
+            </el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="12">
+          <el-form-item label="Purchase Order (PO):" prop="purchaseOrder">
+            <el-input placeholder="Enter purchase order" v-model="CreateModifyGrantForm.purchaseOrder" class="w-full"></el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="12">
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="Start Date:" prop="startDate">
+                <el-date-picker
+                  size="large"
+                  v-model="CreateModifyGrantForm.startDate"
+                  type="date"
+                  placeholder="dd.mm.yyyy">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="End Date:" prop="endDate">
+                <el-date-picker
+                  size="large"
+                  v-model="CreateModifyGrantForm.endDate"
+                  type="date"
+                  placeholder="dd.mm.yyyy">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-col>
       </el-row>
 
-        <el-form :model="CreateModifyGrantForm" label-position="top" :rules="rules" ref="CreateModifyGrantForm">
-        <el-row :gutter="10" class="mb-30">
-          <el-col :span="12">
-            <el-form-item label="Grant name:" prop="name">
-               <el-autocomplete
-                class="inline-input"
-                v-model="CreateModifyGrantForm.name"
-                :fetch-suggestions="querySearch"
-                placeholder="Enter or choose grant name.."
-                @select="getGrantData"
-             ></el-autocomplete>
+        <el-row :gutter="20" class="mb-20">
+          <el-col :span="6">
+            <el-form-item label="IDT allocated amount:" prop="idtAmount">
+              <el-input-number v-model="CreateModifyGrantForm.idtAmount" class="w-full"></el-input-number>
             </el-form-item>
           </el-col>
 
-          <el-col :span='24' class="mb-20">
-            <el-form-item label="Grant description:" prop="description">
-              <el-input
-                type="textarea"
-                :rows="2"
-                placeholder="Enter description of your grant..."
-                v-model="CreateModifyGrantForm.description">
-              </el-input>
+          <el-col :span="6">
+            <el-form-item label="IDT spent amount" prop="idtSpentAmount">
+              <el-input-number v-model="CreateModifyGrantForm.idtSpentAmount" class="w-full"></el-input-number>
             </el-form-item>
           </el-col>
 
-          <el-col :span="8">
-            <el-form-item label="Purchase Order (PO):" prop="purchaseOrder">
-              <el-input placeholder="Enter purchase order" v-model="CreateModifyGrantForm.purchaseOrder"></el-input>
+          <el-col :span="6">
+            <el-form-item label="Qinglan allocated amount:" prop="qlAmount">
+              <el-input-number v-model="CreateModifyGrantForm.qlAmount" class="w-full"></el-input-number>
             </el-form-item>
           </el-col>
 
-          <el-col :span="8">
-            <el-form-item label="Start Date:" prop="startDate">
-              <el-date-picker
-                size="large"
-                v-model="CreateModifyGrantForm.startDate"
-                type="date"
-                placeholder="dd.mm.yyyy">
-            </el-date-picker>
+          <el-col :span="6">
+            <el-form-item label="Qinglan spent amount:" prop="qlSpentAmount">
+              <el-input-number v-model="CreateModifyGrantForm.qlSpentAmount" class="w-full"></el-input-number>
             </el-form-item>
           </el-col>
+        </el-row>
+    </el-form>
 
-          <el-col :span="8">
-            <el-form-item label="End Date:" prop="endDate">
-              <el-date-picker
-                size="large"
-                v-model="CreateModifyGrantForm.endDate"
-                type="date"
-                placeholder="dd.mm.yyyy">
-            </el-date-picker>
-            </el-form-item>
-          </el-col>
-          </el-row>
-
-          <el-row :gutter="20" class="mb-20">
-            <el-col :span="6">
-              <el-form-item label="IDT allocated amount:" prop="idtAmount">
-                <el-input-number v-model="CreateModifyGrantForm.idtAmount" ></el-input-number>
-              </el-form-item>
-            </el-col>
-
-            <el-col :span="6">
-              <el-form-item label="IDT spent amount" prop="idtSpentAmount">
-                <el-input-number v-model="CreateModifyGrantForm.idtSpentAmount" ></el-input-number>
-              </el-form-item>
-            </el-col>
-
-            <el-col :span="6">
-              <el-form-item label="Qinglan allocated amount:" prop="qlAmount">
-                <el-input-number v-model="CreateModifyGrantForm.qlAmount" ></el-input-number>
-              </el-form-item>
-            </el-col>
-
-            <el-col :span="6">
-              <el-form-item label="Qinglan spent amount:" prop="qlSpentAmount">
-                <el-input-number v-model="CreateModifyGrantForm.qlSpentAmount" ></el-input-number>
-              </el-form-item>
-            </el-col>
-          </el-row>
-      </el-form>
-
-      <div slot="footer" class="text-center">
-        <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-        <el-button type="primary" :disabled="!isUpdate" @click="save(isUpdateData)">Update</el-button>
-        <el-button type="primary" :disabled="!isCreate" @click="save(!isUpdateData)">Create</el-button>
-      </div>
+    <div slot="footer" class="text-center">
+      <el-button type="danger" @click="$emit('close')">Cancel</el-button>
+      <el-button type="primary" :disabled="!isUpdate" @click="save(isUpdateData)">Update</el-button>
+      <el-button type="primary" :disabled="!isCreate" @click="save(!isUpdateData)">Create</el-button>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -101,16 +104,17 @@ import { DialogBase, CreateModifyGrant } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
 @Component({ name: 'GrantCreateModifyGrant' })
-export default class GrantCreateModifyGrant extends Vue {
-    @Prop({ required: true }) modalData!: DialogBase
-    @Prop({ required: true }) isLoading!: boolean
 
-    retriverGrantsList: string[] = []
-    isUpdateData: boolean = true;
-    isAlreadyExist: string | undefined = ''
-    localCopyForm: object = {};
-    isUpdate: boolean = true;
-    isCreate: boolean = true;
+export default class GrantCreateModifyGrant extends Vue {
+  @Prop({ required: true }) modalData!: DialogBase
+  @Prop({ required: true }) isLoading!: boolean
+
+  retriverGrantsList: string[] = []
+  isUpdateData: boolean = true
+  isAlreadyExist: string | undefined = ''
+  localCopyForm: object = {}
+  isUpdate: boolean = true
+  isCreate: boolean = true
 
   CreateModifyGrantForm : CreateModifyGrant = {
     name: '',
@@ -147,13 +151,7 @@ export default class GrantCreateModifyGrant extends Vue {
   getGrunts () {
     this.$emit('loadOn')
     return httpService.get('query/grantRetriever')
-      .then((res: any) => {
-        this.retriverGrantsList = res.data.grants.map((item: any) => {
-          return {
-            value: item.name
-          }
-        })
-      })
+      .then((res: any) => { this.retriverGrantsList = res.data.grants.map((item: any) => { return { value: item.name } }) })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
