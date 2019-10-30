@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Model, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop, Model } from 'vue-property-decorator'
 import VirtualListItem from './VirtualListItem.vue'
 
 @Component({ name: 'VirtualSelect' })
