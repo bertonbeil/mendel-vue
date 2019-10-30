@@ -1,6 +1,7 @@
 .vitrual-select {
     width: 100%;
     font-weight: 400;
+    position: relative;
 
     &__input {
         position: relative;
@@ -36,15 +37,17 @@
         }
     }
 
+    .open {
+        border-color: #409EFF;
+    }
+
     &__dropdown {
         background-color: white;
         position: absolute;
-        width: 15%;
+        width: 100%;
         z-index: 1000;
-        overflow: hidden;
-        margin-top: 12px;
         font-size: 14px;
-        padding: 0px;
+        padding: 5px 1px 5px;
         border-radius: 5px;
         box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
         border: 1px solid #E4E7ED;
@@ -53,13 +56,75 @@
         &-item:hover {
             background-color: #f8fafc;
         }
+
     }
 
+    .below {
+        margin-top: 12px;
+    }
+
+    .below::before {
+        content: '';
+        position: absolute;
+        width: 0;
+        top: -6px;
+        left: 15%;
+        height: 0;
+        border-style: solid;
+        border-width: 0 7px 8px 7px;
+        border-color: transparent transparent white transparent;
+        line-height: 0px;
+    }
+
+    .above {
+        bottom: 35px;
+    }
+
+    .above::after {
+        content: " ";
+        border-width: 7px;
+        bottom: 1px;
+        margin-left: -6px;
+        border-top-color: #FFF;
+        border-left-color: #ffffff00;
+        border-right-color: #f0fff000;
+        border-bottom-width: 0;
+        position: absolute;
+        bottom: -7px;
+        border: -48px;
+        left: 15%;
+        display: block;
+        height: 0px;
+        border-style: solid;
+
+    }
+    
+
     &__virtual-list {
-        width: 110%;
+        width: 100%;
         cursor: pointer;
         color: #606266;
         overflow-y: scroll;
+
+        &::-webkit-scrollbar-button {
+            height: 0;
+            background: none;
+        }
+
+        &::-webkit-scrollbar {
+            background: none;
+            width: 7px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba(144, 147, 153, 0.212);
+            border-radius: 4px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgba(144, 147, 153, 0.37);
+            }
+        }
     }
 }
 

@@ -122,7 +122,7 @@
           </el-col>
         </el-row>
 
-        <el-row >
+        <el-row v-if="showAssemblyTable">
           <el-row :gutter="20">
             <el-col :span="4"><h4 class="text-base text-black mt-3">VA:</h4></el-col>
             <el-col :span="4"><h4 class="text-base text-black mt-3">RE:</h4></el-col>
@@ -133,7 +133,7 @@
           </el-row>
 
           <draggable class="p-3" v-model="denovoAssemblyForm.parts">
-            <el-row :gutter="20" class="flex items-center py-10 border-0 border-t border-solid border-grey cursor-pointer" v-for="(assembly, i) in denovoAssemblyForm.parts" :key="i">
+            <el-row :gutter="20" class="flex items-center py-10 border-0 border-t border-solid border-grey cursor-pointer" v-for="(assembly, i) in denovoAssemblyForm.parts" :key="i" ref="draggableRow">
               <el-col :span="4">
                 <el-select v-model="denovoAssemblyForm.parts[i].vegasAdapter" class="w-full outline-none" size="mini">
                   <el-option
@@ -155,7 +155,7 @@
                 </el-select>
               </el-col>
               <el-col :span="4">
-                <VirtualSelect :items="promoters" v-model="denovoAssemblyForm.parts[i].promoters" size="mini"></VirtualSelect>
+                <VirtualSelect :items="promoters" @click.native="unsetCurrentRowTransform(i)" v-model="denovoAssemblyForm.parts[i].promoters" size="mini"></VirtualSelect>
               </el-col>
               <el-col :span="4">
                 <el-select v-model="denovoAssemblyForm.parts[i].partName" class="w-full outline-none" size="mini">
@@ -168,7 +168,7 @@
                 </el-select>
               </el-col>
               <el-col :span="4">
-                <VirtualSelect :items="terminators" v-model="denovoAssemblyForm.parts[i].terminators" size="mini"></VirtualSelect>
+                <VirtualSelect :items="terminators" @click.native="unsetCurrentRowTransform(i)"  v-model="denovoAssemblyForm.parts[i].terminators" size="mini"></VirtualSelect>
               </el-col>
               <el-col :span="2">
                 <el-select v-model="denovoAssemblyForm.parts[i].strand" class="w-full outline-none" size="mini">
@@ -212,9 +212,8 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { DialogBase, DenovoAssembly } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 import { _cloneDeep } from '@/utils/helpers'
-import VirtualSelect from '@/playground/VirtualSelect.vue'
 
-@Component({ name: 'CreateDeNovoAssembly', components: { VirtualSelect } })
+@Component({ name: 'CreateDeNovoAssembly' })
 
 export default class CreateDeNovoAssembly extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
@@ -261,6 +260,7 @@ export default class CreateDeNovoAssembly extends Vue {
     denovoAssemblyForm: HTMLFormElement
     visualizer: HTMLFormElement
     projectSelect: HTMLFormElement
+    draggableRow: any
   }
 
   get showAssemblyTable () {
@@ -269,6 +269,10 @@ export default class CreateDeNovoAssembly extends Vue {
 
   get sendData () {
     return this.denovoAssemblyForm
+  }
+
+  unsetCurrentRowTransform (i: number) {
+    this.$refs.draggableRow[i].$el.style.transform = 'unset'
   }
 
   /* submit Modal data */
