@@ -385,3 +385,14 @@ export interface OrderAssembly {
   assemblies?: string,
   grant_name?: string
 }
+export interface CreateModifyGrant {
+  name?: string
+  description?: string
+  purchaseOrder?: string
+  startDate?: string
+  endDate?: string
+  idtAmount?: number
+  idtSpentAmount?: number
+  qlAmount?: number
+  qlSpentAmount?: number
+}

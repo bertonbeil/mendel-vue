@@ -133,6 +133,13 @@ export default class MainHeader extends Vue {
         { component: 'OrderBarcodeScanner', title: 'Barcode Scanner' },
         { component: 'OrderQinglanOrders', title: 'Qinglan Orders' }
       ]
+    },
+    {
+      menuTitle: 'Grants',
+      disabled: false,
+      items: [
+        { component: 'GrantCreateModifyGrant', title: 'Create/Modify Grant' }
+      ]
     }
   ]
 

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import {
   Alert,
+  Autocomplete,
   Button,
   Card,
   Checkbox,
@@ -13,6 +14,7 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
+  DatePicker,
   Form,
   FormItem,
   Input,
@@ -45,6 +47,7 @@ import { Verify } from 'crypto'
 locale.use(lang)
 
 Vue.use(Alert)
+Vue.use(Autocomplete)
 Vue.use(Button)
 Vue.use(Card)
 Vue.use(Checkbox)
@@ -57,6 +60,7 @@ Vue.use(Dialog)
 Vue.use(Dropdown)
 Vue.use(DropdownMenu)
 Vue.use(DropdownItem)
+Vue.use(DatePicker)
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Input)

@@ -219,6 +219,11 @@ export default new Vuex.Store({
       { 
         component: 'OrderQinglanOrders', 
         title: 'Qinglan Orders' 
+      },
+      { 
+        component: 'GrantCreateModifyGrant', 
+        title: 'Create/Modify Grant',
+        submitUrl: 'grantDesigner'
       }
     ]
   },
@@ -242,6 +247,7 @@ export default new Vuex.Store({
       httpService.get('query/whoAmI')
         .then((res: any) => {
           commit('set_user', res.data.user)
+          document.cookie = `ticket=${res.data.user.id}`
           if (this.state.user.role === 'None') router.push('/login')
           else this.state.isAuth = true
         })
