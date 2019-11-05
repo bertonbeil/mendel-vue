@@ -215,6 +215,10 @@ export default new Vuex.Store({
         dialogIntro: 'Select assemblies for review and order. Only assemblies for which segments and junction primers have been generated are eligible for order. Previously ordered assemblies will be ineligible for re-order.',
         title: 'Select Assemblies',
         submitUrl: 'submitAssemblyReview'
+      },
+      { 
+        component: 'OrderQinglanOrders', 
+        title: 'Qinglan Orders' 
       }
     ]
   },
