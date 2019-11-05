@@ -396,3 +396,7 @@ export interface CreateModifyGrant {
   qlAmount?: number
   qlSpentAmount?: number
 }
+
+export interface GrantsUsersForGrantForm {
+  grant?: string
+}

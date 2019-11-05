@@ -140,6 +140,12 @@ export default class MainHeader extends Vue {
       items: [
         { component: 'GrantCreateModifyGrant', title: 'Create/Modify Grant' }
       ]
+    },
+    { menuTitle: 'Grants',
+      disabled: false,
+      items: [
+        { component: 'GrantsUsersForGrant', title: 'Users for Grant' }
+      ]
     }
   ]
 
