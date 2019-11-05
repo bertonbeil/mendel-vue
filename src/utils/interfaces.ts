@@ -400,3 +400,6 @@ export interface CreateModifyGrant {
 export interface GrantsUsersForGrantForm {
   grant?: string
 }
+export interface grantsForUserForm {
+  user?: string,
+}
