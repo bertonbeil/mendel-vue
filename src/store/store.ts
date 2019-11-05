@@ -134,10 +134,10 @@ export default new Vuex.Store({
         component: 'AccountInfo',
         dialogIntro: 'User Details'
       },
-      { 
-        component: 'GrantsUsersForGrant', 
+      {
+        component: 'GrantsUsersForGrant',
         title: 'Users for Grant',
-        submitUrl: 'usersForGrant',
+        submitUrl: 'usersForGrant'
       }
     ]
   },
