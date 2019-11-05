@@ -135,6 +135,10 @@ export default new Vuex.Store({
         dialogIntro: 'User Details'
       },
       {
+        component: 'OrderBarcodeScanner',
+        title: 'Barcode Scanner'
+      },
+      {
         component: 'GrantsUsersForGrant',
         title: 'Users for Grant',
         submitUrl: 'usersForGrant'

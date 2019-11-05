@@ -403,3 +403,7 @@ export interface GrantsUsersForGrantForm {
 export interface grantsForUserForm {
   user?: string,
 }
+export interface BarcodeScannerForm {
+  type?: string
+  barcode: string
+}
