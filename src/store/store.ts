@@ -135,6 +135,11 @@ export default new Vuex.Store({
         dialogIntro: 'User Details'
       },
       {
+        component: 'OrderReviewOrders',
+        title: 'Review Orders',
+        dialogIntro: 'This page is only available to MenDEL administrators. To review an assembly - click on the appropriate ‘Download’ button, to reject an assembly - press ‘Reject’, to generate and submit an order - press ‘Order’. Selecting ‘Order’ will send emails to Qinglan and IDT as appropriate to start synthesis of segments, amplicon primers, and/or junction primers.'
+      },
+      {
         component: 'ToolAssemblyAlignment',
         title: 'Assembly Alignment Tool'
       },
