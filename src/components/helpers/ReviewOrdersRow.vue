@@ -18,7 +18,7 @@
           <p>{{assembliesData.grant_name}}</p>
         </el-col>
 
-        <el-col :span="12" :offset="isGrantNameExist" class="text-black">
+        <el-col :span="12" :offset="isGrantNameExist" class="flex overflow-x-auto text-black">
           <el-button @click="downloadFile" type="primary" size="medium">Download</el-button>
           <el-button
             @click="submitData(rejectedBtn.resolutionData)"
@@ -108,7 +108,12 @@ export default class ReviewOrdersRow extends Vue {
   submitData (resolutionData: string) {
     this.$emit('loadOn')
     return httpService.post('query/processAssemblyReviews', {
-      assemblies: [ { name: this.assembliesData.assembly, resolution: resolutionData } ]
+      assemblies: [ {
+        study: this.assembliesData.study,
+        project: this.assembliesData.project,
+        name: this.assembliesData.assembly,
+        resolution: resolutionData
+      } ]
     }).then((res: any) => { (this as any).alert({ type: res.data.status, msg: res.data.lims_response }) })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
