@@ -134,22 +134,10 @@ export default class MainHeader extends Vue {
         { component: 'OrderQinglanOrders', title: 'Qinglan Orders' }
       ]
     },
-    {
-      menuTitle: 'Grants',
-      disabled: false,
-      items: [
-        { component: 'GrantCreateModifyGrant', title: 'Create/Modify Grant' }
-      ]
-    },
-    { menuTitle: 'Grants',
-      disabled: false,
-      items: [
-        { component: 'GrantsUsersForGrant', title: 'Users for Grant' }
-      ]
-    },
     { menuTitle: 'Grant',
+      disabled: false,
       items: [
-        { component: 'GrantCreateModify', title: 'Create/Modify Grant' },
+        { component: 'GrantCreateModifyGrant', title: 'Create/Modify Grant' },
         { component: 'GrantsForUser', title: 'Grants for User' },
         { component: 'GrantsUsersForGrant', title: 'Users for Grant' }
       ]

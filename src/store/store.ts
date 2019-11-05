@@ -210,10 +210,9 @@ export default new Vuex.Store({
         component: 'ReportRestrictionEnzymes',
         title: 'Restriction Enzymes'
       },
-      { 
-        component: 'OrderAssemblyStatus', 
-        title: 'Assembly Status' 
-      },
+      {
+        component: 'OrderAssemblyStatus',
+        title: 'Assembly Status'
       },
       {
         component: 'OrderSelectAssemblies',
@@ -221,29 +220,29 @@ export default new Vuex.Store({
         title: 'Select Assemblies',
         submitUrl: 'submitAssemblyReview'
       },
-      { 
-        component: 'OrderQinglanOrders', 
-        title: 'Qinglan Orders' 
+      {
+        component: 'OrderQinglanOrders',
+        title: 'Qinglan Orders'
       },
-      { 
-        component: 'GrantCreateModifyGrant', 
+      {
+        component: 'GrantCreateModifyGrant',
         title: 'Create/Modify Grant',
         submitUrl: 'grantDesigner'
       },
-      { 
-        component: 'GrantCreateModify', 
-        title: 'Create/Modify Grant' 
+      {
+        component: 'GrantCreateModify',
+        title: 'Create/Modify Grant'
       },
-      { 
-        component: 'GrantsForUser', 
+      {
+        component: 'GrantsForUser',
         dialogIntro: 'Assign Grants for User',
-        title: 'Grants for User' ,
-        submitUrl: 'grantsForUser',
+        title: 'Grants for User',
+        submitUrl: 'grantsForUser'
       },
-      { 
-        component: 'GrantsUsersForGrant', 
+      {
+        component: 'GrantsUsersForGrant',
         dialogIntro: 'Assign Users for Grant',
-        title: 'Users for Grant' 
+        title: 'Users for Grant'
       }
     ]
   },

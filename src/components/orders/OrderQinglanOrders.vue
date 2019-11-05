@@ -9,10 +9,6 @@
         <el-form :model="orderQinglanOrdersForm" label-position="top" :rules="rules" ref="orderQinglanOrdersForm">
           <el-row :gutter="20">
             <el-col :span="12">
-              <!-- <el-form-item prop="barcode" label="Type a three letter code from one of the received parts (e.g. EFX):">
-                <el-input maxlength="3" minlength="3" show-word-limit v-model="orderQinglanOrdersForm.barcode" class="w-full"></el-input>
-              </el-form-item>
-              <el-button type="success" @click="searchOrders">Search</el-button> -->
               <el-form-item prop="barcode" label="Type a three letter code from one of the received parts (e.g. EFX):">
                 <el-input
                   v-model="orderQinglanOrdersForm.barcode"
