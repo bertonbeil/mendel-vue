@@ -367,3 +367,9 @@ export interface RegionPrimersTools {
   type?: string,
   well?: string
 }
+export interface OrderAssembly {
+  study?: string,
+  project?: string,
+  assemblies?: string,
+  grant_name?: string
+}
