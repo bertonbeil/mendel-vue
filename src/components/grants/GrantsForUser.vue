@@ -13,13 +13,8 @@
             v-model="grantForUserForm.user"
             @change="getGrantsForUser"
             placeholder="Select name"
-            class="w-full"
-          >
-            <el-option
-              v-for="colaborator in collaboratorList"
-              :key="colaborator"
-              :label="colaborator"
-              :value="colaborator"
+            class="w-full">
+            <el-option v-for="colaborator in collaboratorList" :key="colaborator" :label="colaborator" :value="colaborator"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -32,8 +27,7 @@
           <draggable
             class="el-card is-never-shadow p-10 h-400 overflow-auto"
             v-model="grantRetriver"
-            group="grantsList"
-          >
+            group="grantsList">
             <div
               class="inline-block w-1/2 p-1 cursor-pointer"
               v-for="(retriver,index) in grantRetriver"
@@ -47,13 +41,11 @@
           <draggable
             class=" el-card is-never-shadow p-10 h-400 overflow-auto"
             v-model="grantsList"
-            group="grantsList"
-          >
+            group="grantsList">
             <div
               class="inline-block w-1/2 p-1 cursor-pointer"
               v-for="(grant,index) in grantsList"
-              :key="index"
-            >
+              :key="index">
               <el-card shadow="hover" body-style="padding:10px">{{ grant }}</el-card>
             </div>
           </draggable>
@@ -76,25 +68,26 @@ import { grantsForUserForm } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 
 @Component({ name: 'GrantsForUser' })
-export default class GrantsForUser extends Vue {
-  @Prop({ required: true }) isLoading!: boolean;
 
-  collaboratorList: string[] = [];
-  grantsList: string[] = [];
-  grantRetriver: string[] = [];
-  isShowGrants: boolean = false;
+export default class GrantsForUser extends Vue {
+  @Prop({ required: true }) isLoading!: boolean
+
+  collaboratorList: string[] = []
+  grantsList: string[] = []
+  grantRetriver: string[] = []
+  isShowGrants: boolean = false
 
   grantForUserForm: grantsForUserForm = {
     user: ''
-  };
+  }
 
   rules: object = {
     user: [{ required: true, message: 'User name is required' }]
-  };
+  }
 
   $refs!: {
-    grantForUserForm: HTMLFormElement;
-  };
+    grantForUserForm: HTMLFormElement
+  }
 
   get sendData () {
     return { user: this.grantForUserForm.user, grants: this.grantsList }
@@ -110,15 +103,15 @@ export default class GrantsForUser extends Vue {
 
   getGrantsForUser () {
     this.$emit('loadOn')
-    return httpService
-      .post('query/grantsForUser', { user: this.grantForUserForm.user })
+    return httpService.post('query/grantsForUser', { user: this.grantForUserForm.user })
       .then((res: any) => {
-        this.grantsList = res.data.grants.map((item: any) => item.grant)
+        this.grantsList = res.data.grants.map((item: any) => {
+          this.grantRetriver.splice(this.grantRetriver.indexOf(item.grant), 1)
+          return item.grant
+        })
         this.isShowGrants = true
       })
-      .catch((err: any) => {
-        throw new Error(err)
-      })
+      .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
 
@@ -137,9 +130,7 @@ export default class GrantsForUser extends Vue {
   getInitialData () {
     this.$emit('loadOn')
     Promise.all([this.getGrantRetriever(), this.getCollaboratorList()])
-      .catch((err: any) => {
-        throw new Error(err)
-      })
+      .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
 
