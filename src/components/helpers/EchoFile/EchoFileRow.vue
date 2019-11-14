@@ -88,9 +88,11 @@ export default class EchoFileRow extends Vue {
   @Prop({ required: true }) rowDataIndex!: number
   @Prop({ required: true }) studyList: any
   @Prop({ required: true }) assemblyList: any
+  @Prop({ required: true }) rowWellsUsed: any
 
   echoRowData = {} as EchoFileAssemblyRow
   projectsList: object[] = []
+  assemblyType: string = ''
 
   /* filtered Assembly list depended on selected project */
   get assemblySelectList () {
@@ -110,7 +112,18 @@ export default class EchoFileRow extends Vue {
   }
 
   get primerPairs () {
-    return this.echoRowData.name === '' ? 0 : (this.echoRowData.segments + 1) * 2 + 1
+    const number = this.assemblyTypeNumber
+    if (this.rowData.junctions.length) {
+      return this.echoRowData.name === '' ? 0 : this.rowData.junctions.length * number + this.numControls
+    } else return this.rowData.junctions.length
+  }
+
+  get assemblyTypeNumber () {
+    switch (this.assemblyType) {
+      case 'denovo': return 4
+      case 'adapto': return 2
+      default : return 2
+    }
   }
 
   get wellsUsed () {
@@ -150,11 +163,21 @@ export default class EchoFileRow extends Vue {
   handleAssemblySelect (value: any) {
     const assembly = this.assemblyList.find((a: any) => a.assembly === value)
     this.echoRowData.segments = assembly.segments
+    this.$emit('load:on')
+    return httpService.post('query/assemblyType', { study: this.echoRowData.study, project: this.echoRowData.project, assembly: assembly.assembly })
+      .then((res: any) => { this.assemblyType = res.data.assembly_type })
+      .catch((err) => { throw new Error(err) })
+      .finally(() => this.$emit('load:off'))
+  }
+
+  @Watch('rowData.junctions', { immediate: true, deep: true })
+  handleJunctions () {
+    this.$emit('update:rowWellsUsed', this.wellsUsed)
   }
 
   @Watch('echoRowData', { immediate: false, deep: true })
   handleRowChange () {
-    this.$emit('update:rowData', { ...this.echoRowData, wellsUsed: this.wellsUsed, num_controls: this.numControls })
+    this.$emit('update:rowData', { ...this.echoRowData, junctions: this.rowData.junctions, wellsUsed: this.wellsUsed, num_controls: this.numControls })
   }
 
   created () {

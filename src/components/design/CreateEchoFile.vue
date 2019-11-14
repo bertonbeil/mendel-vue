@@ -39,6 +39,7 @@
           @load:off="$emit('loadOff')"
           class="echo-file-row p-15"
           :row-data.sync="tableData[index]"
+          :row-wells-used.sync="tableData[index].wellsUsed"
           :row-data-index="index"
           :study-list='studyList'
           :assembly-list="assemblyList"
