@@ -35,6 +35,7 @@
                   v-model="segment_request.dnaDesignName"
                   placeholder="Select assembly"
                   :disabled="!segment_request.projectName"
+                  @change="handleAssemblyName"
                   class="w-full">
                   <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
                 </el-select>
@@ -155,6 +156,7 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   dnaSegmentList: any = []
   contiguousSeries: ContiguousSeries = 'contiguous'
 
+
   replaceRowMock = {
     study: '',
     project: '',
@@ -230,6 +232,13 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     segment_request: HTMLFormElement
   }
 
+  handleAssemblyName () {
+    this.adaptoSegmentsManipulationForm.action = ''
+    this.segment_request.firstSegmentIdx = null
+    this.segment_request.lastSegmentIdx = null
+    this.contiguousSeries = 'contiguous'
+  }
+
   @Watch('segment_request', { deep: true })
   onChangeSegmentRequest () {
     this.primers_request.studyName = this.segment_request.studyName
@@ -254,14 +263,16 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   }
 
   get sendData () {
-    return this.adaptoSegmentsManipulationForm
+    if (this.isActionDelete) {
+      return { ...this.adaptoSegmentsManipulationForm, [this.contiguousSeries]: true }
+    } else return this.adaptoSegmentsManipulationForm
   }
 
   /* submit Modal data */
   save () {
     if (this.isActionDelete) {
       this.adaptoSegmentsManipulationForm[this.contiguousSeries] = true
-    }
+    } 
     this.$refs['segment_request'].validate((valid: boolean) => {
       if (valid) this.$emit('save', { data: this.adaptoSegmentsManipulationForm })
       else return false
