@@ -39,7 +39,7 @@
                   v-model="ToolVisualizersForm.assembly_name"
                   placeholder="Select assembly"
                   class="w-full"
-                  @change="$refs.visualizer.vizualizer(ToolVisualizersForm)"
+                  @change="getVisualizerData"
                   :disabled="!ToolVisualizersForm.projectName">
                   <el-option v-for="(item,index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
                 </el-select>
@@ -57,7 +57,7 @@
       <!-- Modal action buttons -->
       <div slot="footer" class="text-center ">
         <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-        <el-button type="primary" @click="generateScreenshot">Generate</el-button>
+        <el-button type="primary" :disabled="!visualizerData" @click="generateScreenshot">Generate</el-button>
       </div>
 
       <div v-if="isGeneratedScreenshot" class="mt-20 p-10 flex flex-col items-center bg-grey-light">
@@ -78,6 +78,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { ToolVisualizers } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 import html2canvas from 'html2canvas'
+import { warn } from 'vue-class-component/lib/util'
 
 @Component({ name: 'ToolVisualizer' })
 
@@ -87,7 +88,7 @@ export default class ToolVisualizer extends Vue {
   studyList: string[] = []
   projectList: string[] = []
   assemblyList: string[] = []
-  visualizerData: string = ''
+  visualizerData: string | undefined = ''
   isGeneratedScreenshot: boolean = false
   canvasVisualizate: string = ''
 
@@ -141,9 +142,13 @@ export default class ToolVisualizer extends Vue {
   }
 
   getVisualizerData () {
+    this.isGeneratedScreenshot = false
     this.$emit('loadOn')
     return httpService.post('query/assemblyVisualizer', this.ToolVisualizersForm)
-      .then((res: any) => { this.visualizerData = res.data.lims_response.elements })
+      .then((res: any) => { 
+        this.visualizerData = res.data.lims_response.elements 
+        this.$refs.visualizer.vizualizer(this.ToolVisualizersForm)
+        })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
