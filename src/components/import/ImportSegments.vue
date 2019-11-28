@@ -251,7 +251,8 @@ export default class ImportSegments extends Vue {
   }
 
   getAssemblyValueLength () {
-    this.assemblyLength = this.allAssemblyList.filter((item: any) => { return item.name === this.dnaDesignName })[0].value.length
+    // this.assemblyLength = this.allAssemblyList.filter((item: any) => { return item.name === this.dnaDesignName })[0].value.length
+    this.assemblyLength = 0
   }
 
   /* Get initial component data */
@@ -260,7 +261,7 @@ export default class ImportSegments extends Vue {
     Promise.all([
       this.getStudyList(),
       this.getRestrictionEnzymeList(),
-      this.getLatestDnaDesign()
+      // this.getLatestDnaDesign()
     ]).catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
