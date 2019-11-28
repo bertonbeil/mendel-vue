@@ -40,6 +40,7 @@
               <el-select
                 v-model="dnaDesignName"
                 :disabled="!segmentRequest.projectName"
+                @change="getDnaSegmentList"
                 placeholder="Select assembly"
                 class="w-full">
                 <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
