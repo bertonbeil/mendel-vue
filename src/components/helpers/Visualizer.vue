@@ -11,10 +11,11 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { httpService } from '@/services/http.service'
 import { alertMixin } from '@/utils/mixins'
 
-
 @Component({ name: 'Visualizer', mixins: [ alertMixin ] })
 
 export default class CreateStudy extends Vue {
+  @Prop({ default: false }) isVisualised!: boolean
+
   visualizerToAppend: string = ''
   isVisible: boolean = false
 
@@ -77,12 +78,14 @@ export default class CreateStudy extends Vue {
 
               case 'er':
                 this.visualizerToAppend += `<span class="sbol-item"><svg ${i.direction === '>' ? "style='transform:rotateY(180deg)'" : null} xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 44.999998 44.999998" version="1.1" xml:space="preserve" x="0px" y="0px" width="0.5in" height="0.5in" id="svg2" inkscape:version="0.91 r13725" sodipodi:docname="user-defined.svg"><metadata id="metadata12"><rdf:RDF><cc:Work rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title>< dc:title></cc:Work></rdf:RDF></metadata><sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="640" inkscape:window-height="480" id="namedview10" showgrid="false" units="in" inkscape:zoom="2.36" inkscape:cx="25" inkscape:cy="50" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="0" inkscape:current-layer="svg2" /><defs id="defs4"><style type="text/css" id="style6"><![CDATA[path,circle,polygon {stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none}]]></style></defs><path d="m 2.4999973,12.499997 0,20 39.9999997,0 0,-20 z" id="path8" inkscape:connector-curvature="0" style="fill:#${color};stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" /></svg><span class="sbol-label">${i.label}</span></span>`
-               break
-           }
+                break
+            }
           }
           this.visualizerToAppend += '<div class="chaing-closet"></div>'
         }
-    })
+      })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('generateScreenshot', !this.isVisible))
   }
 
   responseMessage ({ lims_response, status }: any) {
