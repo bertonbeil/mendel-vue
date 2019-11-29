@@ -5,3 +5,4 @@ declare module '*.vue' {
 
 declare module 'vuedraggable'
 declare module 'jqx'
+declare module 'vue-quaggajs'

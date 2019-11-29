@@ -50,7 +50,8 @@ export default class EchoJunctionsVisualizer extends Vue {
   }
 
   @Watch('assembly.step', { immediate: true, deep: true })
-  handleStepChange () {
+  handleStepChange (newVal: EchoFileAssemblyRow, oldVal: EchoFileAssemblyRow) {
+    if (newVal === oldVal) return
     this.createJunctionArray()
   }
 
