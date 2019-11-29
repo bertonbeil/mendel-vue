@@ -127,7 +127,7 @@ export default class EchoFileRow extends Vue {
   }
 
   get wellsUsed () {
-    return (this.echoRowData.templates + 3) * this.primerPairs
+    return 2 * this.primerPairs
   }
 
   get numControls () {

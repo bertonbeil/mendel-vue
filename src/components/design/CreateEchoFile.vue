@@ -85,7 +85,6 @@ export default class CreateEchoFile extends Vue {
   assemblyList: any = []
   primers: string[] = []
   assemblies: any = []
-  // totalWellsUsed: number = 0
   rowIndex: number = 0
 
   tableData: Array<EchoFileAssemblyRow> = [ {
