@@ -133,36 +133,52 @@
           </el-row>
 
           <draggable class="p-3" v-model="denovoAssemblyForm.parts">
-            <el-row :gutter="20" class="flex items-center py-10 border-0 border-t border-solid border-grey cursor-pointer" v-for="(assembly, i) in denovoAssemblyForm.parts" :key="i">
+            <el-row :gutter="20" class="flex items-center py-10 border-0 border-t border-solid border-grey cursor-pointer" v-for="(assembly, i) in denovoAssemblyForm.parts" :key="i" ref="draggableRow">
               <el-col :span="4">
-                <select v-model="denovoAssemblyForm.parts[i].vegasAdapter" class="w-full outline-none">
-                  <option v-for="(item, i) in vegasAdapters" :key="i" :label="item.name" :value="item.name"></option>
-                </select>
+                <el-select v-model="denovoAssemblyForm.parts[i].vegasAdapter" class="w-full outline-none" size="mini">
+                  <el-option
+                    v-for="(item, i) in vegasAdapters"
+                    :key="i"
+                    :label="item.name"
+                    :value="item.name">
+                  </el-option>
+                </el-select>
               </el-col>
               <el-col :span="4">
-                <select v-model="denovoAssemblyForm.parts[i].restrictionEnzyme" class="w-full outline-none">
-                  <option v-for="(item, i) in restrictionEnzymes" :key="i" :label="item.name" :value="item.name"></option>
-                </select>
+                <el-select v-model="denovoAssemblyForm.parts[i].restrictionEnzyme" class="w-full outline-none" size="mini">
+                  <el-option
+                    v-for="(item, i) in restrictionEnzymes"
+                    :key="i"
+                    :label="item.name"
+                    :value="item.name">
+                  </el-option>
+                </el-select>
               </el-col>
               <el-col :span="4">
-                <select v-model="denovoAssemblyForm.parts[i].promoter" class="w-full outline-none" filterable>
-                  <option v-for="(item, i) in promoters" :key="i" :label="item.name" :value="item.name"></option>
-                </select>
+                <VirtualSelect :items="promoters" @click.native="unsetCurrentRowTransform(i)" v-model="denovoAssemblyForm.parts[i].promoters" size="mini"></VirtualSelect>
               </el-col>
               <el-col :span="4">
-                <select v-model="denovoAssemblyForm.parts[i].partName" class="w-full outline-none">
-                  <option v-for="(item, i) in cds" :key="i" :label="item.name" :value="item.name"></option>
-                </select>
+                <el-select v-model="denovoAssemblyForm.parts[i].partName" class="w-full outline-none" size="mini">
+                  <el-option
+                    v-for="(item, i) in cds"
+                    :key="i"
+                    :label="item.name"
+                    :value="item.name">
+                  </el-option>
+                </el-select>
               </el-col>
               <el-col :span="4">
-                <select v-model="denovoAssemblyForm.parts[i].terminator" class="w-full outline-none" filterable>
-                  <option v-for="(item, i) in terminators" :key="i" :label="item.name" :value="item.name"></option>
-                </select>
+                <VirtualSelect :items="terminators" @click.native="unsetCurrentRowTransform(i)"  v-model="denovoAssemblyForm.parts[i].terminators" size="mini"></VirtualSelect>
               </el-col>
               <el-col :span="2">
-                <select v-model="denovoAssemblyForm.parts[i].strand" class="w-full outline-none">
-                  <option v-for="(item, i) in TUDirections" :key="i" :label="item.name" :value="item.name"></option>
-                </select>
+                <el-select v-model="denovoAssemblyForm.parts[i].strand" class="w-full outline-none" size="mini">
+                  <el-option
+                    v-for="(item, i) in TUDirections"
+                    :key="i"
+                    :label="item.name"
+                    :value="item.name">
+                  </el-option>
+                </el-select>
               </el-col>
 
               <!-- table actions -->
@@ -210,12 +226,12 @@ export default class CreateDeNovoAssembly extends Vue {
   loxSites: string[] = [ 'None', 'loxP', 'loxPsym', 'loxM' ]
   restrictionEnzymes: object[] = []
   vegasAdapters: object[] = []
-  terminators: object[] = []
-  promoters: object[] = []
+  terminators: string[] = []
+  promoters: string[] = []
   cds: object[] = []
   TUDirections: object[] = [ { name: 5 }, { name: 3 } ]
   isSaveAndNext: boolean = false
-  assemblyRow: object = { vegasAdapter: 'None', restrictionEnzyme: 'None', promoter: 'None', partName: 'None', terminator: 'None', strand: 5 }
+  assemblyRow: object = { vegasAdapter: 'None', restrictionEnzyme: 'None', promoters: 'None', partName: 'None', terminators: 'None', strand: 5 }
 
   denovoAssemblyForm: DenovoAssembly = {
     studyName: '',
@@ -244,6 +260,7 @@ export default class CreateDeNovoAssembly extends Vue {
     denovoAssemblyForm: HTMLFormElement
     visualizer: HTMLFormElement
     projectSelect: HTMLFormElement
+    draggableRow: any
   }
 
   get showAssemblyTable () {
@@ -252,6 +269,10 @@ export default class CreateDeNovoAssembly extends Vue {
 
   get sendData () {
     return this.denovoAssemblyForm
+  }
+
+  unsetCurrentRowTransform (i: number) {
+    this.$refs.draggableRow[i].$el.style.transform = 'unset'
   }
 
   /* submit Modal data */
@@ -341,6 +362,20 @@ export default class CreateDeNovoAssembly extends Vue {
     this.denovoAssemblyForm.closingAdapter = res.closing_adapter
   }
 
+  filterUniqItems (items: object[]): string[] {
+    let mapItems = new Map()
+    let uniqItems = []
+
+    items.forEach((p: any) => {
+      mapItems.set(p.name, p.name)
+    })
+
+    for (let value of mapItems.values()) {
+      uniqItems.push(value)
+    }
+    return uniqItems
+  }
+
   /* Add assembly row */
   addRow (index: number) {
     this.$refs['denovoAssemblyForm'].validate((valid: boolean) => {
@@ -372,7 +407,7 @@ export default class CreateDeNovoAssembly extends Vue {
   /* load Modal data -> Get list of promoters */
   getPromoters () {
     return httpService.get('query/promoterNameList')
-      .then((res: any) => { this.promoters = res.data.rows })
+      .then((res: any) => { this.promoters = this.filterUniqItems(res.data.rows) })
       .catch((err: any) => { throw new Error(err) })
   }
 
@@ -389,7 +424,7 @@ export default class CreateDeNovoAssembly extends Vue {
   /* load Modal data -> Get list of terminators */
   getTerminators () {
     return httpService.get('query/terminatorNameList')
-      .then((res: any) => { this.terminators = res.data.rows })
+      .then((res: any) => { this.terminators = this.filterUniqItems(res.data.rows) })
       .catch((err: any) => { throw new Error(err) })
   }
 

@@ -5,12 +5,12 @@
         <h3 class="text-black font-bold">Create new Study</h3>
       </el-col>
       <el-col :span="23">
-        <p v-html="modalData.dialogIntro" class="mb-8 break-word"></p>
+        <!-- <p v-html="modalData.dialogIntro" class="mb-8 break-word"></p> -->
       </el-col>
       <el-col :span="1">
         <el-popover placement="top-start" width="300" trigger="hover">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-          <div v-html="modalData.dialogInfo" class="break-word"></div>
+          <!-- <div v-html="modalData.dialogInfo" class="break-word"></div> -->
         </el-popover>
       </el-col>
     </el-row>
@@ -85,8 +85,8 @@ import { httpService } from '@/services/http.service'
 @Component({ name: 'CreateStudy' })
 
 export default class CreateStudy extends Vue {
-  @Prop({ required: true }) modalData!: DialogBase
-  @Prop({ required: true }) isLoading!: boolean
+  // @Prop({ required: true }) modalData!: DialogBase
+  // @Prop({ required: true }) isLoading!: boolean
 
   investigators: string[] = []
   collaborators: string[] = []
@@ -109,12 +109,12 @@ export default class CreateStudy extends Vue {
   }
 
   /* submit Modal data */
-  save (next?: string) {
-    this.$refs['studyForm'].validate((valid: boolean) => {
-      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
-      else return false
-    })
-  }
+  // save (next?: string) {
+  //   this.$refs['studyForm'].validate((valid: boolean) => {
+  //     if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+  //     else return false
+  //   })
+  // }
 
   /* loda Modal data */
   getCollaboratorList () {

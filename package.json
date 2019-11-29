@@ -14,11 +14,13 @@
     "element-ui": "^2.10.1",
     "html2canvas": "^1.0.0-rc.5",
     "jqwidgets-scripts": "^8.2.0",
+    "v-click-outside": "^2.1.4",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-property-decorator": "^8.2.1",
     "vue-quaggajs": "^1.0.10",
     "vue-router": "^3.0.7",
+    "vue-virtual-scroll-list": "^1.4.2",
     "vuedraggable": "^2.23.0",
     "vuex": "^3.1.1"
   },

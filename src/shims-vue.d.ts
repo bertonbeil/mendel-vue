@@ -6,3 +6,6 @@ declare module '*.vue' {
 declare module 'vuedraggable'
 declare module 'jqx'
 declare module 'vue-quaggajs'
+
+declare module 'v-click-outside'
+declare module 'vue-virtual-scroll-list'
