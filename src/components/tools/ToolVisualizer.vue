@@ -39,7 +39,7 @@
                   v-model="ToolVisualizersForm.assembly_name"
                   placeholder="Select assembly"
                   class="w-full"
-                  @change="$refs.visualizer.vizualizer(ToolVisualizersForm)"
+                  @change="getVisualizer"
                   :disabled="!ToolVisualizersForm.projectName">
                   <el-option v-for="(item,index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
                 </el-select>
@@ -47,24 +47,19 @@
             </el-col>
           </el-row>
         </el-form>
-        <el-col :span="24">
+        <el-col :span="24" v-if="isVisualised">
           <div ref="assemblyVisualizer">
-            <Visualizer ref="visualizer" />
+            <Visualizer ref="visualizer" @generateScreenshot="generateScreenshot" />
           </div>
         </el-col>
       </el-row>
 
-      <!-- Modal action buttons -->
-      <div slot="footer" class="text-center ">
-        <el-button type="danger" @click="$emit('close')">Cancel</el-button>
-        <el-button type="primary" @click="generateScreenshot">Generate</el-button>
-      </div>
-
-      <div v-if="isGeneratedScreenshot" class="mt-20 p-10 flex flex-col items-center bg-grey-light">
+      <div class="mt-20 p-10 flex flex-col items-center bg-grey-light" v-if="isGenerateVisualise">
         <h3>Visualization</h3>
         <img class='visualization-image' :src='canvasVisualizate'>
         <p class='download-visualization-link'>
-          <a class='download-link font-bold' :href='canvasVisualizate' :download="ToolVisualizersForm.assembly_name">
+          <el-button type="danger" @click="$emit('close')">Cancel</el-button>
+          <a class='download-link font-bold ml-10' :href='canvasVisualizate' :download="ToolVisualizersForm.assembly_name">
             <el-button type="primary">save</el-button>
           </a>
         </p>
@@ -78,6 +73,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { ToolVisualizers } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
 import html2canvas from 'html2canvas'
+import { warn } from 'vue-class-component/lib/util'
 
 @Component({ name: 'ToolVisualizer' })
 
@@ -87,8 +83,8 @@ export default class ToolVisualizer extends Vue {
   studyList: string[] = []
   projectList: string[] = []
   assemblyList: string[] = []
-  visualizerData: string = ''
-  isGeneratedScreenshot: boolean = false
+  isVisualised: boolean = true
+  isGenerateVisualise: boolean = false
   canvasVisualizate: string = ''
 
   ToolVisualizersForm: ToolVisualizers = {
@@ -140,25 +136,28 @@ export default class ToolVisualizer extends Vue {
       .finally(() => this.$emit('loadOff'))
   }
 
-  getVisualizerData () {
-    this.$emit('loadOn')
-    return httpService.post('query/assemblyVisualizer', this.ToolVisualizersForm)
-      .then((res: any) => { this.visualizerData = res.data.lims_response.elements })
-      .catch((err: any) => { throw new Error(err) })
-      .finally(() => this.$emit('loadOff'))
+  getVisualizer () {
+    this.$refs.visualizer.vizualizer(this.ToolVisualizersForm)
   }
 
-  generateScreenshot () {
-    this.$refs['ToolVisualizersForm'].validate((valid: boolean) => {
-      if (valid) {
-        this.$emit('loadOn')
-        html2canvas(this.$refs.assemblyVisualizer).then((canvas: any) => {
-          this.canvasVisualizate = canvas.toDataURL('image/jpeg')
-          this.isGeneratedScreenshot = true
-        }).catch((err: any) => { throw new Error(err) })
-          .finally(() => this.$emit('loadOff'))
-      }
-    })
+  generateScreenshot (isError: boolean) {
+    if (isError) {
+      this.isGenerateVisualise = false
+    } else {
+      this.$refs['ToolVisualizersForm'].validate((valid: boolean) => {
+        if (valid) {
+          this.$emit('loadOn')
+          this.isGenerateVisualise = true
+          this.isVisualised = false
+          html2canvas(this.$refs.assemblyVisualizer).then((canvas: any) => {
+            this.canvasVisualizate = canvas.toDataURL('image/jpeg')
+            this.isVisualised = true
+          })
+            .catch((err: any) => { throw new Error(err) })
+            .finally(() => this.$emit('loadOff'))
+        }
+      })
+    }
   }
 
   created () {
