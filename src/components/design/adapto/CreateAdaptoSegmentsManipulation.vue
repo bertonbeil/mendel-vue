@@ -156,7 +156,6 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   dnaSegmentList: any = []
   contiguousSeries: ContiguousSeries = 'contiguous'
 
-
   replaceRowMock = {
     study: '',
     project: '',
@@ -272,7 +271,7 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   save () {
     if (this.isActionDelete) {
       this.adaptoSegmentsManipulationForm[this.contiguousSeries] = true
-    } 
+    }
     this.$refs['segment_request'].validate((valid: boolean) => {
       if (valid) this.$emit('save', { data: this.adaptoSegmentsManipulationForm })
       else return false
