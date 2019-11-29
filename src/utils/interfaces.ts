@@ -246,7 +246,7 @@ export interface importAssembly {
 export interface ImportsCustomParts {
   projectName?: string,
   action?: string,
-  data?: string,
+  data?: '',
 }
 
 export interface ImportsSegments {

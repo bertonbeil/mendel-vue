@@ -71,7 +71,7 @@
       </div>
       <div slot="footer" v-else class="text-center">
         <el-button type="danger" @click="backToCustomParts">Cancel and back</el-button>
-        <el-button type="primary" @click="save">Submit for rewiew</el-button>
+        <el-button type="primary" :disabled="!isSaveDisabled" @click="save">Submit for rewiew</el-button>
       </div>
     </div>
   </div>
@@ -115,6 +115,14 @@ export default class ImportCustomParts extends Vue {
   /* submit Modal data */
   save () {
     this.$emit('save', { data: this.sendData })
+  }
+
+  get isSaveDisabled () {
+    return this.checkEmptyFields(this.importCustomPartsForm.data)
+  }
+
+  checkEmptyFields (data: any) {
+    return data.every((el: any) => el.marker !== '') && data.every((el: any) => el.grant !== '')
   }
 
   /* Get segment data */
