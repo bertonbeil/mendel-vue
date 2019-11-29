@@ -138,6 +138,8 @@ export interface AdaptoSegmentRequest {
 export interface AdaptoSegmentsManipulation {
   requestType?: string,
   action?: string,
+  contiguous?: boolean,
+  series?: boolean,
   segment_request?: object,
   primers_request?: object
 }
