@@ -232,7 +232,7 @@ export default class CreateEchoFile extends Vue {
     return httpService.get('query/projectAssemblyList')
       .then((res: any) => {
         this.assemblyList = res.data.rows
-      }).catch((err: any) => { console.log(err) })
+      }).catch((err: any) => { throw new Error(err) })
   }
 
   getInitialData () {

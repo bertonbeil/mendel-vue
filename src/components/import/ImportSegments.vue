@@ -262,8 +262,8 @@ export default class ImportSegments extends Vue {
       this.getRestrictionEnzymeList(),
       this.getLatestDnaDesign()
     ])
-    .catch((err: any) => { throw new Error(err) })
-    .finally(() => this.$emit('loadOff'))
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
   }
 
   created () {

@@ -85,8 +85,8 @@ import { httpService } from '@/services/http.service'
 @Component({ name: 'CreateStudy' })
 
 export default class CreateStudy extends Vue {
-  // @Prop({ required: true }) modalData!: DialogBase
-  // @Prop({ required: true }) isLoading!: boolean
+  @Prop({ required: true }) modalData!: DialogBase
+  @Prop({ required: true }) isLoading!: boolean
 
   investigators: string[] = []
   collaborators: string[] = []
@@ -109,12 +109,12 @@ export default class CreateStudy extends Vue {
   }
 
   /* submit Modal data */
-  // save (next?: string) {
-  //   this.$refs['studyForm'].validate((valid: boolean) => {
-  //     if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
-  //     else return false
-  //   })
-  // }
+  save (next?: string) {
+    this.$refs['studyForm'].validate((valid: boolean) => {
+      if (valid) this.$emit('save', { data: this.sendData }, next === 'next' ? this.modalData.saveAndNext : null)
+      else return false
+    })
+  }
 
   /* loda Modal data */
   getCollaboratorList () {

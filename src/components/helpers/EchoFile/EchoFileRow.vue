@@ -127,7 +127,7 @@ export default class EchoFileRow extends Vue {
   }
 
   get wellsUsed () {
-    return 2 * this.primerPairs
+    return this.assemblyTypeNumber * this.primerPairs
   }
 
   get numControls () {
@@ -165,7 +165,7 @@ export default class EchoFileRow extends Vue {
     this.echoRowData.segments = assembly.segments
     this.$emit('load:on')
     return httpService.post('query/assemblyType', { study: this.echoRowData.study, project: this.echoRowData.project, assembly: assembly.assembly })
-      .then((res: any) => { this.assemblyType = res.data.assembly_type })
+      .then((res: any) => { this.assemblyType = res.data.assembly_type; this.handleJunctions() })
       .catch((err) => { throw new Error(err) })
       .finally(() => this.$emit('load:off'))
   }

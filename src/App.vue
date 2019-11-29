@@ -1,6 +1,7 @@
 <template>
   <el-container id="app" class="h-full is-vertical bg">
     <router-view />
+    <div class="absolute text-grey-dark version-indicator">beta: v0.9.0</div>
   </el-container>
 </template>
 
