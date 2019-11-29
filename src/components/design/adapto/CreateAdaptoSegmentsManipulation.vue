@@ -35,6 +35,7 @@
                   v-model="segment_request.dnaDesignName"
                   placeholder="Select assembly"
                   :disabled="!segment_request.projectName"
+                  @change="handleAssemblyName"
                   class="w-full">
                   <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
                 </el-select>
@@ -109,6 +110,15 @@
           </div>
         </draggable>
       </el-row>
+
+      <el-row :gutter="20" class="mb-30" v-if="isActionDelete">
+        <el-col :span="24">
+          <el-radio-group v-model="contiguousSeries" class="flex flex-col">
+            <el-radio label="contiguous" class="my-12">Contiguous</el-radio>
+            <el-radio label="series" >Series</el-radio>
+          </el-radio-group>
+        </el-col>
+      </el-row>
     </div>
     <!-- Modal action buttons -->
     <div slot="footer" class="text-center">
@@ -130,6 +140,8 @@ import {
   AdaptoSegmentsManipulationPrimersRequest
 } from '@/utils/interfaces'
 
+type ContiguousSeries = 'contiguous' | 'series';
+
 @Component({ name: 'CreateAdaptoSegmentsManipulation' })
 
 export default class CreateAdaptoSegmentsManipulation extends Vue {
@@ -142,6 +154,7 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   actionList: string[] = [ 'Delete', 'Swap', 'Replace' ]
   customSegmentTypeList: string[] = []
   dnaSegmentList: any = []
+  contiguousSeries: ContiguousSeries = 'contiguous'
 
   replaceRowMock = {
     study: '',
@@ -218,6 +231,13 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     segment_request: HTMLFormElement
   }
 
+  handleAssemblyName () {
+    this.adaptoSegmentsManipulationForm.action = ''
+    this.segment_request.firstSegmentIdx = null
+    this.segment_request.lastSegmentIdx = null
+    this.contiguousSeries = 'contiguous'
+  }
+
   @Watch('segment_request', { deep: true })
   onChangeSegmentRequest () {
     this.primers_request.studyName = this.segment_request.studyName
@@ -237,12 +257,21 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
     return this.adaptoSegmentsManipulationForm.action === 'Replace'
   }
 
+  get isActionDelete () {
+    return this.adaptoSegmentsManipulationForm.action === 'Delete'
+  }
+
   get sendData () {
-    return this.adaptoSegmentsManipulationForm
+    if (this.isActionDelete) {
+      return { ...this.adaptoSegmentsManipulationForm, [this.contiguousSeries]: true }
+    } else return this.adaptoSegmentsManipulationForm
   }
 
   /* submit Modal data */
   save () {
+    if (this.isActionDelete) {
+      this.adaptoSegmentsManipulationForm[this.contiguousSeries] = true
+    }
     this.$refs['segment_request'].validate((valid: boolean) => {
       if (valid) this.$emit('save', { data: this.adaptoSegmentsManipulationForm })
       else return false
@@ -253,7 +282,10 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
   getStudyList () {
     this.$emit('loadOn')
     return httpService.get('query/studyNameList')
-      .then((res: any) => { this.studyList = res.data.rows })
+      .then((res: any) => {
+        this.studyList = res.data.rows
+        this.contiguousSeries = 'contiguous'
+      })
       .catch((err: any) => { throw new Error(err) })
   }
 
@@ -283,6 +315,7 @@ export default class CreateAdaptoSegmentsManipulation extends Vue {
         this.adaptoSegmentsManipulationForm.requestType = ''
         this.adaptoSegmentsManipulationForm.action = ''
         this.assemblyList = res.data.rows
+        this.contiguousSeries = 'contiguous'
       })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))

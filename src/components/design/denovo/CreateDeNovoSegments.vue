@@ -36,7 +36,7 @@
             <el-form-item label="Assembly name:" prop="dnaDesignName">
               <el-select
                 v-model="denovoSegmentForm.dnaDesignName"
-                @change="[getRestrictionEnzymeList(), latestDnaDesign()]"
+                @change="getRestrictionEnzymeList()"
                 :disabled="!denovoSegmentForm.projectName"
                 placeholder="Select assembly"
                 class="w-full">
@@ -276,7 +276,7 @@ export default class CreateDeNovoSegments extends Vue {
   }
 
   getInitialData () {
-    this.getStudyList()
+    Promise.all([this.getStudyList(), this.latestDnaDesign()])
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {
           this.isSaveAndNext = true

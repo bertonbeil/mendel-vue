@@ -234,10 +234,6 @@ export default new Vuex.Store({
         submitUrl: 'grantDesigner'
       },
       {
-        component: 'GrantCreateModify',
-        title: 'Create/Modify Grant'
-      },
-      {
         component: 'GrantsForUser',
         dialogIntro: 'Assign Grants for User',
         title: 'Grants for User',

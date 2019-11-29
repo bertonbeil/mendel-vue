@@ -39,6 +39,7 @@
           @load:off="$emit('loadOff')"
           class="echo-file-row p-15"
           :row-data.sync="tableData[index]"
+          :row-wells-used.sync="tableData[index].wellsUsed"
           :row-data-index="index"
           :study-list='studyList'
           :assembly-list="assemblyList"
@@ -84,7 +85,6 @@ export default class CreateEchoFile extends Vue {
   assemblyList: any = []
   primers: string[] = []
   assemblies: any = []
-  // totalWellsUsed: number = 0
   rowIndex: number = 0
 
   tableData: Array<EchoFileAssemblyRow> = [ {

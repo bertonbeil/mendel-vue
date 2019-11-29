@@ -45,7 +45,9 @@
                   size="large"
                   v-model="CreateModifyGrantForm.startDate"
                   type="date"
-                  placeholder="dd.mm.yyyy">
+                  placeholder="dd.mm.yyyy"
+                  format="yyyy/MM/dd"
+                  value-format="yyyy-MM-dd">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -55,7 +57,9 @@
                   size="large"
                   v-model="CreateModifyGrantForm.endDate"
                   type="date"
-                  placeholder="dd.mm.yyyy">
+                  placeholder="dd.mm.yyyy"
+                  format="yyyy/MM/dd"
+                  value-format="yyyy-MM-dd">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -122,10 +126,10 @@ export default class GrantCreateModifyGrant extends Vue {
     purchaseOrder: '',
     startDate: '',
     endDate: '',
-    idtAmount: 0,
-    idtSpentAmount: 0,
-    qlAmount: 0,
-    qlSpentAmount: 0
+    idtAmount: '',
+    idtSpentAmount: '',
+    qlAmount: '',
+    qlSpentAmount: ''
   }
 
   $refs!: {
@@ -177,24 +181,6 @@ export default class GrantCreateModifyGrant extends Vue {
       else return false
     })
   }
-
-  // isTheSameString (oldString: string, newString: string) {
-  //   return JSON.stringify(this.localCopyForm) === JSON.stringify(this.CreateModifyGrantForm)
-  // }
-
-  // @Watch('CreateModifyGrantForm', { deep: true })
-  // handleFormChange () {
-  //   if (this.isTheSameString && this.isAlreadyExist) {
-  //     this.isCreate = false
-  //     this.isUpdate = false
-  //   } else if (!this.isTheSameString && !this.isAlreadyExist) {
-  //     this.isUpdate = false
-  //     this.isCreate = true
-  //   } else {
-  //     this.isUpdate = true
-  //     this.isCreate = true
-  //   }
-  // }
 
   @Watch('CreateModifyGrantForm.name')
   handleGrantName (inputNameGrant: any) {

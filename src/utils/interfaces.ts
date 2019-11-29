@@ -138,6 +138,8 @@ export interface AdaptoSegmentRequest {
 export interface AdaptoSegmentsManipulation {
   requestType?: string,
   action?: string,
+  contiguous?: boolean,
+  series?: boolean,
   segment_request?: object,
   primers_request?: object
 }
@@ -244,7 +246,7 @@ export interface importAssembly {
 export interface ImportsCustomParts {
   projectName?: string,
   action?: string,
-  data?: string,
+  data?: '',
 }
 
 export interface ImportsSegments {
@@ -391,10 +393,10 @@ export interface CreateModifyGrant {
   purchaseOrder?: string
   startDate?: string
   endDate?: string
-  idtAmount?: number
-  idtSpentAmount?: number
-  qlAmount?: number
-  qlSpentAmount?: number
+  idtAmount?: string
+  idtSpentAmount?: string
+  qlAmount?: string
+  qlSpentAmount?: string
 }
 
 export interface GrantsUsersForGrantForm {
