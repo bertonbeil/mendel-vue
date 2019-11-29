@@ -393,10 +393,10 @@ export interface CreateModifyGrant {
   purchaseOrder?: string
   startDate?: string
   endDate?: string
-  idtAmount?: number
-  idtSpentAmount?: number
-  qlAmount?: number
-  qlSpentAmount?: number
+  idtAmount?: string
+  idtSpentAmount?: string
+  qlAmount?: string
+  qlSpentAmount?: string
 }
 
 export interface GrantsUsersForGrantForm {
