@@ -20,11 +20,15 @@ class HttpService {
 
   public getUrl (relativeUrl: string): string {
     relativeUrl = this.removeLeadingSlash(relativeUrl)
-    return `${process.env.VUE_APP_API_URL}/${relativeUrl}`
+    return `${this.env}/${relativeUrl}`
   }
 
   private removeLeadingSlash (url: string) {
     return url.charAt(0) === '/' ? url.substr(1) : url
+  }
+
+  private get env () {
+    return process.env.NODE_ENV === 'development' ? process.env.VUE_APP_API_URL : ''
   }
 }
 

@@ -155,7 +155,7 @@
                 </el-select>
               </el-col>
               <el-col :span="4">
-                <VirtualSelect :items="promoters" @click.native="unsetCurrentRowTransform(i)" v-model="denovoAssemblyForm.parts[i].promoters" size="mini"></VirtualSelect>
+                <VirtualSelect :items="promoters" @click.native="unsetCurrentRowTransform(i)" v-model="denovoAssemblyForm.parts[i].promoter" size="mini"></VirtualSelect>
               </el-col>
               <el-col :span="4">
                 <el-select v-model="denovoAssemblyForm.parts[i].partName" class="w-full outline-none" size="mini">
@@ -168,7 +168,7 @@
                 </el-select>
               </el-col>
               <el-col :span="4">
-                <VirtualSelect :items="terminators" @click.native="unsetCurrentRowTransform(i)"  v-model="denovoAssemblyForm.parts[i].terminators" size="mini"></VirtualSelect>
+                <VirtualSelect :items="terminators" @click.native="unsetCurrentRowTransform(i)"  v-model="denovoAssemblyForm.parts[i].terminator" size="mini"></VirtualSelect>
               </el-col>
               <el-col :span="2">
                 <el-select v-model="denovoAssemblyForm.parts[i].strand" class="w-full outline-none" size="mini">
@@ -200,7 +200,7 @@
       <el-button type="danger" @click="$emit('close')">Cancel</el-button>
       <el-button type="success" @click="save('next')">Save and Next</el-button>
       <el-button type="primary" @click="save">Save</el-button>
-      <el-button type="warning" @click="$refs.visualizer.vizualizer(denovoAssemblyForm)">Visualize</el-button>
+      <el-button type="warning" @click="$refs.visualizer.vizualizer(denovoAssemblyForm)" :disabled="denovoAssemblyForm.parts.length === 0">Visualize</el-button>
     </div>
     <!-- Assembly visualizer -->
     <Visualizer ref="visualizer" />
@@ -231,7 +231,7 @@ export default class CreateDeNovoAssembly extends Vue {
   cds: object[] = []
   TUDirections: object[] = [ { name: 5 }, { name: 3 } ]
   isSaveAndNext: boolean = false
-  assemblyRow: object = { vegasAdapter: 'None', restrictionEnzyme: 'None', promoters: 'None', partName: 'None', terminators: 'None', strand: 5 }
+  assemblyRow: object = { vegasAdapter: 'None', restrictionEnzyme: 'None', promoter: 'None', partName: 'None', terminator: 'None', strand: 5 }
 
   denovoAssemblyForm: DenovoAssembly = {
     studyName: '',
@@ -360,6 +360,8 @@ export default class CreateDeNovoAssembly extends Vue {
     this.denovoAssemblyForm.organism = res.organism
     this.denovoAssemblyForm.lox = res.lox
     this.denovoAssemblyForm.closingAdapter = res.closing_adapter
+    console.log('parts: ', parts)
+    // this.denovoAssemblyForm.parts = parts
   }
 
   filterUniqItems (items: object[]): string[] {
