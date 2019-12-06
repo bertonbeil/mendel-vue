@@ -208,12 +208,6 @@ export default class CreateAdaptoSegments extends Vue {
     well: 'A1'
   }
 
-  adaptoSegmentForm: object = {
-    requestType: 'AdaptoSegmentRequest',
-    segment_request: this.segmentRequest,
-    primers_request: this.primersRequest
-  }
-
   rules: object = {
     studyName: [ { required: true, message: 'Study name is required' } ],
     projectName: [ { required: true, message: 'Project name is required' } ],
@@ -232,7 +226,11 @@ export default class CreateAdaptoSegments extends Vue {
   }
 
   get sendData () {
-    return this.adaptoSegmentForm
+    return {
+      requestType: 'AdaptoSegmentRequest',
+      segment_request: this.segmentRequest,
+      primers_request: { studyName: this.segmentRequest.studyName, projectName: this.segmentRequest.projectName, ...this.primersRequest }
+    }
   }
 
   /* submit Modal data */
