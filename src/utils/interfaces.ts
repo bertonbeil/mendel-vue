@@ -61,6 +61,7 @@ export interface DenovoSegment {
   studyName?: string
   projectName?: string
   dnaDesignName?: string
+  createNewAssembly?: boolean
   assemblyVectorName?: string
   maxLen?: number
   minLen?: number
@@ -120,6 +121,7 @@ export interface AdaptoAssembly {
 export interface AdaptoSegmentRequest {
   studyName?: string
   projectName?: string
+  createNewAssembly?: boolean
   assemblyVectorName?: string
   dnaDesignName?: string
   assembly?: string

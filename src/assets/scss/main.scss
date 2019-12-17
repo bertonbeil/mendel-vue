@@ -1,3 +1,6 @@
+// @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap');
+
 @tailwind base;
 
 /* Utils files ----------------------------------------
@@ -5,6 +8,7 @@
 @import "utils/_variables";
 @import "utils/_element-reset";
 @import "utils/jqx-menu-vertical-reset";
+@import "utils/_element-theme.config";
 
 /* Base files ----------------------------------------
  ----------------------------------------------------- */

@@ -53,7 +53,7 @@
             <p class="break-normal">Select options for this segmentation, such as assembly vector to be used and any desired flanking restriction sites.</p>
           </el-col>
 
-          <el-col :span="12" class="mb-30">
+          <el-col :span="8" class="mb-30">
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Assembly vector:
               <el-popover class="absolute top-0 right-0" placement="top-start" width="300" trigger="hover">
                 <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
@@ -68,7 +68,11 @@
               </el-radio-group>
             </div>
           </el-col>
-          <el-col :span="12" class="mb-30">
+          <el-col :span="8" class="mb-30">
+            <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Create new assembly version</h4>
+            <el-switch v-model="segmentRequest.createNewAssembly"></el-switch>
+          </el-col>
+          <el-col :span="8" class="mb-30">
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Upload .bed formatted mask file:</h4>
             <UploadFile :dna-sequence.sync="segmentRequest.mask" :updateImmediately='true' :accept='".bed"' />
           </el-col>
@@ -175,6 +179,7 @@ export default class CreateAdaptoSegments extends Vue {
   segmentRequest: AdaptoSegmentRequest = {
     studyName: '',
     projectName: '',
+    createNewAssembly: true,
     assemblyVectorName: 'URA3',
     dnaDesignName: this.dnaDesignName,
     assembly: this.dnaDesignName,

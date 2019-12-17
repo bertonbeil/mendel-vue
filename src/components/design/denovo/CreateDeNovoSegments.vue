@@ -113,6 +113,11 @@
             <el-input-number v-model="assemblyLength" class="w-full" disabled></el-input-number>
           </el-col>
 
+          <el-col :span="24" class="mt-30">
+            <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Create new assembly version</h4>
+            <el-switch v-model="denovoSegmentForm.createNewAssembly"></el-switch>
+          </el-col>
+
           <el-col :span="24" class="my-30">
             <h4 class="text-xl text-black mt-3">Segment parameters</h4>
             <p class="break-normal">You can define parameters for segmentation here. The defaults should work for most loci to minimize number of segments and maximize efficiency of assembly.</p>
@@ -176,6 +181,7 @@ export default class CreateDeNovoSegments extends Vue {
     studyName: '',
     projectName: '',
     dnaDesignName: '',
+    createNewAssembly: false,
     assemblyVectorName: `${this.assemblyVector.yeastMarker},${this.assemblyVector.bacterialCopy}`,
     maxLen: 5000,
     minLen: 600,
@@ -259,7 +265,7 @@ export default class CreateDeNovoSegments extends Vue {
 
   latestDnaDesign () {
     this.$emit('loadOn')
-    return httpService.get('query/latestDnaDesign', { study: this.denovoSegmentForm.studyName, project: this.denovoSegmentForm.projectName })
+    return httpService.get('query/latestDnaDesign')
       .then((res: any) => {
         res.data.rows.filter((i: any) => {
           if (i.name === this.denovoSegmentForm.dnaDesignName) this.assemblyLength = i.value.length
