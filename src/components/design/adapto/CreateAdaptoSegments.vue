@@ -57,7 +57,7 @@
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Assembly vector:
               <el-popover class="absolute top-0 right-0" placement="top-start" width="300" trigger="hover">
                 <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
-                <div class="break-word">All vectors are kanamycin resistant for bacterial selection, and are inducible to high copy number in bacteria for isolation. All contain CEN/ARS for low copy yeast maintenance.</div>
+                <div class="break-word test">All vectors are kanamycin resistant for bacterial selection, and are inducible to high copy number in bacteria for isolation. All contain CEN/ARS for low copy yeast maintenance.</div>
               </el-popover>
             </h4>
             <div class="flex items-center mt-10">
@@ -70,7 +70,10 @@
           </el-col>
           <el-col :span="8" class="mb-30">
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Create new assembly version</h4>
-            <el-switch v-model="segmentRequest.createNewAssembly"></el-switch>
+            <el-switch
+            v-model="segmentRequest.createNewAssembly"
+            active-color="#8900e1"
+            inactive-color="#b8b8b8"></el-switch>
           </el-col>
           <el-col :span="8" class="mb-30">
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Upload .bed formatted mask file:</h4>

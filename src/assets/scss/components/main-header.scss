@@ -1,0 +1,28 @@
+.el-dropdown-menu {
+  border-radius: 0;
+
+  &__item--divided {
+    &::before {
+      background-color: #f2f2f2;
+    }
+  }
+
+}
+
+.el-popper[x-placement^="bottom"] {
+  border-radius: 0;
+  &.header-dropdown {
+    .popper__arrow::after {
+      border-bottom-color: #57068c;
+    }
+  }
+}
+.el-dropdown-menu__item:focus, 
+.el-dropdown-menu__item:not(.is-disabled):hover {
+  background-color: rgb(70, 5, 112);
+  color: #fff;
+}
+
+.el-dropdown-menu__item--divided {
+  border-top: none;
+}

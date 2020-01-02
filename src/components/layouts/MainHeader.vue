@@ -1,5 +1,5 @@
 <template>
-<el-menu text-color="#000" class="el-menu-demo px-20" mode="horizontal">
+<el-menu class="el-menu-demo px-20" background-color="#57068c" text-color="#fff" active-text-color="#fff" mode="horizontal">
   <el-menu-item class="pl-0">Mendel@ISG</el-menu-item>
 
   <!-- Main nav -->
@@ -23,18 +23,27 @@
     v-if="userInfo.id !== ''"
     :hide-on-click="false"
     placement="bottom-end"
-    class="float-right py-10">
-    <span class="el-dropdown-link">
+    trigger="click"
+    class="test float-right py-10 bg-purple">
+    <span class="el-dropdown-link text-white">
       <span class="inline-flex items-center justify-center w-40 h-40 rounded-full bg-grey mr-10">
         <i class="el-icon-user"></i>
       </span>
       {{ userInfo.id }}
       <i class="el-icon-arrow-down el-icon--right"></i>
     </span>
-    <el-dropdown-menu slot="dropdown">
-      <el-dropdown-item v-if="user.role = 'admin'">Debug mode <el-switch class="ml-15" @click.native="$store.dispatch('toggleDebugMode')" :value="debugMode"></el-switch> </el-dropdown-item>
-      <el-dropdown-item disabled>User Info</el-dropdown-item>
-      <el-dropdown-item divided @click.native="logOut">Log Out</el-dropdown-item>
+    <el-dropdown-menu slot="dropdown" class="bg-purple header-dropdown">
+      <el-dropdown-item v-if="user.role = 'admin'" class="text-white hover:bg-white">Debug mode
+        <el-switch
+        class="ml-15"
+        @click.native="$store.dispatch('toggleDebugMode')"
+        :value="debugMode"
+        active-color="#330662"
+        inactive-color="#b8b8b8"
+        ></el-switch>
+        </el-dropdown-item>
+      <el-dropdown-item disabled class="text-white">User Info</el-dropdown-item>
+      <el-dropdown-item divided class="text-white" @click.native="logOut">Log Out</el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
 

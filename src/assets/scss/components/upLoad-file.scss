@@ -1,14 +1,13 @@
 .upLoad-file-input {
     color: #FFF;
-    background-color: #409EFF;
-    border-color: #409EFF;
+    background-color: #3dbbdb;
+    border-color: #3dbbdb;
     text-align: center;
     cursor: pointer;
     font-size: 15px;
-    border-radius: 4px;
     padding: 5px 10px;
 
     &:hover {
-        background-color: rgba(64, 160, 255, 0.726)
+        background-color: #41caec;
     }
 }

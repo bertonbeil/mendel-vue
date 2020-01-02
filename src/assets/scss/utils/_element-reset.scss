@@ -120,11 +120,13 @@
 
 .el-menu--horizontal {
   .el-menu-item:hover {
-    background-color: #ccc;
+    background-color: #57068c;
+    color: #6d6d6d;
   }
   > .el-submenu.is-active .el-submenu__title {
     border-bottom: none;
   }
+
 }
 
 @mixin breakWordAll {
@@ -167,6 +169,7 @@
 .el-loading-spinner {
   display: flex;
   justify-content: center;
+
 }
 
 .break-word {
@@ -178,8 +181,60 @@
 }
 
 .el-message-box {
-
+  border-radius: 0;
   &__message > p {
     overflow-wrap: break-word;
   }
+}
+
+.el-input-number__decrease:hover, 
+.el-input-number__increase:hover {
+color: #57068c;
+}
+
+.el-input-number__decrease:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled), 
+.el-input-number__increase:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled) {
+  border-color: #57068c !important;
+}
+.el-scrollbar__bar {
+
+  .el-scrollbar {
+    &__thumb {
+      background-color: #57068c;
+    }
+  }
+}
+
+.el-radio-button__orig-radio:checked+.el-radio-button__inner {
+  background-color: #8900e1;
+  border-color: #8900e1;
+  box-shadow: none;
+}
+
+.el-radio-button {
+  border-radius: 0;
+
+  &__inner {
+
+    &:hover {
+      color: #57068c;
+    }
+  }
+  
+  &:first-child,
+  &:last-child {
+
+    .el-radio-button__inner {
+      border-radius: 0;
+    }
+  } 
+}
+
+.el-popover {
+  .test {
+    border-radius: 0;
+  }
+}
+.el-popover.el-popper {
+  border-radius: 0
 }

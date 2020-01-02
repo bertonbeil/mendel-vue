@@ -115,7 +115,10 @@
 
           <el-col :span="24" class="mt-30">
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Create new assembly version</h4>
-            <el-switch v-model="denovoSegmentForm.createNewAssembly"></el-switch>
+            <el-switch
+            v-model="denovoSegmentForm.createNewAssembly"
+            active-color="#8900e1"
+            inactive-color="#b8b8b8"></el-switch>
           </el-col>
 
           <el-col :span="24" class="my-30">
