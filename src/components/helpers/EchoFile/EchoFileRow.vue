@@ -18,41 +18,41 @@
         <el-option v-for="(item, i) in assemblySelectList" :key="i" :label="item.assembly" :value="item.assembly"></el-option>
       </el-select>
     </div>
-    <div class="w-60 mr-20 flex h-40 items-center relative">
+    <div class="w-70 mr-20 flex h-40 items-center relative">
       <div v-if="rowDataIndex === 0" class="table-heading">Quadrant</div>
       <EchoQuadrant :activeCell='echoRowData.location' class="mr-20 flex h-40 items-center relative" />
     </div>
     <div class="w-85 flex-shrink-0 mr-20 flex h-40 items-center relative">
-      <div v-if="rowDataIndex === 0" class="table-heading">Templates
-        <el-popover placement="top" width="320" trigger="hover" content="Number of template colonies to be tested.">
+      <div v-if="rowDataIndex === 0" class="table-heading flex">Templates
+        <el-popover class="break-word" placement="top" width="320" trigger="hover" content="Number of template colonies to be tested.">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
         </el-popover>
       </div>
       <el-input v-model.number="echoRowData.templates" size="small" :disabled="echoRowData.name === ''"></el-input>
     </div>
     <div class="w-70 mr-20 flex h-40 items-center justify-center relative">
-      <div v-if="rowDataIndex === 0" class="table-heading w-full text-center">Segments</div>
+      <div v-if="rowDataIndex === 0" class="table-heading w-full text-center flex">Segments</div>
       {{echoRowData.segments}}
     </div>
     <div class="w-70 h-40 flex items-center justify-center relative">
-      <div v-if="rowDataIndex === 0" class="table-heading w-full text-center">Neg Ctrl
-        <el-popover placement="top" width="320" trigger="hover" content="genomic DNA prepped from yeast carrying an empty vector control.">
+      <div v-if="rowDataIndex === 0" class="table-heading w-full text-center flex">Neg Ctrl
+        <el-popover class="break-word" placement="top" width="320" trigger="hover" content="genomic DNA prepped from yeast carrying an empty vector control.">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
         </el-popover>
       </div>
       <el-checkbox v-model="echoRowData.negativeCtrl"></el-checkbox>
     </div>
     <div class="w-70 h-40 flex items-center justify-center relative">
-      <div v-if="rowDataIndex === 0" class="table-heading w-full text-center">Pos Ctrl
-        <el-popover placement="top" width="320" trigger="hover" content="Gibson reaction of all the parts in the assembly including the vector.">
+      <div v-if="rowDataIndex === 0" class="table-heading w-full text-center flex">Pos Ctrl
+        <el-popover class="break-word" placement="top" width="320" trigger="hover" content="Gibson reaction of all the parts in the assembly including the vector.">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
         </el-popover>
       </div>
       <el-checkbox v-model="echoRowData.positiveCtrl"></el-checkbox>
     </div>
     <div class="w-70 h-40 flex items-center justify-center relative">
-      <div v-if="rowDataIndex === 0" class="table-heading w-full text-center">H20 Ctrl
-        <el-popover placement="top" width="320" trigger="hover" content="No DNA control.">
+      <div v-if="rowDataIndex === 0" class="table-heading w-full text-center flex">H20 Ctrl
+        <el-popover class="break-word" placement="top" width="320" trigger="hover" content="No DNA control.">
           <i slot="reference" class="el-icon-info cursor-pointer text-green"></i>
         </el-popover>
       </div>

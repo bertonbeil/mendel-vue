@@ -12,7 +12,7 @@
               :name="item"
               @click.native="selectItem(item)"
               class="pl-20 py-5 vitrual-select__dropdown-item"
-              :class="{'text-blue-azure font-bold': item === selectedItem}" />
+              :class="{'text-purple font-bold': item === selectedItem}" />
           </virtual-list>
       </div>
     </transition>

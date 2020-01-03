@@ -187,10 +187,21 @@
   }
 }
 
-.el-input-number__decrease:hover, 
-.el-input-number__increase:hover {
-color: #57068c;
+.el-input-number {
+
+  &__decrease,
+  &__increase {
+    background-color: #d6d6d6;
+    border-radius: 0;
+  }
+
+  &__decrease:hover,
+  &__increase:hover {
+    color: white;
+    background-color: #8900e1;
+  }
 }
+
 
 .el-input-number__decrease:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled), 
 .el-input-number__increase:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled) {
@@ -237,4 +248,18 @@ color: #57068c;
 }
 .el-popover.el-popper {
   border-radius: 0
+}
+
+.el-dialog__headerbtn {
+  .el-dialog__close {
+    color: #8900e1;
+  }
+
+  &:hover .el-dialog__close {
+    color: #330662;
+  }
+}
+
+.el-loading-spinner .path {
+  stroke: #57068c;
 }

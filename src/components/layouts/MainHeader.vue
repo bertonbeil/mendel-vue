@@ -38,7 +38,7 @@
         class="ml-15"
         @click.native="$store.dispatch('toggleDebugMode')"
         :value="debugMode"
-        active-color="#330662"
+        active-color="#8900e1"
         inactive-color="#b8b8b8"
         ></el-switch>
         </el-dropdown-item>

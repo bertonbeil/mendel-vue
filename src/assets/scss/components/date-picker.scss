@@ -1,0 +1,24 @@
+.el-date-picker {
+  &__header * {
+    &:hover {
+      color: #8900e1;
+    }
+  }
+} 
+
+.el-date-table {
+  &__row {
+    td.available {
+      &:hover {
+        color: #57068c;
+      }
+    }
+    .available.today div span {
+      color: #57068c;
+    }
+  }
+  td.current:not(.disabled) span {
+    color: #fff;
+    background-color: #57068c;
+  }
+} 

@@ -1,0 +1,94 @@
+.jqx-rc-all {
+  border-radius: 0;
+  border-color: #fff;
+}
+
+.jqx-rc-all.jqx-widget-content{
+  border-color: #57068c;
+  border-radius: 0;
+}
+
+.jqx-button.filterbutton,
+.jqx-button.filterclearbutton {
+  background-color: #57068c;
+  color: #fff;
+  border: none;
+  border-radius: 0;
+
+  &:hover {
+    background-color: #330662;
+  }
+
+  * {
+    border-radius: 0;
+  }
+}
+
+
+
+.jqx-widget-header {
+  background-color: #8900e1;
+  color: #fff;
+}
+
+.jqx-grid-cell-alt {
+  background-color: #8b00e157;
+  columns: #000000;
+}
+
+.jqx-grid-cell {
+  &:hover{
+    background-color: #8900e1;
+    color: #fff;
+    cursor: pointer;
+  }
+}
+
+.jqx-fill-state-pressed {
+  background-color: #8900e1;
+  color: #fff;
+  cursor: pointer;
+}
+
+.jqx-input {
+  color: #000000;
+}
+
+.jqx-grid-cell-sort {
+  background-color: #8b00e198;
+  color: #fff;
+}
+
+.jqx-grid-column-header {
+  .jqx-widget-header-energyblue {
+    background-color: white;
+    margin-left: -16px;
+  }
+}
+
+.jqx-button, .jqx-dropdownlist {
+  -webkit-appearance: inherit;
+  background-color: #fff;
+  border-color: #57068c;
+  &:hover {
+    background-color: #8900e1;
+    border-color: #fff;
+  }
+}
+
+.jqx-menu, .jqx-menu-ul {
+  background-color: #fff;
+  color: #57068c;
+}
+
+.jqx-scrollbar-state-normal {
+  background-color: white;
+  border-left-color: #57068c;
+}
+
+.jqx-dropdownlist-content {
+  color: #330662;
+  &:hover {
+    color: #fff;
+  }
+}

@@ -7,7 +7,6 @@
         position: relative;
         background-color: #FFF;
         background-image: none;
-        border-radius: 4px;
         border: 1px solid #DCDFE6;
         box-sizing: border-box;
         color: #606266;
@@ -38,7 +37,7 @@
     }
 
     .open {
-        border-color: #409EFF;
+        border-color: #57068c;
     }
 
     &__dropdown {
@@ -48,7 +47,6 @@
         z-index: 1000;
         font-size: 14px;
         padding: 5px 1px 5px;
-        border-radius: 5px;
         box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
         border: 1px solid #E4E7ED;
         height: auto;
@@ -117,7 +115,7 @@
         }
 
         &::-webkit-scrollbar-thumb {
-            background-color: rgba(144, 147, 153, 0.212);
+            background-color: #57068c;
             border-radius: 4px;
             cursor: pointer;
 
