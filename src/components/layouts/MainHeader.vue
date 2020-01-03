@@ -23,7 +23,7 @@
     v-if="userInfo.id !== ''"
     :hide-on-click="false"
     placement="bottom-end"
-    trigger="click"
+    trigger="hover"
     class="test float-right py-10 bg-purple">
     <span class="el-dropdown-link text-white">
       <span class="inline-flex items-center justify-center w-40 h-40 rounded-full bg-grey mr-10">
