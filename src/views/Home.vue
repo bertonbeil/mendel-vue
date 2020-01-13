@@ -22,7 +22,7 @@
         @close="handleClose">
       </component>
 
-      <div v-if="$store.state.debugMode && $refs.modalRef && $refs.modalRef.sendData" class="w-full fixed bottom-0 left-0 bg-white z-10">
+      <div v-if="$store.state.debugMode && $refs.modalRef && $refs.modalRef.sendData" class="w-full fixed bottom-0 border-t border-purple-light left-0 bg-white z-10">
         <el-collapse accordion class="max-h-450" v-model="isDebugerActive">
           <el-collapse-item title="Debug" name="isActive" class="pl-10">
             <pre class="pr-10" :class="{'overflow-y-auto max-h-400': isDebugerActive}" >{{ $refs.modalRef.sendData }}</pre>
