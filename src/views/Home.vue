@@ -29,6 +29,7 @@
           </el-collapse-item>
         </el-collapse>
       </div>
+      <div v-if="showVirtualSelect" @click="$store.dispatch('toggleVirtualSelect')" class="absolute h-full w-full top-0 left-0 z-index-999"></div>
     </el-dialog>
   </div>
 </template>
@@ -68,6 +69,10 @@ export default class Home extends Vue {
 
   get debugMode () {
     return this.$store.state.debugMode
+  }
+
+  get showVirtualSelect () {
+    return this.$store.state.isVirtualSelectOpen
   }
 
   /* open root Modal with passed prop */

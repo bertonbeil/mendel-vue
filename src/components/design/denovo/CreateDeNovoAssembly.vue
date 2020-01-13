@@ -133,7 +133,7 @@
           </el-row>
 
           <draggable class="p-3" v-model="denovoAssemblyForm.parts">
-            <el-row :gutter="20" class="flex items-center py-10 border-0 border-t border-solid border-grey cursor-pointer" v-for="(assembly, i) in denovoAssemblyForm.parts" :key="i" ref="draggableRow">
+            <el-row :gutter="20" class="flex items-center py-10 border-0 border-t border-solid border-purple cursor-pointer" v-for="(assembly, i) in denovoAssemblyForm.parts" :key="i" ref="draggableRow">
               <el-col :span="4">
                 <el-select v-model="denovoAssemblyForm.parts[i].vegasAdapter" class="w-full outline-none" size="mini">
                   <el-option

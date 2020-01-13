@@ -1,22 +1,22 @@
 <template>
-  <div class="vitrual-select" v-click-outside="closeDropdown">
-    <div class='vitrual-select__input' :class="selectClasses" @click="isShowDropdown = !isShowDropdown" ref="virtualSelectInput">
-      {{selectedItem ? selectedItem : 'None'}}
-      <i class="el-icon-arrow-down vitrual-select__input-icon " :class="{ 'up' :isShowDropdown}"></i>
-    </div>
-    <transition name="el-fade-in">
-        <div class="vitrual-select__dropdown" v-if="isShowDropdown" :class="dropdownPosition">
-          <virtual-list :size="20" :remain="10" :start="startPosition" class="vitrual-select__virtual-list bg-white">
-            <virtual-list-item v-for="item of items"
-              :key="item"
-              :name="item"
-              @click.native="selectItem(item)"
-              class="pl-20 py-5 vitrual-select__dropdown-item"
-              :class="{'text-purple font-bold': item === selectedItem}" />
-          </virtual-list>
+    <div class="vitrual-select" v-click-outside="closeDropdown">
+      <div class='vitrual-select__input' :class="selectClasses" @click="toggleDropdown" ref="virtualSelectInput">
+        {{selectedItem ? selectedItem : 'None'}}
+        <i class="el-icon-arrow-down vitrual-select__input-icon " :class="{ 'up' :isShowDropdown}"></i>
       </div>
-    </transition>
-  </div>
+      <transition name="el-fade-in">
+          <div class="vitrual-select__dropdown" v-if="isShowDropdown" :class="dropdownPosition">
+            <virtual-list :size="20" :remain="10" :start="startPosition" class="vitrual-select__virtual-list bg-white">
+              <virtual-list-item v-for="item of items"
+                :key="item"
+                :name="item"
+                @click.native="selectItem(item)"
+                class="pl-20 py-5 vitrual-select__dropdown-item"
+                :class="{'text-purple font-bold': item === selectedItem}" />
+            </virtual-list>
+        </div>
+      </transition>
+    </div>
 </template>
 
 <script lang="ts">
@@ -66,6 +66,11 @@ export default class VirtualSelect extends Vue {
     return this.getHeightBtwSelectAndBottom() < this.maxDropdownHeight
   }
 
+  toggleDropdown () {
+    this.isShowDropdown = !this.isShowDropdown
+    this.$store.dispatch('toggleVirtualSelect')
+  }
+
   closeDropdown () {
     this.isShowDropdown = false
   }
@@ -73,6 +78,7 @@ export default class VirtualSelect extends Vue {
   selectItem (selectedItem: string) {
     this.$emit('input', selectedItem)
     this.closeDropdown()
+    this.$store.dispatch('toggleVirtualSelect')
   }
 }
 </script>

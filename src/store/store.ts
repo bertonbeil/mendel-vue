@@ -13,6 +13,7 @@ export default new Vuex.Store({
       id: '',
       role: ''
     },
+    isVirtualSelectOpen: false,
     modalDataList: [
       {
         component: 'CreateStudy',
@@ -254,6 +255,10 @@ export default new Vuex.Store({
 
     set_user (state, value) {
       state.user = value
+    },
+
+    open_virtualSelect (state, value) {
+      state.isVirtualSelectOpen = value
     }
   },
 
@@ -261,7 +266,9 @@ export default new Vuex.Store({
     toggleDebugMode ({ commit, state }) {
       commit('set_debugMode', !state.debugMode)
     },
-
+    toggleVirtualSelect ({ commit, state }) {
+      commit('open_virtualSelect', !state.isVirtualSelectOpen)
+    },
     manageAuth ({ commit }) {
       httpService.get('query/whoAmI')
         .then((res: any) => {

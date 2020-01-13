@@ -1,6 +1,6 @@
 <template>
-<el-menu class="el-menu-demo px-20" background-color="#57068c" text-color="#fff" active-text-color="#fff" mode="horizontal">
-  <el-menu-item class="pl-0">Mendel@ISG</el-menu-item>
+<el-menu class="el-menu-demo px-20 " background-color="#57068c" text-color="#fff" active-text-color="#fff" mode="horizontal">
+  <el-menu-item>Mendel@ISG</el-menu-item>
 
   <!-- Main nav -->
   <el-submenu v-for="(topMenu, menuIndex) in defineMenu" :key="menuIndex" :index="topMenu.menuTitle" :disabled="topMenu.disabled">
@@ -24,7 +24,7 @@
     :hide-on-click="false"
     placement="bottom-end"
     trigger="hover"
-    class="test float-right py-10 bg-purple">
+    class="test float-right py-10 pr-20 bg-purple">
     <span class="el-dropdown-link text-white">
       <span class="inline-flex items-center justify-center w-40 h-40 rounded-full bg-grey mr-10">
         <i class="el-icon-user"></i>
