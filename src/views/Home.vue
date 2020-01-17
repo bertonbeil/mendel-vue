@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <MainHeader @select="onSelect" />
+  <div class="min-h-screen bg">
+    <MainHeader @select="onSelect" class="z-2" />
     <!-- Main modal wrapper -->
     <el-dialog
       :visible="dialogVisible"
