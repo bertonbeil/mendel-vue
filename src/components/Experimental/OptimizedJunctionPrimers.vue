@@ -32,20 +32,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="Assembly name:" prop="name">
-              <el-select
-                v-model="OptimizedJunctionForm.name"
-                filterable
-                allow-create
-                default-first-option
-                placeholder="Select assembly"
-                class="w-full"
-                :disabled="!OptimizedJunctionForm.projectName"
-                @change="testFillDraggable">
-                <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+          <el-form-item label="Assembly name:" prop="name">
+            <el-select
+              v-model="OptimizedJunctionForm.name"
+              filterable
+              allow-create
+              default-first-option
+              placeholder="Select assembly"
+              class="w-full"
+              :disabled="!OptimizedJunctionForm.projectName"
+              @change="testFillDraggable">
+              <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
       </el-row>
       <div v-if="isShowDraggable">
         <el-row :gutter="20" class="mb-20">
