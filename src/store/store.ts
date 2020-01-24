@@ -243,6 +243,10 @@ export default new Vuex.Store({
         component: 'GrantsUsersForGrant',
         dialogIntro: 'Assign Users for Grant',
         title: 'Users for Grant'
+      },
+      {
+        component: 'OptimizedJunctionPrimers',
+        titel: 'Optimized junction primers'
       }
     ]
   },

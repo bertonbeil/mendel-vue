@@ -112,10 +112,11 @@ export default class EchoFileRow extends Vue {
   }
 
   get primerPairs () {
-    const number = this.assemblyTypeNumber
-    if (this.rowData.junctions.length) {
-      return this.echoRowData.name === '' ? 0 : this.rowData.junctions.length * number + this.numControls
-    } else return this.rowData.junctions.length
+    // const number = this.assemblyTypeNumber
+    // if (this.rowData.junctions.length) {
+    //   return this.echoRowData.name === '' ? 0 : this.rowData.junctions.length * number + this.numControls
+    // } else return this.rowData.junctions.length
+    return this.rowData.junctions.length + 1
   }
 
   get assemblyTypeNumber () {

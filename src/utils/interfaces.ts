@@ -409,3 +409,9 @@ export interface BarcodeScannerForm {
   type?: string
   barcode: string
 }
+
+export interface OptimizedJunction {
+  studyName?: string
+  projectName?: string
+  name?: string
+}

@@ -141,6 +141,13 @@ export default class MainHeader extends Vue {
         { component: 'GrantsForUser', title: 'Grants for User' },
         { component: 'GrantsUsersForGrant', title: 'Users for Grant' }
       ]
+    },
+    {
+      menuTitle: 'Experimental',
+      disabled: false,
+      items: [
+        { component: 'OptimizedJunctionPrimers', title: 'Optimized Junction primers' }
+      ]
     }
   ]
 
