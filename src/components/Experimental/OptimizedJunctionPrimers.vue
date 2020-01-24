@@ -40,13 +40,67 @@
                 default-first-option
                 placeholder="Select assembly"
                 class="w-full"
-                :disabled="!OptimizedJunctionForm.projectName">
+                :disabled="!OptimizedJunctionForm.projectName"
+                @change="testFillDraggable">
                 <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
       </el-row>
+      <div v-if="isShowDraggable">
+        <el-row :gutter="20" class="mb-20">
+          <el-col :span="6">
+            <p class="text-xl text-black">Constarint Pallete</p>
+          </el-col>
+          <el-col :span="6">
+            <p class="text-xl text-black">Requirement</p>
+          </el-col>
+          <el-col :span="6">
+            <p class="text-xl text-black">Strong Preference</p>
+          </el-col>
+          <el-col :span="6">
+            <p class="text-xl text-black">Soft Preference</p>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20" class="mb-20">
+          <el-col :span="6">
+            <draggable class="el-card is-never-shadow p-10" v-model="OptimizedJunctionForm.constarintPallete" group="collaborators">
+              <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="constarint in OptimizedJunctionForm.constarintPallete" :key="constarint">
+                <el-card shadow="hover" body-style="padding:10px">{{ constarint }}</el-card>
+              </div>
+            </draggable>
+          </el-col>
+          <el-col :span="6">
+            <draggable class="min-h-full el-card is-never-shadow p-10" v-model="OptimizedJunctionForm.requirements" group="collaborators">
+              <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="requirement in OptimizedJunctionForm.requirements" :key="requirement">
+                <el-card shadow="hover" body-style="padding:10px">{{ requirement }}</el-card>
+              </div>
+            </draggable>
+          </el-col>
+          <el-col :span="6">
+            <draggable class="min-h-full el-card is-never-shadow p-10" v-model="OptimizedJunctionForm.strongPreferences" group="collaborators">
+              <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="strongPreference in OptimizedJunctionForm.strongPreferences" :key="strongPreference">
+                <el-card shadow="hover" body-style="padding:10px">{{ strongPreference }}</el-card>
+              </div>
+            </draggable>
+          </el-col>
+          <el-col :span="6">
+          <draggable class="min-h-full el-card is-never-shadow p-10" v-model="OptimizedJunctionForm.softPreferences" group="collaborators">
+            <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="softPreference in OptimizedJunctionForm.softPreferences" :key="softPreference">
+              <el-card shadow="hover" body-style="padding:10px">{{ softPreference }}</el-card>
+            </div>
+          </draggable>
+          </el-col>
+        </el-row>
+      </div>
     </el-form>
+
+    <!-- Modal action buttons -->
+    <div slot="footer" class="text-center">
+      <el-button type="danger" @click="$emit('close')">Cancel</el-button>
+      <el-button type="success" @click="save">Save</el-button>
+    </div>
   </div>
 </template>
 
@@ -61,11 +115,16 @@ export default class OptimizedJunctionPrimers extends Vue {
   studyList: string[] = []
   projectsList: string[] = []
   assemblyList: string[] = []
+  isShowDraggable: boolean = false
 
   OptimizedJunctionForm: OptimizedJunction = {
     studyName: '',
     projectName: '',
-    name: ''
+    name: '',
+    constarintPallete: [],
+    isShowDraggable: [],
+    requirements: [],
+    softPreferences: []
   }
 
   rules: object = {
@@ -105,6 +164,32 @@ export default class OptimizedJunctionPrimers extends Vue {
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
+  }
+
+  get sendData () {
+    return this.OptimizedJunctionForm
+  }
+
+  /* submit Modal data */
+  save (next?: string) {
+    return httpService.post('query/assemblyNameChecker', {
+      studyName: this.OptimizedJunctionForm.studyName,
+      projectName: this.OptimizedJunctionForm.projectName,
+      name: this.OptimizedJunctionForm.name
+    }).then((res: any) => {
+      this.$refs['OptimizedJunctionForm'].validate((valid: boolean) => {
+        if (valid) this.$emit('save', { data: this.sendData })
+        else return false
+      })
+    })
+  }
+
+  testFillDraggable () {
+    this.isShowDraggable = true
+    this.OptimizedJunctionForm.constarintPallete = ['test1', 'test2,', 'test3', 'test354']
+    this.OptimizedJunctionForm.requirements = ['test12', 'test25,', 'test36', 'test31']
+    this.OptimizedJunctionForm.strongPreferences = ['test13', 'test266,', 'test334', 'test356']
+    this.OptimizedJunctionForm.softPreferences = ['test122', 'test223,', 'test361', 'test3144']
   }
 
   created () {

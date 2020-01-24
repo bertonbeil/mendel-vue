@@ -414,4 +414,8 @@ export interface OptimizedJunction {
   studyName?: string
   projectName?: string
   name?: string
+  constarintPallete: string[]
+  isShowDraggable: string[]
+  requirements: string[]
+  softPreferences: string[]
 }
