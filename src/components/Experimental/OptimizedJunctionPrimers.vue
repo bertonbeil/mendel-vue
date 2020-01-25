@@ -2,7 +2,7 @@
   <div>
     <el-row :gutter="20" class="mb-20">
       <el-col :span="24">
-        <h3 class="text-black font-bold">Optimized unction Primers</h3>
+        <h3 class="text-black font-bold">Optimized Junction Primers</h3>
       </el-col>
     </el-row>
 
@@ -107,7 +107,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { httpService } from '@/services/http.service'
-import { OptimizedJunction } from '@/utils/interfaces'
+import { OptimizeJunctionPrimers } from '@/utils/interfaces'
 
 @Component({ name: 'OptimizedJunctionPrimers' })
 
@@ -117,12 +117,12 @@ export default class OptimizedJunctionPrimers extends Vue {
   assemblyList: string[] = []
   isShowDraggable: boolean = false
 
-  OptimizedJunctionForm: OptimizedJunction = {
+  OptimizedJunctionForm: OptimizeJunctionPrimers = {
     studyName: '',
     projectName: '',
     name: '',
     constarintPallete: [],
-    isShowDraggable: [],
+    strongPreferences: [],
     requirements: [],
     softPreferences: []
   }
@@ -193,6 +193,7 @@ export default class OptimizedJunctionPrimers extends Vue {
   }
 
   created () {
+    this.testFillDraggable()
     this.getStudyList()
   }
 }

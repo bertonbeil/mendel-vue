@@ -410,12 +410,12 @@ export interface BarcodeScannerForm {
   barcode: string
 }
 
-export interface OptimizedJunction {
+export interface OptimizeJunctionPrimers {
   studyName?: string
   projectName?: string
   name?: string
-  constarintPallete: string[]
-  isShowDraggable: string[]
-  requirements: string[]
-  softPreferences: string[]
+  constarintPallete?: string[]
+  requirements?: string[]
+  softPreferences?: string[]
+  strongPreferences: string[]
 }
