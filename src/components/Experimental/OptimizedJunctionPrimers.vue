@@ -65,29 +65,43 @@
 
         <el-row :gutter="20" class="mb-20">
           <el-col :span="6">
-            <draggable class="el-card is-never-shadow p-10" v-model="OptimizedJunctionForm.constarintPallete" group="collaborators">
-              <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="constarint in OptimizedJunctionForm.constarintPallete" :key="constarint">
-                <el-card shadow="hover" body-style="padding:10px">{{ constarint }}</el-card>
+            <draggable class="el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.constarintPallete" group="collaborators">
+              <div class="inline-block w-full p-1 cursor-pointer" v-for="constarint in OptimizedJunctionForm.constarintPallete" :key="constarint">
+                <el-card shadow="hover" body-style="padding:10px">
+                  <div>
+                    <div class="mb-5"> {{ constarint }} </div>
+                    <div class="flex justify-between">
+                      <span>
+                        <span>Min: </span>
+                        <el-input-number size="mini" v-model="num4"></el-input-number>
+                      </span>
+                      <span>
+                        <span>Max: </span>
+                        <el-input-number size="mini" v-model="num4"></el-input-number>
+                      </span>
+                    </div>
+                  </div>
+                </el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="6">
-            <draggable class="min-h-full el-card is-never-shadow p-10" v-model="OptimizedJunctionForm.requirements" group="collaborators">
-              <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="requirement in OptimizedJunctionForm.requirements" :key="requirement">
+            <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.requirements" group="collaborators">
+              <div class="inline-block w-full p-1 cursor-pointer" v-for="requirement in OptimizedJunctionForm.requirements" :key="requirement">
                 <el-card shadow="hover" body-style="padding:10px">{{ requirement }}</el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="6">
-            <draggable class="min-h-full el-card is-never-shadow p-10" v-model="OptimizedJunctionForm.strongPreferences" group="collaborators">
-              <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="strongPreference in OptimizedJunctionForm.strongPreferences" :key="strongPreference">
+            <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.strongPreferences" group="collaborators">
+              <div class="inline-block w-full p-1 cursor-pointer" v-for="strongPreference in OptimizedJunctionForm.strongPreferences" :key="strongPreference">
                 <el-card shadow="hover" body-style="padding:10px">{{ strongPreference }}</el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="6">
-          <draggable class="min-h-full el-card is-never-shadow p-10" v-model="OptimizedJunctionForm.softPreferences" group="collaborators">
-            <div class="inline-block w-1/2 p-1 cursor-pointer" v-for="softPreference in OptimizedJunctionForm.softPreferences" :key="softPreference">
+          <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.softPreferences" group="collaborators">
+            <div class="inline-block w-full p-1 cursor-pointer" v-for="softPreference in OptimizedJunctionForm.softPreferences" :key="softPreference">
               <el-card shadow="hover" body-style="padding:10px">{{ softPreference }}</el-card>
             </div>
           </draggable>
@@ -186,10 +200,10 @@ export default class OptimizedJunctionPrimers extends Vue {
 
   testFillDraggable () {
     this.isShowDraggable = true
-    this.OptimizedJunctionForm.constarintPallete = ['test1', 'test2,', 'test3', 'test354']
-    this.OptimizedJunctionForm.requirements = ['test12', 'test25,', 'test36', 'test31']
-    this.OptimizedJunctionForm.strongPreferences = ['test13', 'test266,', 'test334', 'test356']
-    this.OptimizedJunctionForm.softPreferences = ['test122', 'test223,', 'test361', 'test3144']
+    this.OptimizedJunctionForm.constarintPallete = ['Temperatur Constraints', 'Size Constraints', 'Unique Constraints', 'GC Concept Constraints', 'Hairpin Constraints', 'Primer Dimer Constraints', 'Plimet Run Constraints']
+    this.OptimizedJunctionForm.requirements = ['Temperatur Constraints', 'Size Constraints,']
+    this.OptimizedJunctionForm.strongPreferences = ['Temperatur Constraints', 'Size Constraints,', 'Unique Constraints', 'GC Concept Constraints', 'Hairpin Constraints']
+    this.OptimizedJunctionForm.softPreferences = ['Temperatur Constraints', 'Size Constraints']
   }
 
   created () {
