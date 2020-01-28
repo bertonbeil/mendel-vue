@@ -65,12 +65,12 @@
 
         <el-row :gutter="20" class="mb-20">
           <el-col :span="6">
-            <draggable class="el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.constarintPallete" group="collaborators">
+            <draggable class="el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.constarintPallete" :group="{ name: 'people', pull: 'clone', put: false }">
               <div class="inline-block w-full p-1 cursor-pointer" v-for="constarint in OptimizedJunctionForm.constarintPallete" :key="constarint">
                 <el-card shadow="hover" body-style="padding:10px">
                   <div>
                     <div class="mb-5"> {{ constarint }} </div>
-                    <div class="flex justify-between">
+                    <!-- <div class="flex justify-between">
                       <span>
                         <span>Min: </span>
                         <el-input-number size="mini" v-model="num4"></el-input-number>
@@ -79,28 +79,28 @@
                         <span>Max: </span>
                         <el-input-number size="mini" v-model="num4"></el-input-number>
                       </span>
-                    </div>
+                    </div> -->
                   </div>
                 </el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="6">
-            <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.requirements" group="collaborators">
+            <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.requirements" :group="{ name: 'people', pull: true, put: true }">
               <div class="inline-block w-full p-1 cursor-pointer" v-for="requirement in OptimizedJunctionForm.requirements" :key="requirement">
                 <el-card shadow="hover" body-style="padding:10px">{{ requirement }}</el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="6">
-            <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.strongPreferences" group="collaborators">
+            <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.strongPreferences" :group="{ name: 'people', pull: true, put: true }">
               <div class="inline-block w-full p-1 cursor-pointer" v-for="strongPreference in OptimizedJunctionForm.strongPreferences" :key="strongPreference">
                 <el-card shadow="hover" body-style="padding:10px">{{ strongPreference }}</el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="6">
-          <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.softPreferences" group="collaborators">
+          <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.softPreferences" :group="{ name: 'people', pull: true, put: true }">
             <div class="inline-block w-full p-1 cursor-pointer" v-for="softPreference in OptimizedJunctionForm.softPreferences" :key="softPreference">
               <el-card shadow="hover" body-style="padding:10px">{{ softPreference }}</el-card>
             </div>
@@ -141,6 +141,71 @@ export default class OptimizedJunctionPrimers extends Vue {
     softPreferences: []
   }
 
+  // "primers":"",
+  // "dnaDesignName":"SGTestAssembly3",
+  // "minTemperature":"52",
+  // "maxTemperature":"58",
+  // "saltConcentration":"0.05",
+  // "dnaConcentration":"5",
+  // "minPercentGC":"40",
+  // "maxPercentGC":"60",
+  // "minLength":"18",
+  // "maxLength":"30",
+  // "minDistance":"80",
+  // "maxDistance":"300",
+  // "dimerLength":"5",
+  // "hairpinLength":"5",
+  // "tailMinDistance":"200",
+  // "well":"A1"
+
+  // "constraints":[
+  // {
+  // "name":"PrimerDiversityConstraint",
+  // "type":"constraint"
+  // },
+  // {
+  // "name":"PrimerUniqueConstraint",
+  // "type":"preference"
+  // },
+  // {
+  // "name":"PrimerGCConstraint",
+  // "type":"strongPreference",
+  // "min":"40",
+  // "max":"60"
+  // },
+  // {
+  // "name":"PrimerLengthConstraint",
+  // "type":"preference",
+  // "min":"22",
+  // "max":"22"
+  // },
+  // {
+  // "name":"PrimerLengthConstraint",
+  // "type":"constraint",
+  // "min":"18",
+  // "max":"26"
+  // },
+  // {
+  // "name":"PrimerTemperatureConstraint",
+  // "type":"constraint",
+  // "min":"48",
+  // "max":"60"
+  // },
+  // {
+  // "name":"PrimerTemperatureConstraint",
+  // "type":"strongPreference",
+  // "min":"52",
+  // "max":"54"
+  // },
+  // {
+  // "name":"PrimerHairpinConstraint",
+  // "type":"preference"
+  // },
+  // {
+  // "name":"PrimerMaxPolimerRunConstraint",
+  // "type":"preference"
+  // }
+  // ]
   rules: object = {
     studyName: [ { required: true, message: 'Study name is required' } ],
     projectName: [ { required: true, message: 'Project name is required' } ],
