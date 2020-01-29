@@ -34,14 +34,13 @@
           <el-col :span="8">
           <el-form-item label="Assembly name:" prop="name">
             <el-select
-              v-model="OptimizedJunctionForm.name"
+              v-model="OptimizedJunctionForm.primers"
               filterable
               allow-create
               default-first-option
               placeholder="Select assembly"
               class="w-full"
-              :disabled="!OptimizedJunctionForm.projectName"
-              @change="testFillDraggable">
+              :disabled="!OptimizedJunctionForm.projectName">
               <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
             </el-select>
           </el-form-item>
@@ -63,46 +62,83 @@
           </el-col>
         </el-row>
 
-        <el-row :gutter="20" class="mb-20">
+        <el-row :gutter="20" class="optimazed-junction mb-20">
           <el-col :span="6">
-            <draggable class="el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.constarintPallete" :group="{ name: 'people', pull: 'clone', put: false }">
-              <div class="inline-block w-full p-1 cursor-pointer" v-for="constarint in OptimizedJunctionForm.constarintPallete" :key="constarint">
+            <draggable class="el-card is-never-shadow p-10 h-600" v-model="availableConstraints" :group="{ name: 'people', pull: 'clone', put: false }" :move="checkMove">
+              <div class="inline-block w-full p-1 cursor-pointer" v-for="(constarint, index) in availableConstraints" :key="index">
                 <el-card shadow="hover" body-style="padding:10px">
                   <div>
-                    <div class="mb-5"> {{ constarint }} </div>
-                    <!-- <div class="flex justify-between">
-                      <span>
-                        <span>Min: </span>
-                        <el-input-number size="mini" v-model="num4"></el-input-number>
-                      </span>
-                      <span>
-                        <span>Max: </span>
-                        <el-input-number size="mini" v-model="num4"></el-input-number>
-                      </span>
-                    </div> -->
+                    <div class="mb-5"> {{ constarint.name }} </div>
                   </div>
                 </el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="6">
-            <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.requirements" :group="{ name: 'people', pull: true, put: true }">
-              <div class="inline-block w-full p-1 cursor-pointer" v-for="requirement in OptimizedJunctionForm.requirements" :key="requirement">
-                <el-card shadow="hover" body-style="padding:10px">{{ requirement }}</el-card>
+            <draggable
+              class="min-h-full el-card is-never-shadow p-10 h-600" v-model="requirements"
+              :group="{ name: 'people', pull: true, put: true }"
+              :move="checkMove"
+              @add="onDrop('requirements')">
+              <div class="inline-block w-full p-1 cursor-pointer" v-for="(requirement, index) in requirements" :key="index">
+                <el-card shadow="hover" body-style="padding:10px">{{ requirement.name }}
+                  <div v-if="requirement.min" class="flex justify-between pt-5">
+                    <span>
+                      <span>Min: </span>
+                      <el-input-number size="mini" v-model="requirements[index].min"></el-input-number>
+                    </span>
+                    <span>
+                      <span>Max: </span>
+                      <el-input-number size="mini" v-model="requirements[index].max"></el-input-number>
+                    </span>
+                  </div>
+                </el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="6">
-            <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.strongPreferences" :group="{ name: 'people', pull: true, put: true }">
-              <div class="inline-block w-full p-1 cursor-pointer" v-for="strongPreference in OptimizedJunctionForm.strongPreferences" :key="strongPreference">
-                <el-card shadow="hover" body-style="padding:10px">{{ strongPreference }}</el-card>
+            <draggable
+              class="min-h-full el-card is-never-shadow p-10 h-600"
+              v-model="strongPreferences"
+              :group="{ name: 'people', pull: true, put: true }"
+              :move="checkMove"
+              @add="onDrop('strongPreferences')">
+              <div class="inline-block w-full p-1 cursor-pointer" v-for="(strongPreference, index) in strongPreferences" :key="index">
+                <el-card shadow="hover" body-style="padding:10px">{{ strongPreference.name }}
+                  <div v-if="strongPreference.min" class="flex justify-between pt-5">
+                    <span>
+                      <span>Min: </span>
+                      <el-input-number class="max-w-xs" size="mini" v-model="strongPreferences[index].min"></el-input-number>
+                    </span>
+                    <span>
+                      <span>Max: </span>
+                      <el-input-number size="mini" v-model="strongPreferences[index].max"></el-input-number>
+                    </span>
+                  </div>
+                </el-card>
               </div>
             </draggable>
           </el-col>
           <el-col :span="6">
-          <draggable class="min-h-full el-card is-never-shadow p-10 h-600" v-model="OptimizedJunctionForm.softPreferences" :group="{ name: 'people', pull: true, put: true }">
-            <div class="inline-block w-full p-1 cursor-pointer" v-for="softPreference in OptimizedJunctionForm.softPreferences" :key="softPreference">
-              <el-card shadow="hover" body-style="padding:10px">{{ softPreference }}</el-card>
+            <draggable
+              class="min-h-full el-card is-never-shadow p-10 h-600"
+              v-model="softPreferences"
+              :group="{ name: 'people', pull: true, put: true }"
+              :move="checkMove"
+              @add="onDrop('softPreferences')">
+            <div class="inline-block w-full p-1 cursor-pointer" v-for="(softPreference, index) in softPreferences" :key="index">
+              <el-card shadow="hover" body-style="padding:10px">{{ softPreference.name }}
+                <div v-if="softPreference.min" class="flex justify-between pt-5">
+                  <span>
+                    <span>Min: </span>
+                    <el-input-number size="mini" v-model="softPreferences[index].min"></el-input-number>
+                  </span>
+                  <span>
+                    <span>Max: </span>
+                    <el-input-number size="mini" v-model="softPreferences[index].max"></el-input-number>
+                  </span>
+                </div>
+              </el-card>
             </div>
           </draggable>
           </el-col>
@@ -129,83 +165,71 @@ export default class OptimizedJunctionPrimers extends Vue {
   studyList: string[] = []
   projectsList: string[] = []
   assemblyList: string[] = []
-  isShowDraggable: boolean = false
+  isShowDraggable: boolean = true
+  requirements: object[] = []
+  strongPreferences: object[] = []
+  softPreferences: object[] = []
+  availableConstraints: object[] = [
+    {
+      name: 'PrimerDiversityConstraint'
+    },
+    {
+      name: 'PrimerUniqueConstraint'
+    },
+    {
+      name: 'PrimerGCConstraint',
+      min: 40,
+      max: 60
+    },
+    {
+      name: 'PrimerLengthConstraint',
+      min: 22,
+      max: 22
+    },
+    {
+      name: 'PrimerLengthConstraint',
+      min: 18,
+      max: 26
+    },
+    {
+      name: 'PrimerTemperatureConstraint',
+      min: 48,
+      max: 60
+    },
+    {
+      name: 'PrimerHairpinConstraint'
+    },
+    {
+      name: 'PrimerMaxPolimerRunConstraint'
+    }
+  ]
 
-  OptimizedJunctionForm: OptimizeJunctionPrimers = {
-    studyName: '',
-    projectName: '',
-    name: '',
-    constarintPallete: [],
-    strongPreferences: [],
-    requirements: [],
-    softPreferences: []
+  onDrop (payload: any) {
+    (this as any)[payload] = JSON.parse(JSON.stringify((this as any)[payload]))
   }
 
-  // "primers":"",
-  // "dnaDesignName":"SGTestAssembly3",
-  // "minTemperature":"52",
-  // "maxTemperature":"58",
-  // "saltConcentration":"0.05",
-  // "dnaConcentration":"5",
-  // "minPercentGC":"40",
-  // "maxPercentGC":"60",
-  // "minLength":"18",
-  // "maxLength":"30",
-  // "minDistance":"80",
-  // "maxDistance":"300",
-  // "dimerLength":"5",
-  // "hairpinLength":"5",
-  // "tailMinDistance":"200",
-  // "well":"A1"
+  OptimizedJunctionForm: OptimizeJunctionPrimers = {
+    studyName: 'Sox2',
+    projectName: 'Sox2Test',
+    primers: '',
+    dnaDesignName: 'Masked2',
+    minTemperature: 52,
+    maxTemperature: 58,
+    saltConcentration: 0.05,
+    dnaConcentration: 5,
+    minPercentGC: 40,
+    maxPercentGC: 60,
+    minLength: 18,
+    maxLength: 30,
+    minDistance: 80,
+    maxDistance: 300,
+    dimerLength: 5,
+    hairpinLength: 5,
+    tailMinDistance: 200,
+    well: 'A1',
+    type: 'JunctionOptimized'
+  }
 
-  // "constraints":[
-  // {
-  // "name":"PrimerDiversityConstraint",
-  // "type":"constraint"
-  // },
-  // {
-  // "name":"PrimerUniqueConstraint",
-  // "type":"preference"
-  // },
-  // {
-  // "name":"PrimerGCConstraint",
-  // "type":"strongPreference",
-  // "min":"40",
-  // "max":"60"
-  // },
-  // {
-  // "name":"PrimerLengthConstraint",
-  // "type":"preference",
-  // "min":"22",
-  // "max":"22"
-  // },
-  // {
-  // "name":"PrimerLengthConstraint",
-  // "type":"constraint",
-  // "min":"18",
-  // "max":"26"
-  // },
-  // {
-  // "name":"PrimerTemperatureConstraint",
-  // "type":"constraint",
-  // "min":"48",
-  // "max":"60"
-  // },
-  // {
-  // "name":"PrimerTemperatureConstraint",
-  // "type":"strongPreference",
-  // "min":"52",
-  // "max":"54"
-  // },
-  // {
-  // "name":"PrimerHairpinConstraint",
-  // "type":"preference"
-  // },
-  // {
-  // "name":"PrimerMaxPolimerRunConstraint",
-  // "type":"preference"
-  // }
-  // ]
   rules: object = {
     studyName: [ { required: true, message: 'Study name is required' } ],
     projectName: [ { required: true, message: 'Project name is required' } ],
@@ -214,6 +238,11 @@ export default class OptimizedJunctionPrimers extends Vue {
 
   $refs!: {
     OptimizedJunctionForm: HTMLFormElement
+  }
+
+  checkMove (env: any) {
+    return !env.relatedContext.list.map((el: any) => el.name)
+      .includes(env.draggedContext.element.name)
   }
 
   getProjectsList () {
@@ -240,39 +269,36 @@ export default class OptimizedJunctionPrimers extends Vue {
 
   /* load Modal data -> Get list of study */
   getStudyList () {
+    this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
+  }
+
+  constraintsWithType () {
+    return [
+      ...this.requirements.map((i) => { return { ...i, type: 'requirements' } }),
+      ...this.strongPreferences.map((i) => { return { ...i, type: 'strongPreference' } }),
+      ...this.softPreferences.map((i) => { return { ...i, type: 'softPreferences' } })
+    ]
   }
 
   get sendData () {
-    return this.OptimizedJunctionForm
+    return {
+      ...this.OptimizedJunctionForm,
+      constraints: this.constraintsWithType() }
   }
 
   /* submit Modal data */
   save (next?: string) {
-    return httpService.post('query/assemblyNameChecker', {
-      studyName: this.OptimizedJunctionForm.studyName,
-      projectName: this.OptimizedJunctionForm.projectName,
-      name: this.OptimizedJunctionForm.name
-    }).then((res: any) => {
-      this.$refs['OptimizedJunctionForm'].validate((valid: boolean) => {
-        if (valid) this.$emit('save', { data: this.sendData })
-        else return false
-      })
+    this.$refs['OptimizedJunctionForm'].validate((valid: boolean) => {
+      if (valid) this.$emit('save', { data: this.sendData })
+      else return false
     })
   }
 
-  testFillDraggable () {
-    this.isShowDraggable = true
-    this.OptimizedJunctionForm.constarintPallete = ['Temperatur Constraints', 'Size Constraints', 'Unique Constraints', 'GC Concept Constraints', 'Hairpin Constraints', 'Primer Dimer Constraints', 'Plimet Run Constraints']
-    this.OptimizedJunctionForm.requirements = ['Temperatur Constraints', 'Size Constraints,']
-    this.OptimizedJunctionForm.strongPreferences = ['Temperatur Constraints', 'Size Constraints,', 'Unique Constraints', 'GC Concept Constraints', 'Hairpin Constraints']
-    this.OptimizedJunctionForm.softPreferences = ['Temperatur Constraints', 'Size Constraints']
-  }
-
   created () {
-    this.testFillDraggable()
     this.getStudyList()
   }
 }

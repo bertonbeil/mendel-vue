@@ -414,8 +414,21 @@ export interface OptimizeJunctionPrimers {
   studyName?: string
   projectName?: string
   name?: string
-  constarintPallete?: string[]
-  requirements?: string[]
-  softPreferences?: string[]
-  strongPreferences: string[]
+  primers?: string
+  dnaDesignName?: string
+  minTemperature?: number
+  maxTemperature?: number
+  saltConcentration?: number
+  dnaConcentration?: number
+  minPercentGC?: number
+  maxPercentGC?: number
+  minLength?: number
+  maxLength?: number
+  minDistance?: number
+  maxDistance?: number
+  dimerLength?: number
+  hairpinLength?: number
+  tailMinDistance?: number
+  well?: string
+  type?: string
 }
