@@ -166,7 +166,12 @@ export default class OptimizedJunctionPrimers extends Vue {
   projectsList: string[] = []
   assemblyList: string[] = []
   isShowDraggable: boolean = true
-  requirements: object[] = []
+  requirements: object[] = [
+    { name: 'PrimerUniqueConstraint', type: 'preference' },
+    { name: 'PrimerLengthConstraint', type: 'preference', 'min': '22', 'max': '22' },
+    { name: 'PrimerHairpinConstraint', type: 'preference' },
+    { name: 'PrimerMaxPolimerRunConstraint', type: 'preference' }
+  ]
   strongPreferences: object[] = []
   softPreferences: object[] = []
   availableConstraints: object[] = [
@@ -209,8 +214,8 @@ export default class OptimizedJunctionPrimers extends Vue {
   }
 
   OptimizedJunctionForm: OptimizeJunctionPrimers = {
-    studyName: 'Sox2',
-    projectName: 'Sox2Test',
+    studyName: '',
+    projectName: '',
     primers: '',
     dnaDesignName: 'Masked2',
     minTemperature: 52,
