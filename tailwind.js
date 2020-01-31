@@ -602,6 +602,9 @@ module.exports = {
 
     minHeight: {
       '0': '0',
+      '88': '88px',
+      '100': '100px',
+      '120': '120px',
       'full': '100%',
       'screen': '100vh',
       '450': '450px'
@@ -624,6 +627,7 @@ module.exports = {
   */
 
     maxWidth: {
+      '310': '310px',
       'xs': '20rem',
       'sm': '30rem',
       'md': '40rem',
@@ -767,6 +771,8 @@ module.exports = {
   */
     inset: {
       '-35': '-35px',
+      '20': '20%',
+      '45': '45%',
       '0': '0'
     },
     /*

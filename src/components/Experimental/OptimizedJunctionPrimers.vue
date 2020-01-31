@@ -7,46 +7,61 @@
     </el-row>
 
     <el-form :model="OptimizedJunctionForm" label-position="top" :rules="rules" ref="OptimizedJunctionForm">
-      <el-row :gutter="20" class="mb-30">
-        <el-col :span="8">
-            <el-form-item label="Study name:" prop="studyName">
+      <div class="min-h-120 mb-20">
+        <el-row v-show="!isTrashOpen" :gutter="20" class="mb-10">
+          <el-col :span="8">
+              <el-form-item label="Study name:" prop="studyName">
+                <el-select
+                  v-model="OptimizedJunctionForm.studyName"
+                  @change="getProjectsList"
+                  placeholder="Select study"
+                  class="w-full">
+                  <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="Project name:" prop="projectName">
+                <el-select
+                  v-model="OptimizedJunctionForm.projectName"
+                  :disabled="!OptimizedJunctionForm.studyName"
+                  @change="getAssemblyList"
+                  placeholder="Select project"
+                  class="w-full">
+                  <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+            <el-form-item label="Assembly name:" prop="name">
               <el-select
-                v-model="OptimizedJunctionForm.studyName"
-                @change="getProjectsList"
-                placeholder="Select study"
-                class="w-full">
-                <el-option v-for="item in studyList" :key="item.name" :label="item.name" :value="item.name"></el-option>
+                v-model="OptimizedJunctionForm.primers"
+                filterable
+                allow-create
+                default-first-option
+                placeholder="Select assembly"
+                class="w-full"
+                :disabled="!OptimizedJunctionForm.projectName">
+                <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="Project name:" prop="projectName">
-              <el-select
-                v-model="OptimizedJunctionForm.projectName"
-                :disabled="!OptimizedJunctionForm.studyName"
-                @change="getAssemblyList"
-                placeholder="Select project"
-                class="w-full">
-                <el-option v-for="item in projectsList" :key="item.name" :label="item.name" :value="item.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-          <el-form-item label="Assembly name:" prop="name">
-            <el-select
-              v-model="OptimizedJunctionForm.primers"
-              filterable
-              allow-create
-              default-first-option
-              placeholder="Select assembly"
-              class="w-full"
-              :disabled="!OptimizedJunctionForm.projectName">
-              <el-option v-for="(item, index) in assemblyList" :key="index" :label="item.assembly" :value="item.assembly"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <div v-if="isShowDraggable">
+        </el-row>
+        <el-row v-show="isTrashOpen" :gutter="20" class="justify-center flex">
+          <transition name="el-zoom-in-top">
+            <el-col :span="24" class="relative">
+              <span class="absolute text-lg top-20 left-45 flex flex-col items-center z-1 opacity-25"><i class="el-icon-delete"></i>Trash</span>
+              <draggable
+                class="el-card is-never-shadow px-10 min-h-120 flex items-center justify-center"
+                id="trash"
+                v-model="trash"
+                :group="{ name: 'people', pull: true, put: true }">
+              </draggable>
+            </el-col>
+          </transition>
+        </el-row>
+      </div>
+      <div>
         <el-row :gutter="20" class="mb-20">
           <el-col :span="6">
             <p class="text-xl text-black">Constarint Pallete</p>
@@ -64,7 +79,7 @@
 
         <el-row :gutter="20" class="optimazed-junction mb-20">
           <el-col :span="6">
-            <draggable class="el-card is-never-shadow p-10 h-600" v-model="availableConstraints" :group="{ name: 'people', pull: 'clone', put: false }" :move="checkMove">
+            <draggable class="el-card is-never-shadow p-10 h-500" v-model="availableConstraints" :group="{ name: 'people', pull: 'clone', put: false }" :move="checkMove">
               <div class="inline-block w-full p-1 cursor-pointer" v-for="(constarint, index) in availableConstraints" :key="index">
                 <el-card shadow="hover" body-style="padding:10px">
                   <div>
@@ -76,14 +91,16 @@
           </el-col>
           <el-col :span="6">
             <draggable
-              class="min-h-full el-card is-never-shadow p-10 h-600" v-model="requirements"
+              class="min-h-full el-card is-never-shadow p-10 h-500" v-model="requirements"
               :group="{ name: 'people', pull: true, put: true }"
               :move="checkMove"
-              @add="onDrop('requirements')">
-              <div class="inline-block w-full p-1 cursor-pointer" v-for="(requirement, index) in requirements" :key="index">
+              @add="onDrop('requirements')"
+              @start="isTrashOpen = true"
+              @end="isTrashOpen = false">
+              <div class="inline-block w-full p-1 cursor-pointer z-2 max-w-310" v-for="(requirement, index) in requirements" :key="index">
                 <el-card shadow="hover" body-style="padding:10px">{{ requirement.name }}
-                  <div v-if="requirement.min" class="flex justify-between pt-5">
-                    <span>
+                  <div v-if="requirement.min" class="flex pt-5">
+                    <span class="mr-20">
                       <span>Min: </span>
                       <el-input-number size="mini" v-model="requirements[index].min"></el-input-number>
                     </span>
@@ -98,15 +115,17 @@
           </el-col>
           <el-col :span="6">
             <draggable
-              class="min-h-full el-card is-never-shadow p-10 h-600"
+              class="min-h-full el-card is-never-shadow p-10 h-500"
               v-model="strongPreferences"
               :group="{ name: 'people', pull: true, put: true }"
               :move="checkMove"
-              @add="onDrop('strongPreferences')">
-              <div class="inline-block w-full p-1 cursor-pointer" v-for="(strongPreference, index) in strongPreferences" :key="index">
+              @add="onDrop('strongPreferences')"
+              @start="isTrashOpen = true"
+              @end="isTrashOpen = false">
+              <div class="inline-block w-full p-1 cursor-pointer z-2 max-w-310" v-for="(strongPreference, index) in strongPreferences" :key="index">
                 <el-card shadow="hover" body-style="padding:10px">{{ strongPreference.name }}
-                  <div v-if="strongPreference.min" class="flex justify-between pt-5">
-                    <span>
+                  <div v-if="strongPreference.min" class="flex pt-5">
+                    <span class="mr-20">
                       <span>Min: </span>
                       <el-input-number class="max-w-xs" size="mini" v-model="strongPreferences[index].min"></el-input-number>
                     </span>
@@ -121,15 +140,17 @@
           </el-col>
           <el-col :span="6">
             <draggable
-              class="min-h-full el-card is-never-shadow p-10 h-600"
+              class="min-h-full el-card is-never-shadow p-10 h-500"
               v-model="softPreferences"
               :group="{ name: 'people', pull: true, put: true }"
               :move="checkMove"
-              @add="onDrop('softPreferences')">
-            <div class="inline-block w-full p-1 cursor-pointer" v-for="(softPreference, index) in softPreferences" :key="index">
+              @add="onDrop('softPreferences')"
+              @start="isTrashOpen = true"
+              @end="isTrashOpen = false">
+            <div class="inline-block w-full p-1 cursor-pointer z-2 max-w-310" v-for="(softPreference, index) in softPreferences" :key="index">
               <el-card shadow="hover" body-style="padding:10px">{{ softPreference.name }}
-                <div v-if="softPreference.min" class="flex justify-between pt-5">
-                  <span>
+                <div v-if="softPreference.min" class="flex pt-5">
+                  <span class="mr-20">
                     <span>Min: </span>
                     <el-input-number size="mini" v-model="softPreferences[index].min"></el-input-number>
                   </span>
@@ -165,7 +186,7 @@ export default class OptimizedJunctionPrimers extends Vue {
   studyList: string[] = []
   projectsList: string[] = []
   assemblyList: string[] = []
-  isShowDraggable: boolean = true
+  isTrashOpen: boolean = false
   requirements: object[] = [
     { name: 'PrimerUniqueConstraint', type: 'preference' },
     { name: 'PrimerLengthConstraint', type: 'preference', 'min': '22', 'max': '22' },
@@ -208,6 +229,7 @@ export default class OptimizedJunctionPrimers extends Vue {
       name: 'PrimerMaxPolimerRunConstraint'
     }
   ]
+  trash: object[] = []
 
   onDrop (payload: any) {
     (this as any)[payload] = JSON.parse(JSON.stringify((this as any)[payload]))
@@ -245,9 +267,11 @@ export default class OptimizedJunctionPrimers extends Vue {
     OptimizedJunctionForm: HTMLFormElement
   }
 
-  checkMove (env: any) {
-    return !env.relatedContext.list.map((el: any) => el.name)
-      .includes(env.draggedContext.element.name)
+  checkMove (evt: any) {
+    if (evt.to.id === 'trash') return true
+
+    return !evt.relatedContext.list.map((el: any) => el.name)
+      .includes(evt.draggedContext.element.name)
   }
 
   getProjectsList () {
