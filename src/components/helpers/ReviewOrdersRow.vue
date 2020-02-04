@@ -75,7 +75,7 @@ export default class ReviewOrdersRow extends Vue {
     let zipName = `${this.assembliesData.assembly}_${this.dateTime}`
     // Create request to get .zip file
     let xhr = new XMLHttpRequest()
-    xhr.open('POST', 'https://mendel-dev.nyumc.org/query/AssemblyExporter', true)
+    xhr.open('POST', 'query/AssemblyExporter', true)
     xhr.setRequestHeader('Content-Type', 'application/json')
     xhr.responseType = 'blob'
     xhr.onload = function () {
