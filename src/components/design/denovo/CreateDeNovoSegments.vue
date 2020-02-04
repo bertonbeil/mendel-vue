@@ -227,7 +227,6 @@ export default class CreateDeNovoSegments extends Vue {
 
   /* load Modal data -> Get list of study */
   getStudyList () {
-    this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
@@ -258,7 +257,6 @@ export default class CreateDeNovoSegments extends Vue {
   }
 
   latestDnaDesign () {
-    this.$emit('loadOn')
     return httpService.get('query/latestDnaDesign', { study: this.denovoSegmentForm.studyName, project: this.denovoSegmentForm.projectName })
       .then((res: any) => {
         res.data.rows.filter((i: any) => {
@@ -276,6 +274,7 @@ export default class CreateDeNovoSegments extends Vue {
   }
 
   getInitialData () {
+    this.$emit('loadOn')
     Promise.all([this.getStudyList(), this.latestDnaDesign()])
       .then(() => {
         if (this.modalData.hasOwnProperty('saveAndNextData')) {

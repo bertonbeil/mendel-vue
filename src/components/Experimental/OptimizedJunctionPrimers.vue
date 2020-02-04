@@ -91,7 +91,7 @@
           </el-col>
           <el-col :span="6">
             <draggable
-              class="min-h-full el-card is-never-shadow p-10 h-500" v-model="requirements"
+              class="min-h-full el-card is-never-shadow p-10 h-500 overflow-y-auto" v-model="requirements"
               :group="{ name: 'people', pull: true, put: true }"
               :move="checkMove"
               @add="onDrop('requirements')"
@@ -115,7 +115,7 @@
           </el-col>
           <el-col :span="6">
             <draggable
-              class="min-h-full el-card is-never-shadow p-10 h-500"
+              class="min-h-full el-card is-never-shadow p-10 h-500 overflow-y-auto"
               v-model="strongPreferences"
               :group="{ name: 'people', pull: true, put: true }"
               :move="checkMove"
@@ -140,7 +140,7 @@
           </el-col>
           <el-col :span="6">
             <draggable
-              class="min-h-full el-card is-never-shadow p-10 h-500"
+              class="min-h-full el-card is-never-shadow p-10 h-500 overflow-y-auto"
               v-model="softPreferences"
               :group="{ name: 'people', pull: true, put: true }"
               :move="checkMove"
@@ -206,11 +206,6 @@ export default class OptimizedJunctionPrimers extends Vue {
       name: 'PrimerGCConstraint',
       min: 40,
       max: 60
-    },
-    {
-      name: 'PrimerLengthConstraint',
-      min: 22,
-      max: 22
     },
     {
       name: 'PrimerLengthConstraint',
