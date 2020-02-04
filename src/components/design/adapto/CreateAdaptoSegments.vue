@@ -60,13 +60,24 @@
                 <div class="break-word">All vectors are kanamycin resistant for bacterial selection, and are inducible to high copy number in bacteria for isolation. All contain CEN/ARS for low copy yeast maintenance.</div>
               </el-popover>
             </h4>
-            <div class="flex items-center mt-10">
-              <p class="mr-20">Yeast marker</p>
-              <el-radio-group v-model="segmentRequest.assemblyVectorName" size="mini">
-                <el-radio-button :label="'URA3'">URA3</el-radio-button>
-                <el-radio-button :label="'LEU2'">LEU2</el-radio-button>
-              </el-radio-group>
-            </div>
+            <el-row class="mt-10 flex items-center">
+              <el-col :span="4"><p>Yeast marker</p></el-col>
+              <el-col :span="15">
+                <el-radio-group v-model="assemblyVector.yeastMarker" size="mini">
+                  <el-radio-button :label="'URA3'">URA3</el-radio-button>
+                  <el-radio-button :label="'LEU2'">LEU2</el-radio-button>
+                </el-radio-group>
+              </el-col>
+            </el-row>
+            <el-row class="mt-10 flex items-center">
+              <el-col :span="4"><p>Bacterial copy #</p></el-col>
+              <el-col :span="15">
+                <el-radio-group v-model="assemblyVector.bacterialCopy" size="mini">
+                  <el-radio-button :label="'pUC'">High (pUC)</el-radio-button>
+                  <el-radio-button :label="'BAC'">Low (BAC)</el-radio-button>
+                </el-radio-group>
+              </el-col>
+            </el-row>
           </el-col>
           <el-col :span="12" class="mb-30">
             <h4 class="relative inline-block pr-30 text-xl text-black mt-3">Upload .bed formatted mask file:</h4>
@@ -170,6 +181,7 @@ export default class CreateAdaptoSegments extends Vue {
   segmentVegasAdapters: boolean = false
   type: string = ''
   dnaDesignName: string = ''
+  assemblyVector: any = { yeastMarker: 'URA3', bacterialCopy: 'pUC' }
   bedFile: string = ''
 
   segmentRequest: AdaptoSegmentRequest = {
@@ -228,7 +240,7 @@ export default class CreateAdaptoSegments extends Vue {
   get sendData () {
     return {
       requestType: 'AdaptoSegmentRequest',
-      segment_request: this.segmentRequest,
+      segment_request: { ...this.segmentRequest, assemblyVectorName: `${this.assemblyVector.yeastMarker},${this.assemblyVector.bacterialCopy}` },
       primers_request: { studyName: this.segmentRequest.studyName, projectName: this.segmentRequest.projectName, ...this.primersRequest }
     }
   }
