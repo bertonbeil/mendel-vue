@@ -58,7 +58,7 @@
                 :disabled="!orderSelectAssemblyForm.assemblies.length"
                 placeholder="Select Grant"
                 class="w-full">
-                <el-option v-for="item in grantsList" :key="item.name" :label="item.name" :value="item.name">
+                <el-option v-for="item in grantsList" :key="item.grant" :label="item.grant" :value="item.grant">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -170,7 +170,7 @@ export default class OrderSelectAssemblies extends Vue {
 
   getGrantsList () {
     return httpService.post('query/grantsForUser', { user: this.$store.state.user.id })
-      .then((res: any) => { this.grantsList = res.data.grantsList })
+      .then((res: any) => { this.grantsList = res.data.grants })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
