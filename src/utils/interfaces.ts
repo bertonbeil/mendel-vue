@@ -384,7 +384,7 @@ export interface RegionPrimersTools {
 export interface OrderAssembly {
   study?: string,
   project?: string,
-  assemblies?: string,
+  assemblies?: string[],
   grant_name?: string
 }
 export interface CreateModifyGrant {

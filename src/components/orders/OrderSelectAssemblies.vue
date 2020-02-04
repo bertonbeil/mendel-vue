@@ -39,8 +39,9 @@
           <el-col :span="6">
             <el-form-item label="Assembly:" prop="assemblies">
               <el-select
+                multiple
+                collapse-tags
                 v-model="orderSelectAssemblyForm.assemblies"
-                @change="selectAssembly"
                 :disabled="!orderSelectAssemblyForm.project"
                 placeholder="Select Assembly"
                 class="w-full">
@@ -54,7 +55,7 @@
             <el-form-item label="Grant:" prop="grant_name">
               <el-select
                 v-model="orderSelectAssemblyForm.grant_name"
-                :disabled="!orderSelectAssemblyForm.assemblies"
+                :disabled="!orderSelectAssemblyForm.assemblies.length"
                 placeholder="Select Grant"
                 class="w-full">
                 <el-option v-for="item in grantsList" :key="item.name" :label="item.name" :value="item.name">
@@ -65,14 +66,14 @@
         </el-row>
       </el-form>
 
-      <el-card v-if="selectedAssembly.length" class="box-card mb-20">
+      <el-card class="min-h-100 box-card mb-20">
           <el-tag
-            v-for="tag in selectedAssembly"
+            v-for="tag in orderSelectAssemblyForm.assemblies"
             :key="tag"
             closable
             effect="dark"
             class="mx-20"
-            @close="handleClose(tag)">>
+            @close="removeTag(tag)">>
             {{tag}}
          </el-tag>
       </el-card>
@@ -104,7 +105,7 @@ export default class OrderSelectAssemblies extends Vue {
   orderSelectAssemblyForm: OrderAssembly = {
     study: '',
     project: '',
-    assemblies: '',
+    assemblies: [],
     grant_name: ''
   }
 
@@ -130,16 +131,11 @@ export default class OrderSelectAssemblies extends Vue {
     })
   }
 
-  handleClose (tag: any) {
-    this.selectedAssembly = this.selectedAssembly.filter((existTag: any) => tag !== existTag)
-  }
-
-  selectAssembly (value: any) {
-    if (!this.selectedAssembly.includes(value)) this.selectedAssembly = [ ...this.selectedAssembly, value ]
+  removeTag (tag: any) {
+    this.orderSelectAssemblyForm.assemblies = this.orderSelectAssemblyForm.assemblies!.filter((existTag: any) => tag !== existTag)
   }
 
   getStudyList () {
-    this.$emit('loadOn')
     return httpService.get('query/studyNameList')
       .then((res: any) => { this.studyList = res.data.rows })
       .catch((err: any) => { throw new Error(err) })
@@ -151,7 +147,7 @@ export default class OrderSelectAssemblies extends Vue {
     return httpService.post('query/projectNameList', { study: this.orderSelectAssemblyForm.study })
       .then((res: any) => {
         this.orderSelectAssemblyForm.project = ''
-        this.orderSelectAssemblyForm.assemblies = ''
+        this.orderSelectAssemblyForm.assemblies = []
         this.orderSelectAssemblyForm.grant_name = ''
         this.projectList = res.data.rows
       })
@@ -165,7 +161,7 @@ export default class OrderSelectAssemblies extends Vue {
       study: this.orderSelectAssemblyForm.study,
       project: this.orderSelectAssemblyForm.project
     }).then((res: any) => {
-      this.orderSelectAssemblyForm.assemblies = ''
+      this.orderSelectAssemblyForm.assemblies = []
       this.orderSelectAssemblyForm.grant_name = ''
       this.assemblyList = res.data.assemblies
     }).catch((err: any) => { throw new Error(err) })
@@ -173,15 +169,22 @@ export default class OrderSelectAssemblies extends Vue {
   }
 
   getGrantsList () {
-    this.$emit('loadOn')
     return httpService.post('query/grantsForUser', { user: this.$store.state.user.id })
       .then((res: any) => { this.grantsList = res.data.grantsList })
       .catch((err: any) => { throw new Error(err) })
       .finally(() => this.$emit('loadOff'))
   }
 
+  getInitialData () {
+    this.$emit('loadOn')
+    Promise.all([this.getStudyList(), this.getGrantsList()])
+      .then(() => { })
+      .catch((err: any) => { throw new Error(err) })
+      .finally(() => this.$emit('loadOff'))
+  }
+
   created () {
-    this.getStudyList()
+    this.getInitialData()
   }
 }
 </script>
