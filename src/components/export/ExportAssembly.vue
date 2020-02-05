@@ -113,8 +113,8 @@ export default class ExportAssemblies extends Vue {
       if (xhr.status === 200) {
         let data = xhr.response
         if (navigator.appVersion.toString().indexOf('.NET') > 0 && navigator.msSaveBlob) {
-          this.closeModal()
           window.navigator.msSaveBlob(new Blob([data]), `${zipName}.zip`)
+          this.closeModal()
         } else {
           const blob = new Blob([data], { type: 'application/octet-stream' })
           const file = new File([blob], 'file.zip', { type: 'application/zip' })
@@ -191,7 +191,7 @@ export default class ExportAssemblies extends Vue {
       })
   }
   closeModal () {
-    this.$emit('closeModal')
+    this.$emit('close', true)
     this.$emit('loadOff')
   }
 

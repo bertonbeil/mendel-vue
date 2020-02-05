@@ -19,8 +19,7 @@
         @loadOn="showLoader"
         @loadOff="isLoading.close()"
         @save="onSave"
-        @close="handleClose"
-        @closeModal="closeModal">
+        @close="handleClose">
       </component>
 
       <div v-if="$store.state.debugMode && $refs.modalRef && $refs.modalRef.sendData" class="w-full fixed bottom-0 left-0 bg-white z-10">
@@ -104,8 +103,9 @@ export default class Home extends Vue {
   }
 
   /* modal close handler */
-  handleClose (isCloseOnSave: boolean) {
-    this.confirmClose()
+  handleClose (closeWithoutConfirm: boolean) {
+    if (closeWithoutConfirm) this.closeModal()
+    else this.confirmClose()
   }
 
   /* before close handler */
