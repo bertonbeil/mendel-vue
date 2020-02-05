@@ -19,7 +19,8 @@
         @loadOn="showLoader"
         @loadOff="isLoading.close()"
         @save="onSave"
-        @close="handleClose">
+        @close="handleClose"
+        @closeModal="closeModal">
       </component>
 
       <div v-if="$store.state.debugMode && $refs.modalRef && $refs.modalRef.sendData" class="w-full fixed bottom-0 left-0 bg-white z-10">

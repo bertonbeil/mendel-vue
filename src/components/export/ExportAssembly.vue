@@ -59,8 +59,9 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DialogBase, ExportAssembly } from '@/utils/interfaces'
 import { httpService } from '@/services/http.service'
+import { alertMixin } from '@/utils/mixins'
 
-@Component({ name: 'ExportAssemblies' })
+@Component({ name: 'ExportAssemblies', mixins: [ alertMixin ] })
 
 export default class ExportAssemblies extends Vue {
   @Prop({ required: true }) modalData!: DialogBase
@@ -93,8 +94,9 @@ export default class ExportAssemblies extends Vue {
 
   submit () {
     this.$refs['exportAssemblyForm'].validate((valid: boolean) => {
-      if (valid) this.exportAssembly()
-      else return false
+      if (valid) {
+        this.exportAssembly()
+      } else return false
     })
   }
 
@@ -106,11 +108,14 @@ export default class ExportAssemblies extends Vue {
     xhr.open('POST', 'query/AssemblyExporter', true)
     xhr.setRequestHeader('Content-Type', 'application/json')
     xhr.responseType = 'blob'
-    xhr.onload = function () {
-      if (this.status === 200) {
-        let data = this.response
-        if (navigator.appVersion.toString().indexOf('.NET') > 0 && navigator.msSaveBlob) window.navigator.msSaveBlob(new Blob([data]), `${zipName}.zip`)
-        else {
+    this.$emit('loadOn')
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        let data = xhr.response
+        if (navigator.appVersion.toString().indexOf('.NET') > 0 && navigator.msSaveBlob) {
+          this.closeModal()
+          window.navigator.msSaveBlob(new Blob([data]), `${zipName}.zip`)
+        } else {
           const blob = new Blob([data], { type: 'application/octet-stream' })
           const file = new File([blob], 'file.zip', { type: 'application/zip' })
           let link = document.createElement('a')
@@ -118,9 +123,15 @@ export default class ExportAssemblies extends Vue {
           link.download = `${zipName}.zip`
           document.body.appendChild(link)
           link.click()
-          setTimeout(() => link.remove(), 0)
+          setTimeout(() => {
+            link.remove()
+            this.closeModal()
+          }, 0)
         }
-      } else console.log('Internal Error occurred. Please contact Systems Administrator')
+      } else {
+        (this as any).alert({ type: 'error', msg: 'Internal Error occurred. Please contact Systems Administrator' })
+        this.closeModal()
+      }
     }
     // Send array of links
     xhr.send(JSON.stringify(this.exportAssemblyForm))
@@ -178,6 +189,10 @@ export default class ExportAssemblies extends Vue {
           this.getAssemblyList(false)
         }
       })
+  }
+  closeModal () {
+    this.$emit('closeModal')
+    this.$emit('loadOff')
   }
 
   created () {

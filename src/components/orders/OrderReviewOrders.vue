@@ -9,7 +9,7 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" class="mb-10">
+    <el-row :gutter="20" class="mb-10 pl-20">
       <el-col :span="3" class="text-black"><h5>Study</h5></el-col>
       <el-col :span="3" class="text-black"><h5>Project</h5></el-col>
       <el-col :span="3" class="text-black"><h5>Assembly</h5></el-col>

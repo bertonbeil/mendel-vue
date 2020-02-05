@@ -2,48 +2,55 @@
   <div class="order-row-wrapper">
     <el-card class="box-card mb-10">
       <el-row :gutter="20" class="flex items-center">
-        <el-col :span="3" class="text-black">
-          <p>{{assembliesData.study}}</p>
+        <el-col :span="3" class="text-black  min-w-173">
+          <p class="truncate">{{assembliesData.study}}</p>
         </el-col>
 
-        <el-col :span="3" class="text-black">
-          <p>{{assembliesData.project}}</p>
+        <el-col :span="3" class="text-black min-w-173">
+          <p class="truncate">{{assembliesData.project}}</p>
         </el-col>
 
-        <el-col :span="3" class="text-black">
+        <el-col :span="3" class="text-black  min-w-173">
           <p class="truncate">{{assembliesData.assembly}}</p>
         </el-col>
 
-        <el-col :span="3" class="text-black">
-          <p>{{assembliesData.grant_name}}</p>
+        <el-col :span="3" class="text-black  min-w-173">
+          <p class="truncate">{{assembliesData.grant_name}}</p>
         </el-col>
 
         <el-col :span="12" :offset="isGrantNameExist" class="flex overflow-x-auto text-black">
-          <el-button @click="downloadFile" type="primary" size="medium">Download</el-button>
-          <el-button
-            @click="submitData(rejectedBtn.resolutionData)"
-            size="medium"
-            type="danger"
-            :disabled="rejectedBtn.disabled">
-            Reject
-          </el-button>
+          <div class="min-w-1/5">
+            <el-button @click="downloadFile" type="primary" size="medium">Download</el-button>
+          </div>
+          <div class="min-w-1/5">
+            <el-button
+              @click="submitData(rejectedBtn.resolutionData)"
+              size="medium"
+              type="danger"
+              :disabled="rejectedBtn.disabled">
+              Reject
+            </el-button>
+          </div>
 
-          <el-button
-            @click="submitData(orderSegmentBtn.resolutionData)"
-            size="medium"
-            type="success"
-            :disabled="orderSegmentBtn.disabled">
-            {{this.orderSegmentBtn.name}}
-          </el-button>
-
-          <el-button
-            v-if="OrderJunctionBtn.isShow"
-            @click="submitData(OrderJunctionBtn.resolutionData)"
-            size="medium"
-            type="info"
-            :disabled="OrderJunctionBtn.disabled">
-            {{OrderJunctionBtn.name}}
-          </el-button>
+          <div class="min-w-1/3">
+            <el-button
+              @click="submitData(orderSegmentBtn.resolutionData)"
+              size="medium"
+              type="success"
+              :disabled="orderSegmentBtn.disabled">
+              {{this.orderSegmentBtn.name}}
+            </el-button>
+          </div>
+          <div class="min-w-1/3">
+            <el-button
+              v-if="OrderJunctionBtn.isShow"
+              @click="submitData(OrderJunctionBtn.resolutionData)"
+              size="medium"
+              type="info"
+              :disabled="OrderJunctionBtn.disabled">
+              {{OrderJunctionBtn.name}}
+            </el-button>
+          </div>
         </el-col>
       </el-row>
     </el-card>
@@ -137,13 +144,13 @@ export default class ReviewOrdersRow extends Vue {
         return {
           disabled: true,
           name: 'Order Segment Primers',
-          resolutionData: 'orderSegments'
+          resolutionData: 'orderSegmentPrimers'
         }
       } else {
         return {
           disabled: false,
           name: 'Order Segment Primers',
-          resolutionData: 'orderSegments'
+          resolutionData: 'orderSegmentPrimers'
         }
       }
     } else if (this.assembliesData.segment_status === 'Ordered') {
